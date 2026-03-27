@@ -1,0 +1,130 @@
+/* Back Button */
+.back-btn {
+  width: 40px;
+  height: 40px;
+  min-width: 40px;
+  background-color: #8b5a8e;
+  border-radius: 8px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: #ffffff;
+  text-decoration: none;
+  font-size: 18px;
+  transition: background-color 0.3s;
+}
+
+.back-btn:hover {
+  background-color: #9a6a9d;
+  color: #ffffff;
+}
+
+/* Details Info Box */
+.details-info-box {
+  background-color: #3d373e;
+  border-radius: 20px;
+}
+
+.text-white-70 {
+  color: rgba(255, 255, 255, 0.7);
+  font-family: poppins-regular;
+}
+
+/* Filter Section */
+.details-filter-box {
+  background-color: #3d373e;
+  border-radius: 20px;
+}
+
+.details-select {
+  appearance: auto;
+  -webkit-appearance: auto;
+  -moz-appearance: auto;
+  cursor: pointer;
+  color: #999;
+}
+
+/* Show Panel Button */
+.show-panel-btn {
+  background-color: #561d5e;
+  color: #ffffff;
+  font-family: Poppins-SemiBold;
+  font-size: 15px;
+  border: none;
+  border-radius: 100px;
+  padding: 12px 16px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.show-panel-btn:hover {
+  background-color: #6b2875;
+}
+
+/* Year Grid */
+.year-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 12px;
+}
+
+/* Year Buttons */
+.year-btn {
+  background-color: #6b3a6e;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: #ffffff;
+  font-family: Poppins-SemiBold;
+  font-size: 15px;
+  padding: 12px 20px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s;
+  width: 100%;
+}
+
+.year-btn:hover {
+  background-color: #8b5a8e;
+  border-color: rgba(255, 255, 255, 0.3);
+}
+
+.year-btn.active {
+  background-color: #8b5a8e;
+  border-color: rgba(255, 255, 255, 0.3);
+}
+
+/* Responsive */
+@media (max-width: 991px) {
+  .year-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+@media (max-width: 767px) {
+  .details-info-box {
+    padding: 16px !important;
+  }
+
+  .details-filter-box {
+    padding: 16px !important;
+  }
+
+  .year-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .year-btn {
+    font-size: 14px;
+    padding: 10px 16px;
+  }
+}
+
+@media (max-width: 480px) {
+  .year-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .year-btn {
+    font-size: 13px;
+    padding: 8px 12px;
+  }
+}

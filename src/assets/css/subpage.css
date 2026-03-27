@@ -1,0 +1,1041 @@
+/* Active Nav Link */
+.active-nav {
+  color: #ffbc53 !important;
+  border-bottom: 2px solid #ffffff;
+  font-family: poppins-bold;
+}
+
+/* Game Tabs */
+.game-tabs-wrapper {
+  border-bottom: 2px solid rgba(255, 255, 255, 0.2);
+}
+
+.game-tabs {
+  border: none;
+  gap: 10px;
+}
+
+.game-tab-btn {
+  background: none;
+  border: none;
+  color: rgba(255, 255, 255, 0.5);
+  font-family: Poppins-SemiBold;
+  font-size: 18px;
+  padding: 8px 16px 10px;
+  cursor: pointer;
+  transition: color 0.3s;
+  position: relative;
+  margin-bottom: -2px;
+}
+
+.game-tab-btn:hover {
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.game-tab-btn.active {
+  color: #ffffff;
+  font-family: poppins-bold;
+  border-bottom: 2px solid #ffbc53;
+}
+
+/* Games List Container */
+.games-list-container {
+  background-color: #3d373e;
+  border-radius: 20px;
+}
+
+/* Game Accordion */
+.game-accordion-item {
+  background: none !important;
+  border: none !important;
+  margin-bottom: 12px;
+}
+
+.game-accordion-btn {
+  background-color: #8b5a8e !important;
+  color: #ffffff !important;
+  font-family: poppins-regular;
+  font-size: 15px;
+  border: none;
+  border-radius: 8px !important;
+  padding: 14px 20px;
+  box-shadow: none !important;
+}
+
+.game-accordion-btn::after {
+  filter: brightness(0) invert(1);
+}
+
+.game-accordion-btn:not(.collapsed) {
+  background-color: #7a4880 !important;
+  color: #ffffff !important;
+  box-shadow: none !important;
+  border-radius: 8px 8px 0 0 !important;
+}
+
+.game-accordion-btn:not(.collapsed)::after {
+  filter: brightness(0) invert(1);
+}
+
+.game-accordion-body {
+  background-color: #443c44;
+  color: #ffffff;
+  font-family: poppins-regular;
+  font-size: 14px;
+  padding: 16px 20px;
+  border-radius: 0 0 8px 8px;
+}
+
+/* Accordion collapse border fix */
+.game-accordion-item .accordion-collapse {
+  border: none;
+}
+
+/* Game Cards inside Accordion */
+.game-card {
+  background-color: #8b5a8e;
+  border-radius: 12px;
+  padding: 20px 10px;
+  text-align: center;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.game-card:hover {
+  background-color: #9a6a9d;
+}
+
+.game-card-icon {
+  font-size: 36px;
+  color: #ffffff;
+  margin-bottom: 12px;
+}
+
+.game-card-label {
+  color: #ffffff;
+  font-family: poppins-regular;
+  font-size: 13px;
+  margin-bottom: 0;
+}
+
+/* Poppins Regular utility class */
+.poppins-regular {
+  font-family: poppins-regular;
+}
+
+/* Responsive */
+@media (max-width: 767px) {
+  .game-tab-btn {
+    font-size: 15px;
+    padding: 6px 12px;
+  }
+
+  .games-list-container {
+    padding: 16px !important;
+  }
+
+  .game-accordion-btn {
+    font-size: 14px;
+    padding: 12px 16px;
+  }
+
+  .game-accordion-body .row {
+    flex-wrap: wrap;
+  }
+
+  .game-accordion-body .row .col {
+    flex: 0 0 50%;
+    max-width: 50%;
+  }
+
+  .game-card-icon {
+    font-size: 28px;
+  }
+
+  .game-card-label {
+    font-size: 12px;
+  }
+}
+
+@media (max-width: 480px) {
+  .game-tab-btn {
+    font-size: 14px;
+    padding: 5px 10px;
+  }
+
+  .game-accordion-body .row .col {
+    flex: 0 0 100%;
+    max-width: 100%;
+  }
+}
+
+/* ======================== */
+/* Result Screen Styles     */
+/* ======================== */
+
+/* Search Box */
+.result-search-box {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  width: 100%;
+  max-width: 260px;
+}
+
+.result-search-input {
+  width: 100%;
+  padding: 8px 16px 8px 16px;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  background-color: #ffffff;
+  color: #333333;
+  font-family: poppins-regular;
+  font-size: 14px;
+  outline: none;
+}
+
+.result-search-input::placeholder {
+  color: #999999;
+}
+
+.result-search-icon {
+  position: absolute;
+  right: 12px;
+  color: #999999;
+  font-size: 14px;
+}
+
+/* Refresh Button */
+.result-refresh-btn {
+  background-color: #ffffff;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  color: #333333;
+  font-family: poppins-regular;
+  font-size: 14px;
+  padding: 8px 20px;
+  border-radius: 8px;
+}
+
+.result-refresh-btn:hover {
+  background-color: rgba(255, 255, 255, 0.2);
+  color: #ffffff;
+}
+
+/* Filter Select */
+.result-filter-select {
+  background-color: #ffffff;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  color: #333333;
+  font-family: poppins-regular;
+  font-size: 14px;
+  padding: 8px 16px;
+  border-radius: 8px;
+  outline: none;
+  min-width: 100px;
+}
+
+.result-filter-select option {
+  background-color: #302530;
+  color: #ffffff;
+}
+
+/* Bazar Type Dots */
+.bazar-dot {
+  width: 16px;
+  height: 16px;
+  border-radius: 4px;
+  display: inline-block;
+}
+
+.bazar-dot-normal {
+  background-color: rgba(255, 255, 255, 0.3);
+}
+
+.bazar-dot-elite {
+  background-color: #f4a623;
+}
+
+.bazar-dot-premium {
+  background-color: #4ecdc4;
+}
+
+/* Result Screen Cards */
+.rs-card {
+  border-radius: 14px;
+  overflow: hidden;
+}
+
+.rs-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 20px;
+}
+
+/* Purple Card */
+.rs-header-purple {
+  background-color: #561d5e;
+  border-radius: 12px;
+}
+
+.rs-body-purple {
+  background-color: #807381;
+}
+
+/* Teal/Cyan Card */
+
+.rs-header-teal {
+  background-color: #561d5e;
+  border-radius: 12px;
+}
+
+.rs-body-teal {
+  background-color: #539fbd;
+}
+
+/* Yellow/Gold Card */
+.rs-header-yellow {
+  background-color: #561d5e;
+  border-radius: 12px;
+}
+
+.rs-body-yellow {
+  background-color: #e1b62b;
+}
+
+/* Panel Button */
+.rs-panel-btn {
+  background-color: #ffffff;
+  border: none;
+  color: #333333;
+  font-family: Poppins-SemiBold;
+  font-size: 13px;
+  padding: 6px 22px;
+  border-radius: 6px;
+}
+
+.rs-panel-btn:hover {
+  background-color: #e8e8e8;
+  color: #333333;
+}
+
+/* Card Body */
+.rs-card-body {
+  padding: 20px 20px 16px;
+  text-align: center;
+}
+
+/* Guessing Label */
+.rs-guessing-label {
+  color: white;
+  font-size: 13px;
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+
+.rs-guess-box {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  background-color: #996c9b;
+  border: none;
+  border-radius: 4px;
+  color: #ffffff;
+  font-family: Poppins-SemiBold;
+  font-size: 12px;
+}
+
+.rs-guess-box-blue {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  background-color: #346377;
+  border: none;
+  border-radius: 4px;
+  color: #ffffff;
+  font-family: Poppins-SemiBold;
+  font-size: 12px;
+}
+.rs-guess-box-yellow {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  background-color: #dc9e25;
+  border: none;
+  border-radius: 4px;
+  color: #ffffff;
+  font-family: Poppins-SemiBold;
+  font-size: 12px;
+}
+/* Result Numbers */
+.rs-result-number {
+  color: #ffffff;
+  font-size: 32px;
+  letter-spacing: 4px;
+  margin-bottom: 6px;
+}
+
+/* Time Range */
+.rs-time-range {
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 13px;
+  margin-bottom: 0;
+}
+
+/* Result Screen Responsive */
+@media (max-width: 767px) {
+  .result-search-box {
+    max-width: 100%;
+    width: 100%;
+  }
+
+  .result-search-input {
+    font-size: 13px;
+    padding: 8px 12px;
+  }
+
+  .result-refresh-btn {
+    padding: 6px 14px;
+    font-size: 13px;
+  }
+
+  .result-filter-select {
+    padding: 6px 10px;
+    font-size: 13px;
+    min-width: 80px;
+  }
+
+  .rs-result-number {
+    font-size: 26px;
+    letter-spacing: 2px;
+  }
+
+  .rs-card-header {
+    padding: 10px 16px;
+  }
+
+  .rs-card-body {
+    padding: 16px 16px 14px;
+  }
+}
+
+@media (max-width: 480px) {
+  .result-refresh-btn {
+    padding: 5px 10px;
+    font-size: 12px;
+  }
+
+  .result-filter-select {
+    padding: 5px 8px;
+    font-size: 12px;
+    min-width: 70px;
+  }
+
+  .rs-card-header {
+    padding: 10px 14px;
+  }
+
+  .rs-card-header h6 {
+    font-size: 13px;
+  }
+
+  .rs-card-body {
+    padding: 14px 14px 12px;
+  }
+
+  .rs-result-number {
+    font-size: 22px;
+    letter-spacing: 1px;
+  }
+
+  .rs-guessing-label {
+    font-size: 11px;
+  }
+
+  .rs-guess-box {
+    width: 20px;
+    height: 20px;
+    font-size: 10px;
+  }
+
+  .rs-guess-box-blue {
+    width: 20px;
+    height: 20px;
+    font-size: 10px;
+  }
+
+  .rs-guess-box-yellow {
+    width: 20px;
+    height: 20px;
+    font-size: 10px;
+  }
+
+  .rs-time-range {
+    font-size: 11px;
+  }
+}
+
+/* ===== Calendar Filter Bar ===== */
+.calendar-filter-bar {
+  margin-bottom: 16px;
+}
+
+.calendar-filter-bar .cal-sidebar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 16px 20px;
+  flex-wrap: wrap;
+}
+
+.calendar-filter-bar .form-field {
+  flex: 1;
+  min-width: 120px;
+  margin-bottom: 0;
+}
+
+.calendar-filter-bar .btn-show-panel,
+.calendar-filter-bar .btn-download-pdf {
+  white-space: nowrap;
+  width: auto;
+  padding: 12px 24px;
+  margin-bottom: 0;
+}
+
+/* ===== Calendar Layout ===== */
+.calendar-section {
+  display: flex;
+  gap: 16px;
+  align-items: flex-start;
+}
+
+.calendar-left {
+  flex: 1;
+  overflow-x: auto;
+}
+
+/* ===== Calendar Table ===== */
+.cal-table {
+  width: 100%;
+  border-collapse: collapse;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.cal-table thead th {
+  background: #694a6a;
+  color: #fff;
+  font-family: Poppins-SemiBold;
+  font-size: 13px;
+  padding: 10px 6px;
+  text-align: center;
+  border: 2px solid rgb(23 23 23);
+}
+
+.cal-table thead th:first-child {
+  text-align: left;
+  padding-left: 14px;
+  min-width: 95px;
+  width: 95px;
+}
+
+.cal-table tbody td {
+  background-color: #7a4880;
+  color: #fff;
+  font-family: poppins-regular;
+  font-size: 11px;
+  padding: 0;
+  text-align: center;
+  vertical-align: middle;
+  border: 2px solid rgb(23 23 23);
+  height: 48px;
+}
+
+.cal-table tbody td:first-child {
+  background-color: #996c9b;
+  font-family: Poppins-SemiBold;
+  font-size: 11px;
+  padding: 6px 14px;
+  text-align: left;
+  white-space: nowrap;
+}
+
+/* ===== Result Cell ===== */
+.rc {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 100%;
+  padding: 7px 18px;
+}
+
+.rc .s {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-size: 9px;
+  color: rgba(255, 255, 255, 0.7);
+  line-height: 1.15;
+  gap: 0px;
+  min-width: 10px;
+}
+
+.rc .j {
+  font-family: Poppins-SemiBold;
+  font-size: 18px;
+  color: #fff;
+  line-height: 1;
+  flex: 1;
+  text-align: center;
+}
+
+/* ===== Sidebar ===== */
+.cal-sidebar {
+  background-color: #3d373e;
+  border-radius: 16px;
+  padding: 20px;
+}
+
+.cal-sidebar select,
+.cal-sidebar input[type="text"],
+.cal-sidebar input[type="date"] {
+  width: 100%;
+  padding: 12px 16px;
+  border-radius: 10px;
+  border: none;
+  background-color: #fff;
+  color: #333;
+  font-family: poppins-regular;
+  font-size: 14px;
+  outline: none;
+}
+
+.cal-sidebar select {
+  appearance: auto;
+  -webkit-appearance: auto;
+  color: #999;
+}
+
+.cal-sidebar input[type="text"]::placeholder {
+  color: #999;
+}
+
+.btn-show-panel {
+  width: 100%;
+  background-color: #561d5e;
+  color: #fff;
+  font-family: Poppins-SemiBold;
+  font-size: 14px;
+  border: none;
+  border-radius: 100px;
+  padding: 11px 16px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  margin-bottom: 14px;
+}
+
+.btn-show-panel:hover {
+  background-color: #6b2875;
+}
+
+.btn-download-pdf {
+  width: 100%;
+  background-color: #8b5a8e;
+  color: #fff;
+  font-family: Poppins-SemiBold;
+  font-size: 14px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 100px;
+  padding: 11px 16px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.btn-download-pdf:hover {
+  background-color: #9a6a9d;
+}
+
+/* ===== Calendar Responsive ===== */
+
+/* Tablet */
+@media (max-width: 991px) {
+  .calendar-filter-bar .cal-sidebar {
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  .calendar-filter-bar .form-field {
+    flex: 1 1 calc(33% - 10px);
+    min-width: 140px;
+  }
+  .calendar-filter-bar .btn-show-panel,
+  .calendar-filter-bar .btn-download-pdf {
+    flex: 1 1 calc(50% - 10px);
+  }
+  .cal-table thead th {
+    font-size: 12px;
+    padding: 8px 4px;
+  }
+  .cal-table tbody td {
+    height: 42px;
+  }
+  .rc {
+    padding: 5px 10px;
+  }
+  .rc .j {
+    font-size: 15px;
+  }
+  .rc .s {
+    font-size: 8px;
+  }
+}
+
+/* Small Tablet / Large Phone */
+@media (max-width: 767px) {
+  .calendar-filter-bar .cal-sidebar {
+    flex-direction: column;
+    padding: 14px;
+  }
+  .calendar-filter-bar .form-field {
+    width: 100%;
+    flex: unset;
+  }
+  .calendar-filter-bar .btn-show-panel,
+  .calendar-filter-bar .btn-download-pdf {
+    width: 100%;
+    flex: unset;
+  }
+  .cal-table thead th {
+    font-size: 11px;
+    padding: 8px 3px;
+  }
+  .cal-table thead th:first-child {
+    min-width: 75px;
+    width: 75px;
+    padding-left: 8px;
+  }
+  .cal-table tbody td {
+    height: 38px;
+  }
+  .cal-table tbody td:first-child {
+    font-size: 9px;
+    padding: 4px 8px;
+  }
+  .rc {
+    padding: 4px 6px;
+  }
+  .rc .j {
+    font-size: 13px;
+  }
+  .rc .s {
+    font-size: 7px;
+  }
+  .cal-sidebar {
+    padding: 14px;
+  }
+}
+
+/* Mobile */
+@media (max-width: 480px) {
+  .cal-table thead th {
+    font-size: 10px;
+    padding: 6px 2px;
+  }
+  .cal-table thead th:first-child {
+    min-width: 60px;
+    width: 60px;
+    font-size: 9px;
+    padding-left: 5px;
+  }
+  .cal-table tbody td {
+    height: 34px;
+  }
+  .cal-table tbody td:first-child {
+    font-size: 8px;
+    padding: 3px 5px;
+  }
+  .rc {
+    padding: 3px 4px;
+  }
+  .rc .j {
+    font-size: 11px;
+  }
+  .rc .s {
+    font-size: 6px;
+    min-width: 8px;
+  }
+}
+
+/* About page mobile responsive */
+@media (max-width: 575px) {
+  .about-content-box {
+    padding: 16px !important;
+  }
+
+  .about-content-box h5 {
+    font-size: 16px;
+  }
+
+  .about-content-box p {
+    font-size: 12px;
+  }
+}
+
+/* ======================== */
+/* Profile Creation Screen  */
+/* ======================== */
+
+.profile-logo {
+  width: 200px;
+}
+
+.profile-card {
+  background: #453c46;
+  border-radius: 16px;
+  padding: 40px 50px;
+  margin: 0 auto;
+}
+
+.profile-input {
+  background: #ffffff !important;
+  border: 1px solid #ccc !important;
+  border-radius: 8px !important;
+  padding: 14px 18px !important;
+  font-family: poppins-regular;
+  font-size: 14px;
+  color: #333 !important;
+}
+
+.profile-input::placeholder {
+  color: #7a4880;
+}
+
+.profile-input:focus {
+  box-shadow: 0 0 0 2px #55205d !important;
+  border-color: #55205d !important;
+}
+
+.username-available {
+  position: absolute;
+  right: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #4caf50;
+  font-family: poppins-regular;
+  font-size: 12px;
+}
+
+.profile-desc {
+  color: #d4cdd5;
+  font-family: poppins-regular;
+  font-size: 13px;
+  line-height: 1.7;
+}
+
+.profile-upgrade-btn {
+  background: #cca8d1;
+  color: #561e5f;
+  width: 224px;
+  height: 55px;
+  border-radius: 4px;
+  gap: 10px;
+  padding: 19px;
+  font-family: Poppins-SemiBold;
+  font-size: 16px;
+  line-height: 100%;
+  text-align: center;
+  vertical-align: middle;
+  transition: all 0.3s ease;
+}
+
+.profile-upgrade-btn:hover {
+  background: #55205d;
+  color: #ffffff;
+}
+
+.profile-save-btn {
+  background: #55205d;
+  color: #ffffff;
+  border: none;
+  width: 195px;
+  height: 55px;
+  border-radius: 4px;
+  gap: 10px;
+  padding: 19px;
+  font-family: Poppins-SemiBold;
+  font-size: 16px;
+  line-height: 100%;
+  letter-spacing: 0%;
+  text-align: center;
+  vertical-align: middle;
+  transition: background 0.3s ease;
+}
+
+.profile-save-btn:hover {
+  background: #6b2875;
+  color: #ffffff;
+}
+
+.profile-cancel-btn {
+  background: #ffffff;
+  color: #333;
+  border: 1px solid #ccc;
+  width: 195px;
+  height: 55px;
+  border-radius: 4px;
+  gap: 10px;
+  padding: 19px;
+  font-family: Poppins-SemiBold;
+  font-size: 16px;
+  line-height: 100%;
+  text-align: center;
+  vertical-align: middle;
+  transition: all 0.3s ease;
+}
+
+.profile-cancel-btn:hover {
+  background: #f0f0f0;
+  color: #333;
+}
+
+.profile-delete-btn {
+  background: #a2a2a2;
+  color: #ffffff;
+  border: none;
+  width: 195px;
+  height: 55px;
+  border-radius: 4px;
+  gap: 10px;
+  padding: 19px;
+  font-family: Poppins-SemiBold;
+  font-size: 16px;
+  line-height: 100%;
+  text-align: center;
+  vertical-align: middle;
+  transition: background 0.3s ease;
+}
+
+.profile-delete-btn:hover {
+  background: #555555;
+  color: #ffffff;
+}
+
+/* Delete Confirmation Modal */
+.delete-modal-content {
+  background-color: #807381;
+  border-radius: 12px;
+  border: 0.3px solid #561d5e;
+  padding: 20px;
+  width: 704px;
+  max-width: 100%;
+  box-shadow: 0px 1px 25px 2px #7d447f66;
+}
+
+.delete-modal-body {
+  padding: 30px 20px;
+}
+
+.delete-modal-text {
+  color: #ffffff;
+  font-family: Poppins-SemiBold;
+  font-size: 16px;
+  margin-bottom: 0;
+}
+
+.delete-modal-delete-btn {
+  background: #55205d;
+  color: #ffffff;
+  width: 150px;
+  height: 48px;
+  border-radius: 4px;
+  font-family: Poppins-SemiBold;
+  font-size: 16px;
+  border: none;
+  transition: background 0.3s ease;
+}
+
+.delete-modal-delete-btn:hover {
+  background: #6b2875;
+  color: #ffffff;
+}
+
+.delete-modal-cancel-btn {
+  background: #ffffff;
+  color: #333;
+  width: 150px;
+  height: 48px;
+  border-radius: 4px;
+  font-family: Poppins-SemiBold;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  transition: all 0.3s ease;
+}
+
+.delete-modal-cancel-btn:hover {
+  background: #f0f0f0;
+  color: #333;
+}
+
+/* Profile Responsive */
+@media (max-width: 768px) {
+  .profile-card {
+    padding: 28px 24px;
+  }
+
+  .profile-upgrade-btn {
+    width: 100%;
+  }
+
+  .profile-save-btn,
+  .profile-cancel-btn,
+  .profile-delete-btn {
+    width: 100%;
+    height: 48px;
+    padding: 14px;
+    font-size: 14px;
+  }
+
+  .profile-card .d-flex.justify-content-between {
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .profile-card .d-flex.justify-content-between .d-flex.gap-3 {
+    width: 100%;
+    flex-direction: column;
+    gap: 12px !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .profile-card {
+    padding: 20px 16px;
+  }
+
+  .profile-logo {
+    width: 160px;
+  }
+
+  .profile-desc {
+    font-size: 12px;
+  }
+
+  .profile-input {
+    padding: 12px 14px !important;
+    font-size: 13px;
+  }
+}

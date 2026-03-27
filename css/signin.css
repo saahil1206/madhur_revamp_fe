@@ -1,0 +1,157 @@
+/* Sign In Page */
+.signin-page {
+  min-height: 100vh;
+  background: linear-gradient(
+    180deg,
+    #1a0a2e 0%,
+    #2d1249 30%,
+    #1a0a2e 60%,
+    #0f0618 100%
+  );
+  font-family: "Poppins", sans-serif;
+}
+
+.signin-logo {
+  width: 200px;
+}
+
+/* Tab Container */
+.tab-container {
+  display: flex;
+  width: 100%;
+  max-width: 474px;
+  height: 56px;
+  background: #ffffff;
+  border: 2px solid #55205d;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+/* Inactive (default) */
+.tab-btn {
+  flex: 1;
+  height: 56px;
+  padding: 8px 16px;
+  border: none;
+  outline: none;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  background: #ffffff;
+  color: #561d5e;
+  border-radius: 0;
+}
+
+/* Active */
+.tab-btn.active {
+  background: #55205d;
+  color: #ffffff;
+  width: 238px;
+  flex: none;
+  height: 56px;
+  border-radius: 10px;
+  gap: 10px;
+  border-width: 1px;
+  padding: 8px 16px;
+}
+
+/* Form Card */
+.form-card {
+  background: #453c46;
+  border-radius: 16px;
+  padding: 40px;
+  width: 100%;
+  max-width: 550px;
+}
+
+/* Input Fields */
+.signin-input {
+  background: #f0eae5 !important;
+  border: none !important;
+  border-radius: 8px !important;
+  padding: 14px 18px !important;
+  font-size: 15px;
+  color: #333 !important;
+}
+
+.signin-input::placeholder {
+  color: #7a4880;
+}
+
+.signin-input:focus {
+  box-shadow: 0 0 0 2px #55205d !important;
+}
+
+/* Checkbox */
+.form-check-input {
+  background-color: #55205d;
+  border-color: #55205d;
+}
+
+.form-check-input:checked {
+  background-color: #55205d;
+  border-color: #55205d;
+}
+
+.form-check-label {
+  font-size: 14px;
+}
+
+/* Button */
+.signin-btn {
+  background: #55205d;
+  color: #ffffff;
+  border: none;
+  border-radius: 8px;
+  padding: 12px;
+  font-size: 16px;
+  font-weight: 600;
+  transition: background 0.3s ease;
+}
+
+.signin-btn:hover {
+  background: #5e1f6e;
+  color: #ffffff;
+}
+
+/* Footer Text */
+.footer-text {
+  color: #F9F6F8;
+  font-size: 12px;
+  line-height: 1.6;
+}
+
+.terms-link {
+  color: #ffbc53;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.privacy-link {
+  color: #ffbc53;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.terms-link:hover,
+.privacy-link:hover {
+  text-decoration: underline;
+}
+
+/* Responsive */
+@media (max-width: 576px) {
+  .form-card {
+    margin: 0 16px;
+    padding: 28px 20px;
+  }
+
+  .tab-btn {
+    padding: 8px 28px;
+    font-size: 14px;
+  }
+
+  .signin-logo {
+    width: 160px;
+  }
+}
