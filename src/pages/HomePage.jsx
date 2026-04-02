@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import ChatBox from '../components/common/ChatBox'
 import Footer from '../components/layout/Footer'
@@ -8,14 +9,7 @@ import motorImg from '../assets/images/motor.png'
 import horoscopeMainImg from '../assets/images/Todays-Horoscope.png'
 import horoscopeIcon from '../assets/images/Horoscope.png'
 
-const resultCards = [
-  { title: 'Madhur Morning Result', variant: 'default', timer: { hr: '1', min: '12', sec: '05' }, digits: ['0','7','2','-','7','5','8','-','9','2','4'] },
-  { title: 'Madhur Morning Result', variant: 'default', timer: { hr: '1', min: '12', sec: '05' }, digits: ['0','7','2','-','7','5','8','-','9','2','4'] },
-  { title: 'Madhur Morning Result', variant: 'yellow', timer: { hr: '1', min: '12', sec: '05' }, digits: ['0','7','2','-','7','5','8','-','9','2','4'] },
-  { title: 'Madhur Morning Result', variant: 'default', timer: { hr: '1', min: '12', sec: '05' }, digits: ['0','7','2','-','7','5','8','-','9','2','4'] },
-  { title: 'Madhur Morning Result', variant: 'default', timer: { hr: '1', min: '12', sec: '05' }, digits: ['0','7','2','-','7','5','8','-','9','2','4'] },
-  { title: 'Madhur Morning Result', variant: 'blue', timer: { hr: '1', min: '12', sec: '05' }, digits: ['0','7','2','-','7','5','8','-','9','2','4'] },
-]
+const cardVariants = ['default', 'default', 'yellow', 'default', 'default', 'blue']
 
 const luckyCards = [
   { img: akadaImg, title: 'Aakda', numbers: [1, 1, 1, 1] },
@@ -24,23 +18,81 @@ const luckyCards = [
   { img: motorImg, title: 'Motor', numbers: [1, 1, 1, 1] },
 ]
 
-const scheduleData = [
-  { name: 'Madhur Morning', open: '11.30 PM', close: '12.30 PM' },
-  { name: 'Madhur Day', open: '11.30 PM', close: '12.30 PM' },
-  { name: 'Kamdhenu Day', open: '11.30 PM', close: '12.30 PM' },
-  { name: 'Madhur Evening', open: '11.30 PM', close: '12.30 PM' },
-  { name: 'Dhanlaxmi Day', open: '11.30 PM', close: '12.30 PM' },
-  { name: 'Kalyan', open: '11.30 PM', close: '12.30 PM' },
-  { name: 'Dhanlaxmi Night', open: '11.30 PM', close: '12.30 PM' },
-  { name: 'Madhur Night', open: '11.30 PM', close: '12.30 PM' },
-  { name: 'Madhur Shubhank', open: '11.30 PM', close: '12.30 PM' },
-  { name: 'Kamdhenu Night', open: '11.30 PM', close: '12.30 PM' },
-  { name: 'Main', open: '11.30 PM', close: '12.30 PM' },
-  { name: 'Dhanlaxmi Morning', open: '11.30 PM', close: '12.30 PM' },
-  { name: 'Time', open: '11.30 PM', close: '12.30 PM' },
-]
+function formatApiTime(value) {
+  if (!value) return '--'
+  const [hStr, mStr] = String(value).split(':')
+  const hour = Number(hStr)
+  const minute = Number(mStr || 0)
+  if (Number.isNaN(hour) || Number.isNaN(minute)) return String(value)
+  const ampm = hour >= 12 ? 'PM' : 'AM'
+  const h12 = hour % 12 || 12
+  return `${String(h12).padStart(2, '0')}.${String(minute).padStart(2, '0')} ${ampm}`
+}
 
-function ResultCard({ title, variant, timer, digits }) {
+function formatResultDigits(openPana, openAakda, closeAakda, closePana) {
+  const text = `${openPana ?? '---'}-${openAakda ?? '-'}${closeAakda ?? '-'}-${closePana ?? '---'}`
+  return text.split('')
+}
+
+function combineDateAndTime(baseDate, timeValue) {
+  if (!timeValue) return null
+  const [h, m, s] = String(timeValue).split(':').map((v) => Number(v || 0))
+  if ([h, m, s].some(Number.isNaN)) return null
+  return new Date(
+    baseDate.getFullYear(),
+    baseDate.getMonth(),
+    baseDate.getDate(),
+    h,
+    m,
+    s
+  )
+}
+
+function getOperationalDate(now) {
+  const base = new Date(now)
+  if (base.getHours() < 1) {
+    base.setDate(base.getDate() - 1)
+  }
+  return new Date(base.getFullYear(), base.getMonth(), base.getDate())
+}
+
+function getCountdownPhase(now, openTime, closeTime) {
+  const opDate = getOperationalDate(now)
+  const openAt = combineDateAndTime(opDate, openTime)
+  let closeAt = combineDateAndTime(opDate, closeTime)
+  if (!openAt || !closeAt) return null
+
+  if (closeAt <= openAt) {
+    closeAt.setDate(closeAt.getDate() + 1)
+  }
+
+  if (now < openAt) {
+    return { phase: 'Open', target: openAt }
+  }
+
+  if (now < closeAt) {
+    return { phase: 'Close', target: closeAt }
+  }
+
+  const nextOpen = new Date(openAt)
+  nextOpen.setDate(nextOpen.getDate() + 1)
+  return { phase: 'Open', target: nextOpen }
+}
+
+function formatYmd(dateObj) {
+  const y = dateObj.getFullYear()
+  const m = String(dateObj.getMonth() + 1).padStart(2, '0')
+  const d = String(dateObj.getDate()).padStart(2, '0')
+  return `${y}-${m}-${d}`
+}
+
+function addDays(dateObj, days) {
+  const d = new Date(dateObj)
+  d.setDate(d.getDate() + days)
+  return d
+}
+
+function ResultCard({ title, variant, timer, digits, badgeText }) {
   const bodyClass = variant === 'yellow' ? 'result-card-body yellow-bg' : variant === 'blue' ? 'result-card-body blue-bg' : 'result-card-body'
   const timerBoxClass = variant === 'yellow' ? 'timer-box-yellow' : variant === 'blue' ? 'timer-box-blue' : 'timer-box'
 
@@ -49,7 +101,7 @@ function ResultCard({ title, variant, timer, digits }) {
       <div className="result-card">
         <div className="result-card-header">
           <h6 className="mb-0 Poppins-SemiBold text-white">{title}</h6>
-          <span className="live-badge Poppins-SemiBold">Live <span className="live-dot"></span></span>
+          <span className="live-badge Poppins-SemiBold">{badgeText || 'Live'} <span className="live-dot"></span></span>
         </div>
         <div className={bodyClass}>
           <div className="timer-section">
@@ -88,6 +140,142 @@ function ResultCard({ title, variant, timer, digits }) {
 }
 
 function HomePage() {
+  const [liveCards, setLiveCards] = useState([])
+  const [resultLoading, setResultLoading] = useState(true)
+  const [scheduleData, setScheduleData] = useState([])
+  const [scheduleLoading, setScheduleLoading] = useState(true)
+  const [scheduleError, setScheduleError] = useState('')
+  const apiBaseUrl = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000'
+  const [nowTick, setNowTick] = useState(Date.now())
+
+  useEffect(() => {
+    const timer = setInterval(() => setNowTick(Date.now()), 1000)
+    return () => clearInterval(timer)
+  }, [])
+
+  useEffect(() => {
+    const fetchUpcomingCards = async () => {
+      setResultLoading(true)
+      try {
+        const now = new Date()
+        const opDate = getOperationalDate(now)
+        const currentDate = formatYmd(opDate)
+        const prevDate = formatYmd(addDays(opDate, -1))
+
+        const [bazarRes, resultRes] = await Promise.all([
+          fetch(`${apiBaseUrl}/api/bazar`),
+          fetch(`${apiBaseUrl}/api/results?fromDate=${prevDate}&toDate=${currentDate}`),
+        ])
+        if (!bazarRes.ok || !resultRes.ok) throw new Error('Failed to load live results')
+
+        const bazars = await bazarRes.json()
+        const rangeResults = await resultRes.json()
+
+        const byBazarDate = new Map()
+        ;(Array.isArray(rangeResults) ? rangeResults : []).forEach((row) => {
+          const key = `${row.bazar_id}-${row.result_date}`
+          const current = byBazarDate.get(key) || { openPana: '---', openAakda: '-', closeAakda: '-', closePana: '---' }
+          if (row.result_type === 'open') {
+            current.openPana = row.result_pana ?? '---'
+            current.openAakda = row.result_AAkda ?? '-'
+          } else if (row.result_type === 'close') {
+            current.closeAakda = row.result_AAkda ?? '-'
+            current.closePana = row.result_pana ?? '---'
+          }
+          byBazarDate.set(key, current)
+        })
+
+        const cards = (Array.isArray(bazars) ? bazars : [])
+          .map((bazar, idx) => {
+            const phaseData = getCountdownPhase(now, bazar.open_time, bazar.close_time)
+            if (!phaseData) return null
+
+            const todayParts = byBazarDate.get(`${bazar.id}-${currentDate}`) || null
+            const prevParts = byBazarDate.get(`${bazar.id}-${prevDate}`) || null
+
+            let parts = prevParts || { openPana: '---', openAakda: '-', closeAakda: '-', closePana: '---' }
+            if (todayParts) {
+              if (phaseData.phase === 'Close') {
+                parts = {
+                  openPana: todayParts.openPana ?? '---',
+                  openAakda: todayParts.openAakda ?? '-',
+                  closeAakda: todayParts.closeAakda ?? '-',
+                  closePana: todayParts.closePana ?? '---',
+                }
+              } else if ((todayParts.openPana ?? null) !== null || (todayParts.openAakda ?? null) !== null) {
+                parts = todayParts
+              }
+            }
+
+            if (phaseData.phase === 'Close' && !todayParts?.closePana && !todayParts?.closeAakda) {
+              parts = {
+                openPana: todayParts?.openPana ?? parts.openPana,
+                openAakda: todayParts?.openAakda ?? parts.openAakda,
+                closeAakda: '-',
+                closePana: '---',
+              }
+            }
+
+            return {
+              id: bazar.id,
+              title: `${bazar.bazar_name} Result`,
+              variant: cardVariants[idx % cardVariants.length],
+              badgeText: phaseData.phase,
+              targetTime: phaseData.target.toISOString(),
+              digits: formatResultDigits(parts.openPana, parts.openAakda, parts.closeAakda, parts.closePana),
+            }
+          })
+          .filter(Boolean)
+          .sort((a, b) => new Date(a.targetTime) - new Date(b.targetTime))
+
+        setLiveCards(cards)
+      } catch (error) {
+        setLiveCards([])
+      } finally {
+        setResultLoading(false)
+      }
+    }
+
+    fetchUpcomingCards()
+  }, [apiBaseUrl])
+
+  const cardsWithTimer = liveCards
+    .map((card) => {
+      const remaining = new Date(card.targetTime).getTime() - nowTick
+      if (remaining <= 0) return null
+      const totalSec = Math.floor(remaining / 1000)
+      const hr = String(Math.floor(totalSec / 3600)).padStart(2, '0')
+      const min = String(Math.floor((totalSec % 3600) / 60)).padStart(2, '0')
+      const sec = String(totalSec % 60).padStart(2, '0')
+      return { ...card, timer: { hr, min, sec } }
+    })
+    .filter(Boolean)
+
+  useEffect(() => {
+    const fetchTimeTable = async () => {
+      setScheduleLoading(true)
+      setScheduleError('')
+      try {
+        const response = await fetch(`${apiBaseUrl}/api/bazar`)
+        if (!response.ok) throw new Error('Failed to load time table')
+        const data = await response.json()
+        const rows = Array.isArray(data)
+          ? data.map((row) => ({
+              name: row.bazar_name || '--',
+              open: formatApiTime(row.open_time),
+              close: formatApiTime(row.close_time),
+            }))
+          : []
+        setScheduleData(rows)
+      } catch (err) {
+        setScheduleError(err.message || 'Failed to load time table')
+      } finally {
+        setScheduleLoading(false)
+      }
+    }
+    fetchTimeTable()
+  }, [apiBaseUrl])
+
   return (
     <>
       {/* Purple Bar */}
@@ -169,7 +357,9 @@ function HomePage() {
         <div className="container-fluid pt-3">
           <div className="px-3 bg-gray minus-margin-top">
             <div className="row pt-2">
-              {resultCards.map((card, i) => (
+              {resultLoading && <p className="text-white px-3 mb-3">Loading upcoming results...</p>}
+              {!resultLoading && cardsWithTimer.length === 0 && <p className="text-white px-3 mb-3">No upcoming results for today.</p>}
+              {cardsWithTimer.map((card, i) => (
                 <ResultCard key={i} {...card} />
               ))}
             </div>
@@ -254,10 +444,25 @@ function HomePage() {
                 <tr>
                   <th>Game Bazaar</th>
                   <th>Open Time</th>
-                  <th>Open Time</th>
+                  <th>Close Time</th>
                 </tr>
               </thead>
               <tbody>
+                {scheduleLoading && (
+                  <tr>
+                    <td colSpan="3" className="text-center text-white">Loading...</td>
+                  </tr>
+                )}
+                {!scheduleLoading && scheduleError && (
+                  <tr>
+                    <td colSpan="3" className="text-center text-white">{scheduleError}</td>
+                  </tr>
+                )}
+                {!scheduleLoading && !scheduleError && scheduleData.length === 0 && (
+                  <tr>
+                    <td colSpan="3" className="text-center text-white">No timetable data found.</td>
+                  </tr>
+                )}
                 {scheduleData.map((row, i) => (
                   <tr key={i}>
                     <td>{row.name}</td>
