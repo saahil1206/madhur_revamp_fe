@@ -22,7 +22,7 @@ jobs:
           echo "Sending deploy command via SSM..."
 
           COMMAND_ID=$(aws ssm send-command \
-            --instance-ids i-01fd1193be05adf3d \
+            --instance-ids i-09cca75368f18e9b6 \
             --document-name "AWS-RunShellScript" \
             --comment "Deploy report PHP (master)" \
             --parameters commands="/usr/local/bin/deploy-madhur.sh" \
@@ -35,7 +35,7 @@ jobs:
           while true; do
             STATUS=$(aws ssm get-command-invocation \
               --command-id "$COMMAND_ID" \
-              --instance-id i-01fd1193be05adf3d \
+              --instance-id i-09cca75368f18e9b6 \
               --query "Status" \
               --output text)
 
@@ -45,7 +45,7 @@ jobs:
               echo "=== DEPLOY OUTPUT ==="
               aws ssm get-command-invocation \
                 --command-id "$COMMAND_ID" \
-                --instance-id i-01fd1193be05adf3d \
+                --instance-id i-09cca75368f18e9b6 \
                 --query "StandardOutputContent" \
                 --output text
               echo "=== DEPLOY FINISHED SUCCESSFULLY ==="
@@ -56,7 +56,7 @@ jobs:
               echo "=== DEPLOY FAILED ==="
               aws ssm get-command-invocation \
                 --command-id "$COMMAND_ID" \
-                --instance-id i-01fd1193be05adf3d \
+                --instance-id i-09cca75368f18e9b6 \
                 --query "StandardErrorContent" \
                 --output text
               exit 1
