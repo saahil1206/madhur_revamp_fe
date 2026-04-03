@@ -25,7 +25,7 @@ jobs:
             --instance-ids i-01fd1193be05adf3d \
             --document-name "AWS-RunShellScript" \
             --comment "Deploy report PHP (master)" \
-            --parameters commands="/usr/local/bin/deploy-madhur.sh" \
+            --parameters commands=" bash /usr/local/bin/deploy-madhur.sh" \
             --query "Command.CommandId" \
             --output text)
 
