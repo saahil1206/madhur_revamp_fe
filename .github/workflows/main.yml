@@ -1,0 +1,66 @@
+name: Deploy Report (PHP)
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ap-southeast-1
+
+      - name: Deploy via SSM (wait + logs)
+        run: |
+          echo "Sending deploy command via SSM..."
+
+          COMMAND_ID=$(aws ssm send-command \
+            --instance-ids i-09cca75368f18e9b6 \
+            --document-name "AWS-RunShellScript" \
+            --comment "Deploy report PHP (master)" \
+            --parameters commands="/usr/local/bin/deploy-madhur.sh" \
+            --query "Command.CommandId" \
+            --output text)
+
+          echo "SSM Command ID: $COMMAND_ID"
+          echo "Waiting for command to complete..."
+
+          while true; do
+            STATUS=$(aws ssm get-command-invocation \
+              --command-id "$COMMAND_ID" \
+              --instance-id i-09cca75368f18e9b6 \
+              --query "Status" \
+              --output text)
+
+            echo "Current status: $STATUS"
+
+            if [[ "$STATUS" == "Success" ]]; then
+              echo "=== DEPLOY OUTPUT ==="
+              aws ssm get-command-invocation \
+                --command-id "$COMMAND_ID" \
+                --instance-id i-09cca75368f18e9b6 \
+                --query "StandardOutputContent" \
+                --output text
+              echo "=== DEPLOY FINISHED SUCCESSFULLY ==="
+              break
+            fi
+
+            if [[ "$STATUS" == "Failed" || "$STATUS" == "Cancelled" || "$STATUS" == "TimedOut" ]]; then
+              echo "=== DEPLOY FAILED ==="
+              aws ssm get-command-invocation \
+                --command-id "$COMMAND_ID" \
+                --instance-id i-09cca75368f18e9b6 \
+                --query "StandardErrorContent" \
+                --output text
+              exit 1
+            fi
+
+            sleep 5
+          done
