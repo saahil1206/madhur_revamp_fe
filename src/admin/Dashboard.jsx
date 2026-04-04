@@ -45,9 +45,9 @@ const Dashboard = () => {
               <Link to="/floating-setting" className="admin-dropdown-item">
                 New Floating
               </Link>
-              <Link to="/dashboard/floating-records" className="admin-dropdown-item">
+              {/* <Link to="/dashboard/floating-records" className="admin-dropdown-item">
                 Floating Records
-              </Link>
+              </Link> */}
             </div>
           )}
         </div>
