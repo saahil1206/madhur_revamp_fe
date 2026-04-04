@@ -1,5 +1,5 @@
 import madhurLogo from "./admin-img/madhur-logo.png";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const AdminHeader = () => {
   const navigate = useNavigate();
@@ -15,9 +15,9 @@ const AdminHeader = () => {
   return (
     <nav className="admin-navbar">
       <div className="container d-flex align-items-center justify-content-between">
-        <div className="navbar-logo">
+        <Link to="/dashboard" className="navbar-logo" title="Go to Dashboard">
           <img src={madhurLogo} alt="Madhur Logo" />
-        </div>
+        </Link>
         <div className="navbar-user" style={{ cursor: "pointer" }} onClick={handleLogout} title="Logout">
           <div className="user-avatar">
             <img src={madhurLogo} alt="Profile" />
