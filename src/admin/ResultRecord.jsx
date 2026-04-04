@@ -1,36 +1,104 @@
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 const ResultRecord = () => {
   const navigate = useNavigate();
-  const [currentPage, setCurrentPage] = useState(1);
-  const totalPages = 10;
+  const today = new Date().toISOString().slice(0, 10);
+  const [fromDate, setFromDate] = useState(today);
+  const [toDate, setToDate] = useState(today);
+  const [bazar, setBazar] = useState("SelectAll");
+  const [category, setCategory] = useState("SelectAll");
+  const [searchTerm, setSearchTerm] = useState("");
+  const [records, setRecords] = useState([]);
+  const [bazars, setBazars] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+  const apiBaseUrl = import.meta.env.VITE_API_BASE_URL || "http://localhost:5000";
 
-  const records = [
-    { date: "02 April 2026", bazar: "Dhanlaxmi morning", category: "Open", panaNo: 138, aakda: 2, entryTime: "02/04/2026 15:17:45", createdBy: "Akshay Nandgwade" },
-    { date: "03 April 2026", bazar: "Madhur Afternoon", category: "Open", panaNo: 138, aakda: 2, entryTime: "02/04/2026 15:17:45", createdBy: "Akshay Nandgwade" },
-    { date: "02 April 2026", bazar: "Dhanlaxmi morning", category: "Open", panaNo: 138, aakda: 2, entryTime: "02/04/2026 15:17:45", createdBy: "Akshay Nandgwade" },
-    { date: "03 April 2026", bazar: "Madhur Afternoon", category: "Open", panaNo: 138, aakda: 2, entryTime: "02/04/2026 15:17:45", createdBy: "Akshay Nandgwade" },
-    { date: "02 April 2026", bazar: "Dhanlaxmi morning", category: "Open", panaNo: 138, aakda: 2, entryTime: "02/04/2026 15:17:45", createdBy: "Akshay Nandgwade" },
-    { date: "03 April 2026", bazar: "Madhur Afternoon", category: "Open", panaNo: 138, aakda: 2, entryTime: "02/04/2026 15:17:45", createdBy: "Akshay Nandgwade" },
-    { date: "02 April 2026", bazar: "Dhanlaxmi morning", category: "Open", panaNo: 138, aakda: 2, entryTime: "02/04/2026 15:17:45", createdBy: "Akshay Nandgwade" },
-    { date: "03 April 2026", bazar: "Madhur Afternoon", category: "Open", panaNo: 138, aakda: 2, entryTime: "02/04/2026 15:17:45", createdBy: "Akshay Nandgwade" },
-  ];
+  const token = localStorage.getItem("admin_token");
 
-  const renderPageNumbers = () => {
-    const pages = [];
-    for (let i = 1; i <= 3; i++) {
-      pages.push(
-        <button
-          key={i}
-          className={`page-btn ${currentPage === i ? "active" : ""}`}
-          onClick={() => setCurrentPage(i)}
-        >
-          {i}
-        </button>
-      );
+  const loadBazars = async () => {
+    try {
+      const response = await fetch(`${apiBaseUrl}/api/bazar`);
+      const data = await response.json();
+      setBazars(Array.isArray(data) ? data : []);
+    } catch (_err) {
+      setBazars([]);
     }
-    return pages;
+  };
+
+  const loadResults = async () => {
+    if (!token) {
+      navigate("/login");
+      return;
+    }
+
+    setLoading(true);
+    setError("");
+    try {
+      const params = new URLSearchParams();
+      params.set("fromDate", fromDate);
+      params.set("toDate", toDate);
+      if (bazar !== "SelectAll") params.set("bazarId", bazar);
+      if (category !== "SelectAll") params.set("category", category);
+
+      const response = await fetch(`${apiBaseUrl}/api/gameresult?${params.toString()}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      const data = await response.json();
+      if (!response.ok) {
+        throw new Error(data?.message || "Failed to load records.");
+      }
+      setRecords(Array.isArray(data) ? data : []);
+    } catch (err) {
+      setError(err.message || "Failed to load records.");
+      setRecords([]);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    loadBazars();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useEffect(() => {
+    loadResults();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const filteredRecords = useMemo(() => {
+    const term = searchTerm.trim().toLowerCase();
+    if (!term) return records;
+    return records.filter((rec) => {
+      const bazarName = rec?.bazar?.bazar_name || "";
+      const date = rec?.result_date || "";
+      return (
+        bazarName.toLowerCase().includes(term) ||
+        String(rec?.result_pana || "").includes(term) ||
+        String(rec?.result_AAkda || "").includes(term) ||
+        String(date).toLowerCase().includes(term)
+      );
+    });
+  }, [records, searchTerm]);
+
+  const handleDelete = async (id) => {
+    if (!window.confirm("Delete this result?")) return;
+    try {
+      const response = await fetch(`${apiBaseUrl}/api/gameresult/${id}`, {
+        method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      if (!response.ok) throw new Error("Failed to delete");
+      await loadResults();
+    } catch (_err) {
+      setError("Failed to delete result.");
+    }
   };
 
   return (
@@ -41,7 +109,7 @@ const ResultRecord = () => {
         <div className="record-top-right">
           <div className="record-search-box">
             <i className="fas fa-search"></i>
-            <input type="text" placeholder="Search" />
+            <input type="text" placeholder="Search" value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} />
           </div>
           <button className="btn-back-record" onClick={() => navigate("/dashboard")}>
             <i className="fas fa-arrow-left"></i> Back
@@ -54,30 +122,36 @@ const ResultRecord = () => {
         <div className="row">
           <div className="col-md-3">
             <label className="form-label-custom">From Date</label>
-            <input type="date" className="custom-input" defaultValue="2026-04-02" />
+            <input type="date" className="custom-input" value={fromDate} onChange={(e) => setFromDate(e.target.value)} />
           </div>
           <div className="col-md-3">
             <label className="form-label-custom">To Date</label>
-            <input type="date" className="custom-input" defaultValue="2026-04-03" />
+            <input type="date" className="custom-input" value={toDate} onChange={(e) => setToDate(e.target.value)} />
           </div>
           <div className="col-md-3">
             <label className="form-label-custom">Bazar</label>
-            <select className="custom-input">
-              <option>Madhur Morning</option>
-              <option>Madhur Day</option>
-              <option>Madhur Evening</option>
-              <option>Madhur Night</option>
+            <select className="custom-input" value={bazar} onChange={(e) => setBazar(e.target.value)}>
+              <option value="SelectAll">SelectAll</option>
+              {bazars.map((item) => (
+                <option key={item.id} value={item.id}>{item.bazar_name}</option>
+              ))}
             </select>
           </div>
           <div className="col-md-3">
             <label className="form-label-custom">Category</label>
-            <select className="custom-input">
-              <option>Open</option>
-              <option>Close</option>
+            <select className="custom-input" value={category} onChange={(e) => setCategory(e.target.value)}>
+              <option value="SelectAll">SelectAll</option>
+              <option value="open">Open</option>
+              <option value="close">Close</option>
             </select>
+          </div>
+          <div className="col-md-12 mt-2">
+            <button className="btn-submit" type="button" onClick={loadResults}>Search</button>
           </div>
         </div>
       </div>
+      {loading ? <p style={{ color: "#fff" }}>Loading records...</p> : null}
+      {error ? <p style={{ color: "#c92a2a" }}>{error}</p> : null}
 
       {/* Table */}
       <div className="record-table-wrapper">
@@ -95,45 +169,22 @@ const ResultRecord = () => {
             </tr>
           </thead>
           <tbody>
-            {records.map((rec, idx) => (
+            {filteredRecords.map((rec, idx) => (
               <tr key={idx}>
-                <td>{rec.date}</td>
-                <td>{rec.bazar}</td>
-                <td>{rec.category}</td>
-                <td>{rec.panaNo}</td>
-                <td>{rec.aakda}</td>
-                <td>{rec.entryTime}</td>
-                <td>{rec.createdBy}</td>
+                <td>{rec.result_date}</td>
+                <td>{rec?.bazar?.bazar_name || "-"}</td>
+                <td style={{ textTransform: "capitalize" }}>{rec.result_type}</td>
+                <td>{rec.result_pana}</td>
+                <td>{rec.result_AAkda}</td>
+                <td>{rec.after_time || "-"}</td>
+                <td>{rec.createdby || "-"}</td>
                 <td className="action-btns">
-                  <button className="action-edit"><i className="fas fa-edit"></i></button>
-                  <button className="action-delete"><i className="fas fa-trash"></i></button>
+                  <button className="action-delete" onClick={() => handleDelete(rec.id)}><i className="fas fa-trash"></i></button>
                 </td>
               </tr>
             ))}
           </tbody>
         </table>
-      </div>
-
-      {/* Pagination */}
-      <div className="record-pagination">
-        <div className="pagination-left">
-          <button className="page-btn" onClick={() => setCurrentPage(1)}><i className="fas fa-angle-double-left"></i></button>
-          <button className="page-btn" onClick={() => setCurrentPage(Math.max(1, currentPage - 1))}><i className="fas fa-angle-left"></i></button>
-          {renderPageNumbers()}
-          <span className="page-dots">...</span>
-          <button className="page-btn" onClick={() => setCurrentPage(10)}>10</button>
-          <button className="page-btn" onClick={() => setCurrentPage(Math.min(totalPages, currentPage + 1))}><i className="fas fa-angle-right"></i></button>
-          <button className="page-btn" onClick={() => setCurrentPage(totalPages)}><i className="fas fa-angle-double-right"></i></button>
-        </div>
-        <div className="pagination-right">
-          <span>Page</span>
-          <select className="page-select" value={currentPage} onChange={(e) => setCurrentPage(Number(e.target.value))}>
-            {Array.from({ length: totalPages }, (_, i) => (
-              <option key={i + 1} value={i + 1}>{i + 1}</option>
-            ))}
-          </select>
-          <span>of {totalPages}</span>
-        </div>
       </div>
 
       {/* Disclaimer */}
