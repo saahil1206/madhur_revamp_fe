@@ -1,38 +1,59 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 const GameSeoList = () => {
   const navigate = useNavigate();
+  const apiBaseUrl = import.meta.env.VITE_API_BASE_URL || "http://localhost:5000";
   const [modalOpen, setModalOpen] = useState(false);
   const [modalTitle, setModalTitle] = useState("");
+  const [site, setSite] = useState("madhurbazar.com");
+  const [sites, setSites] = useState([{ value: "madhurbazar.com" }]);
+  const [bazarList, setBazarList] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [saveLoading, setSaveLoading] = useState(false);
+  const [error, setError] = useState("");
+  const [editContext, setEditContext] = useState({ bazarId: null, seoType: "jodi" });
+  const [form, setForm] = useState({
+    metaHeader: "",
+    pageTitle: "",
+    subheading: "",
+    pageHtml: "",
+  });
 
-  const openModal = (bazarName, type) => {
+  const token = localStorage.getItem("admin_token");
+
+  const openModal = async (bazar, type) => {
+    if (!token) {
+      navigate("/login");
+      return;
+    }
     setModalTitle(`Edit SEO for ${type} page`);
+    setEditContext({ bazarId: bazar?.id || null, seoType: type.toLowerCase() });
+    setForm({ metaHeader: "", pageTitle: "", subheading: "", pageHtml: "" });
     setModalOpen(true);
+
+    try {
+      const params = new URLSearchParams();
+      params.set("seoType", type.toLowerCase());
+      params.set("site", site);
+      if (bazar?.id) params.set("bazarId", String(bazar.id));
+      const response = await fetch(`${apiBaseUrl}/api/seo/entry?${params.toString()}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      const data = await response.json();
+      if (!response.ok) throw new Error(data?.message || "Failed to load SEO");
+      setForm({
+        metaHeader: data.metaHeader || "",
+        pageTitle: data.pageTitle || "",
+        subheading: data.subheading || "",
+        pageHtml: data.pageHtml || "",
+      });
+    } catch (_err) {}
   };
 
   const closeModal = () => {
     setModalOpen(false);
   };
-
-  const bazarList = [
-    "Dhanlaxmi morning",
-    "Madhur Afternoon",
-    "Dhanlaxmi morning",
-    "Madhur Afternoon",
-    "Dhanlaxmi morning",
-    "Madhur Afternoon",
-    "Dhanlaxmi morning",
-    "Madhur Afternoon",
-    "Dhanlaxmi morning",
-    "Madhur Afternoon",
-    "Dhanlaxmi morning",
-    "Madhur Afternoon",
-    "Dhanlaxmi morning",
-    "Madhur Afternoon",
-    "Dhanlaxmi morning",
-    "Madhur Afternoon",
-  ];
 
   const pageList = [
     "Home",
@@ -62,6 +83,72 @@ const GameSeoList = () => {
     </body>
 </html>`;
 
+  const loadBaseData = async () => {
+    if (!token) {
+      navigate("/login");
+      return;
+    }
+    setLoading(true);
+    setError("");
+    try {
+      const [siteRes, bazarRes] = await Promise.all([
+        fetch(`${apiBaseUrl}/api/seo/sites`, { headers: { Authorization: `Bearer ${token}` } }),
+        fetch(`${apiBaseUrl}/api/bazar`),
+      ]);
+      const siteData = await siteRes.json();
+      const bazarData = await bazarRes.json();
+      if (siteRes.ok && Array.isArray(siteData) && siteData.length) {
+        setSites(siteData);
+        setSite(siteData[0].value);
+      }
+      if (bazarRes.ok && Array.isArray(bazarData)) {
+        setBazarList(bazarData);
+      }
+    } catch (err) {
+      setError("Failed to load SEO base data");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    loadBaseData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const saveSeo = async () => {
+    if (!token) {
+      navigate("/login");
+      return;
+    }
+    setSaveLoading(true);
+    try {
+      const response = await fetch(`${apiBaseUrl}/api/seo/entry`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          bazarId: editContext.bazarId,
+          seoType: editContext.seoType,
+          site,
+          metaHeader: form.metaHeader,
+          pageTitle: form.pageTitle,
+          subheading: form.subheading,
+          pageHtml: form.pageHtml,
+        }),
+      });
+      const data = await response.json();
+      if (!response.ok) throw new Error(data?.message || "Failed to save SEO");
+      closeModal();
+    } catch (_err) {
+      setError("Failed to save SEO entry");
+    } finally {
+      setSaveLoading(false);
+    }
+  };
+
   return (
     <>
       {/* Top Bar */}
@@ -70,8 +157,10 @@ const GameSeoList = () => {
         <div className="record-top-right">
           <div className="seo-site-select">
             <span>Select Site:</span>
-            <select className="custom-input seo-select-input">
-              <option>madhurbazar.com</option>
+            <select className="custom-input seo-select-input" value={site} onChange={(e) => setSite(e.target.value)}>
+              {sites.map((s, idx) => (
+                <option key={`${s.value}-${idx}`} value={s.value}>{s.value}</option>
+              ))}
             </select>
           </div>
           <button className="btn-back-record" onClick={() => navigate("/dashboard")}>
@@ -94,7 +183,7 @@ const GameSeoList = () => {
             {bazarList.map((name, idx) => (
               <tr key={idx}>
                 <td>{idx + 1}.</td>
-                <td>{name}</td>
+                <td>{name.bazar_name}</td>
                 <td className="seo-action-btns">
                   <button className="seo-btn-purple" onClick={() => openModal(name, "Jodi")}>Edit Jodi</button>
                   <button className="seo-btn-purple" onClick={() => openModal(name, "Pana")}>Edit Pana</button>
@@ -157,12 +246,7 @@ const GameSeoList = () => {
             <div className="seo-modal-body">
               <div className="seo-form-group">
                 <label className="seo-form-label">Meta Header</label>
-                <div
-                  className="seo-form-code-box"
-                  contentEditable
-                  suppressContentEditableWarning
-                  dangerouslySetInnerHTML={{ __html: defaultMetaHeader.replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/\n/g, '<br/>') }}
-                ></div>
+                <textarea className="seo-form-input" rows={5} value={form.metaHeader} onChange={(e) => setForm((prev) => ({ ...prev, metaHeader: e.target.value }))} />
               </div>
               <div className="seo-form-group">
                 <label className="seo-form-label">Page Title</label>
@@ -170,6 +254,8 @@ const GameSeoList = () => {
                   type="text"
                   className="seo-form-input"
                   placeholder="Enter here"
+                  value={form.pageTitle}
+                  onChange={(e) => setForm((prev) => ({ ...prev, pageTitle: e.target.value }))}
                 />
               </div>
               <div className="seo-form-group">
@@ -178,27 +264,28 @@ const GameSeoList = () => {
                   type="text"
                   className="seo-form-input"
                   placeholder="Enter here"
+                  value={form.subheading}
+                  onChange={(e) => setForm((prev) => ({ ...prev, subheading: e.target.value }))}
                 />
               </div>
               <div className="seo-form-group">
                 <label className="seo-form-label">Page HTML</label>
-                <div
-                  className="seo-form-code-box"
-                  contentEditable
-                  suppressContentEditableWarning
-                  dangerouslySetInnerHTML={{ __html: defaultPageHTML.replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/\n/g, '<br/>') }}
-                ></div>
+                <textarea className="seo-form-input" rows={8} value={form.pageHtml} onChange={(e) => setForm((prev) => ({ ...prev, pageHtml: e.target.value }))} />
               </div>
             </div>
             <div className="seo-modal-footer">
               <button className="seo-modal-btn-back" onClick={closeModal}>
                 Back
               </button>
-              <button className="seo-modal-btn-save">Save</button>
+              <button className="seo-modal-btn-save" onClick={saveSeo} disabled={saveLoading}>
+                {saveLoading ? "Saving..." : "Save"}
+              </button>
             </div>
           </div>
         </div>
       )}
+      {loading ? <p style={{ color: "#fff" }}>Loading...</p> : null}
+      {error ? <p style={{ color: "#c92a2a" }}>{error}</p> : null}
     </>
   );
 };
