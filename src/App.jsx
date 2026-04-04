@@ -1,4 +1,5 @@
 import { Routes, Route } from 'react-router-dom'
+import { Navigate } from 'react-router-dom'
 import HomeLayout from './components/layout/HomeLayout'
 import SubpageLayout from './components/layout/SubpageLayout'
 import HomePage from './pages/HomePage'
@@ -17,6 +18,22 @@ import ResultRecord from './admin/ResultRecord'
 import FloatingSetting from './admin/FloatingSetting'
 import GameSeoList from './admin/GameSeoList'
 
+function AdminProtectedRoute({ children }) {
+  const token = localStorage.getItem('admin_token')
+  if (!token) {
+    return <Navigate to="/login" replace />
+  }
+  return children
+}
+
+function AdminPublicRoute({ children }) {
+  const token = localStorage.getItem('admin_token')
+  if (token) {
+    return <Navigate to="/dashboard" replace />
+  }
+  return children
+}
+
 function App() {
   return (
     <Routes>
@@ -32,8 +49,8 @@ function App() {
       </Route>
       <Route path="/signin" element={<SignInPage />} />
       <Route path="/profile" element={<ProfilePage />} />
-      <Route path="/login" element={<Login />} />
-      <Route element={<AdminLayout />}>
+      <Route path="/login" element={<AdminPublicRoute><Login /></AdminPublicRoute>} />
+      <Route element={<AdminProtectedRoute><AdminLayout /></AdminProtectedRoute>}>
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/enter-result" element={<EnterResult />} />
         <Route path="/result-record" element={<ResultRecord />} />

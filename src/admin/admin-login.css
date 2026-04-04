@@ -202,6 +202,13 @@
   color: rgba(255, 255, 255, 0.8);
 }
 
+.admin-login-error {
+  color: #ffb3b3;
+  font-size: 14px;
+  margin-top: 10px;
+  text-align: center;
+}
+
 /* Submit Button */
 .admin-submit-btn {
   width: 100%;

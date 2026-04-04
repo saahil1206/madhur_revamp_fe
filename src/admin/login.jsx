@@ -7,11 +7,44 @@ const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
   const navigate = useNavigate();
+  const apiBaseUrl = import.meta.env.VITE_API_BASE_URL || "http://localhost:5000";
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    navigate("/dashboard");
+    setError("");
+
+    if (!username.trim() || !password) {
+      setError("Username and password are required.");
+      return;
+    }
+
+    setLoading(true);
+    try {
+      const response = await fetch(`${apiBaseUrl}/api/auth/login`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          userName: username.trim(),
+          passWord: password,
+        }),
+      });
+
+      const data = await response.json();
+      if (!response.ok) {
+        throw new Error(data?.message || "Login failed");
+      }
+
+      localStorage.setItem("admin_token", data.token);
+      localStorage.setItem("admin_user", JSON.stringify(data.user || {}));
+      navigate("/dashboard");
+    } catch (err) {
+      setError(err.message || "Unable to login right now.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -68,9 +101,10 @@ const Login = () => {
             </div>
 
             {/* Submit Button */}
-            <button type="submit" className="admin-submit-btn">
-              Submit
+            <button type="submit" className="admin-submit-btn" disabled={loading}>
+              {loading ? "Please wait..." : "Submit"}
             </button>
+            {error ? <p className="admin-login-error">{error}</p> : null}
           </form>
 
           {/* Register Now */}
