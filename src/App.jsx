@@ -9,6 +9,13 @@ import AboutPage from './pages/AboutPage'
 import GamesPage from './pages/GamesPage'
 import DetailsPage from './pages/DetailsPage'
 import CalendarPage from './pages/CalendarPage'
+import Login from './admin/login'
+import AdminLayout from './admin/AdminLayout'
+import Dashboard from './admin/Dashboard'
+import EnterResult from './admin/EnterResult'
+import ResultRecord from './admin/ResultRecord'
+import FloatingSetting from './admin/FloatingSetting'
+import GameSeoList from './admin/GameSeoList'
 
 function App() {
   return (
@@ -25,6 +32,14 @@ function App() {
       </Route>
       <Route path="/signin" element={<SignInPage />} />
       <Route path="/profile" element={<ProfilePage />} />
+      <Route path="/login" element={<Login />} />
+      <Route element={<AdminLayout />}>
+        <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/enter-result" element={<EnterResult />} />
+        <Route path="/result-record" element={<ResultRecord />} />
+        <Route path="/floating-setting" element={<FloatingSetting />} />
+        <Route path="/game-seo-list" element={<GameSeoList />} />
+      </Route>
     </Routes>
   )
 }
