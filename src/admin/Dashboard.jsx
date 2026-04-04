@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Link } from "react-router-dom";
 
 const Dashboard = () => {
   const [openDropdown, setOpenDropdown] = useState(null);
@@ -21,15 +22,12 @@ const Dashboard = () => {
           </button>
           {openDropdown === "result" && (
             <div className="admin-dropdown-menu">
-              <a href="/enter-result" className="admin-dropdown-item">
+              <Link to="/enter-result" className="admin-dropdown-item">
                 New Result
-              </a>
-              <a
-                href="/result-record"
-                className="admin-dropdown-item"
-              >
+              </Link>
+              <Link to="/result-record" className="admin-dropdown-item">
                 Result Records
-              </a>
+              </Link>
             </div>
           )}
         </div>
@@ -44,15 +42,12 @@ const Dashboard = () => {
           </button>
           {openDropdown === "floating" && (
             <div className="admin-dropdown-menu">
-              <a href="/floating-setting" className="admin-dropdown-item">
+              <Link to="/floating-setting" className="admin-dropdown-item">
                 New Floating
-              </a>
-              <a
-                href="/dashboard/floating-records"
-                className="admin-dropdown-item"
-              >
+              </Link>
+              <Link to="/dashboard/floating-records" className="admin-dropdown-item">
                 Floating Records
-              </a>
+              </Link>
             </div>
           )}
         </div>
@@ -67,9 +62,9 @@ const Dashboard = () => {
           </button>
           {openDropdown === "seo" && (
             <div className="admin-dropdown-menu">
-              <a href="/game-seo-list" className="admin-dropdown-item">
+              <Link to="/game-seo-list" className="admin-dropdown-item">
                 Game SEO List
-              </a>
+              </Link>
             </div>
           )}
         </div>
