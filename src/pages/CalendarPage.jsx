@@ -66,19 +66,24 @@ function emptyCell() {
 function normalizeCell(entry) {
   if (!entry) return emptyCell()
 
-  const left = String(entry.openPana || '---')
+  const openPanaValue = entry.openPana === null || entry.openPana === undefined || entry.openPana === '' ? '---' : entry.openPana
+  const closePanaValue = entry.closePana === null || entry.closePana === undefined || entry.closePana === '' ? '---' : entry.closePana
+
+  const left = String(openPanaValue)
     .replace(/\s+/g, '')
     .slice(0, 3)
     .padEnd(3, '-')
     .split('')
-  const right = String(entry.closePana || '---')
+  const right = String(closePanaValue)
     .replace(/\s+/g, '')
     .slice(0, 3)
     .padEnd(3, '-')
     .split('')
 
-  const openAakda = String(entry.openAakda || '-').replace(/\D/g, '').slice(0, 1) || '-'
-  const closeAakda = String(entry.closeAakda || '-').replace(/\D/g, '').slice(0, 1) || '-'
+  const openAakdaRaw = entry.openAakda === null || entry.openAakda === undefined || entry.openAakda === '' ? '-' : entry.openAakda
+  const closeAakdaRaw = entry.closeAakda === null || entry.closeAakda === undefined || entry.closeAakda === '' ? '-' : entry.closeAakda
+  const openAakda = String(openAakdaRaw).replace(/\D/g, '').slice(0, 1) || '-'
+  const closeAakda = String(closeAakdaRaw).replace(/\D/g, '').slice(0, 1) || '-'
 
   return {
     left,
@@ -187,12 +192,12 @@ function CalendarPage() {
         closePana: '--',
       }
       if (row.result_type === 'open') {
-        current.openPana = row.result_pana || '--'
-        current.openAakda = row.result_AAkda || '-'
+        current.openPana = row.result_pana ?? '--'
+        current.openAakda = row.result_AAkda ?? '-'
       }
       if (row.result_type === 'close') {
-        current.closeAakda = row.result_AAkda || '-'
-        current.closePana = row.result_pana || '--'
+        current.closeAakda = row.result_AAkda ?? '-'
+        current.closePana = row.result_pana ?? '--'
       }
       byDate.set(key, current)
     })
