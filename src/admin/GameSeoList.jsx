@@ -6,13 +6,13 @@ const GameSeoList = () => {
   const apiBaseUrl = import.meta.env.VITE_API_BASE_URL || "http://localhost:5000";
   const [modalOpen, setModalOpen] = useState(false);
   const [modalTitle, setModalTitle] = useState("");
-  const [site, setSite] = useState("madhurbazar.com");
-  const [sites, setSites] = useState([{ value: "madhurbazar.com" }]);
+  const [siteId, setSiteId] = useState("1");
+  const [sites, setSites] = useState([{ id: 1, name: "madhurbazar.com" }]);
   const [bazarList, setBazarList] = useState([]);
   const [loading, setLoading] = useState(false);
   const [saveLoading, setSaveLoading] = useState(false);
   const [error, setError] = useState("");
-  const [editContext, setEditContext] = useState({ bazarId: null, seoType: "jodi" });
+  const [editContext, setEditContext] = useState({ gameId: 0, pageName: "home" });
   const [form, setForm] = useState({
     metaHeader: "",
     pageTitle: "",
@@ -22,21 +22,21 @@ const GameSeoList = () => {
 
   const token = localStorage.getItem("admin_token");
 
-  const openModal = async (bazar, type) => {
+  const openModal = async (entry, pageName, titleText) => {
     if (!token) {
       navigate("/login");
       return;
     }
-    setModalTitle(`Edit SEO for ${type} page`);
-    setEditContext({ bazarId: bazar?.id || null, seoType: type.toLowerCase() });
+    setModalTitle(titleText);
+    setEditContext({ gameId: entry?.id || 0, pageName });
     setForm({ metaHeader: "", pageTitle: "", subheading: "", pageHtml: "" });
     setModalOpen(true);
 
     try {
       const params = new URLSearchParams();
-      params.set("seoType", type.toLowerCase());
-      params.set("site", site);
-      if (bazar?.id) params.set("bazarId", String(bazar.id));
+      params.set("siteId", siteId);
+      params.set("gameId", String(entry?.id || 0));
+      params.set("pageName", pageName);
       const response = await fetch(`${apiBaseUrl}/api/seo/entry?${params.toString()}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
@@ -56,10 +56,10 @@ const GameSeoList = () => {
   };
 
   const pageList = [
-    "Home",
-    "About Us",
-    "Terms & Condition",
-    "Privacy Policy",
+    { label: "Home", key: "home" },
+    { label: "About Us", key: "about-us" },
+    { label: "Terms & Condition", key: "term-condition" },
+    { label: "Privacy Policy", key: "privacy-policy" },
   ];
 
   const defaultMetaHeader = `<!doctype html>
@@ -99,7 +99,7 @@ const GameSeoList = () => {
       const bazarData = await bazarRes.json();
       if (siteRes.ok && Array.isArray(siteData) && siteData.length) {
         setSites(siteData);
-        setSite(siteData[0].value);
+        setSiteId(String(siteData[0].id));
       }
       if (bazarRes.ok && Array.isArray(bazarData)) {
         setBazarList(bazarData);
@@ -130,9 +130,9 @@ const GameSeoList = () => {
           Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify({
-          bazarId: editContext.bazarId,
-          seoType: editContext.seoType,
-          site,
+          siteId: Number(siteId),
+          gameId: Number(editContext.gameId || 0),
+          pageName: editContext.pageName,
           metaHeader: form.metaHeader,
           pageTitle: form.pageTitle,
           subheading: form.subheading,
@@ -157,9 +157,9 @@ const GameSeoList = () => {
         <div className="record-top-right">
           <div className="seo-site-select">
             <span>Select Site:</span>
-            <select className="custom-input seo-select-input" value={site} onChange={(e) => setSite(e.target.value)}>
+            <select className="custom-input seo-select-input" value={siteId} onChange={(e) => setSiteId(e.target.value)}>
               {sites.map((s, idx) => (
-                <option key={`${s.value}-${idx}`} value={s.value}>{s.value}</option>
+                <option key={`${s.id}-${idx}`} value={String(s.id)}>{s.name}</option>
               ))}
             </select>
           </div>
@@ -185,8 +185,8 @@ const GameSeoList = () => {
                 <td>{idx + 1}.</td>
                 <td>{name.bazar_name}</td>
                 <td className="seo-action-btns">
-                  <button className="seo-btn-purple" onClick={() => openModal(name, "Jodi")}>Edit Jodi</button>
-                  <button className="seo-btn-purple" onClick={() => openModal(name, "Pana")}>Edit Pana</button>
+                  <button className="seo-btn-purple" onClick={() => openModal(name, "jodi", "Edit SEO for Jodi page")}>Edit Jodi</button>
+                  <button className="seo-btn-purple" onClick={() => openModal(name, "pana", "Edit SEO for Pana page")}>Edit Pana</button>
                 </td>
               </tr>
             ))}
@@ -208,9 +208,9 @@ const GameSeoList = () => {
             {pageList.map((page, idx) => (
               <tr key={idx}>
                 <td>{idx + 1}.</td>
-                <td>{page}</td>
+                <td>{page.label}</td>
                 <td className="seo-action-btns">
-                  <button className="action-edit" onClick={() => openModal(page, page)}>
+                  <button className="action-edit" onClick={() => openModal({ id: 0 }, page.key, `Edit SEO for ${page.label}`)}>
                     <i className="fas fa-edit"></i>
                   </button>
                 </td>
