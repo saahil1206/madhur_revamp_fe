@@ -15,73 +15,73 @@ const SPIN_DURATION_MS = 7600;
 const spinHoroscopeData = [
   {
     sign: "Aries",
-    iconClass: "fa-solid fa-aries",
+    symbol: "♈",
     message:
       "Today Aries can gain momentum by taking one bold but focused step. Keep communication clear and avoid rushing into unnecessary arguments.",
   },
   {
     sign: "Taurus",
-    iconClass: "fa-solid fa-cow",
+    symbol: "♉",
     message:
       "Today Taurus may feel steady progress in routine work. Prioritize consistency and avoid overcommitting your time to too many tasks.",
   },
   {
     sign: "Gemini",
-    iconClass: "fa-solid fa-people-arrows",
+    symbol: "♊",
     message:
       "Today Gemini may receive useful updates through conversations. Stay flexible and double-check details before final decisions.",
   },
   {
     sign: "Cancer",
-    iconClass: "fa-solid fa-shield-heart",
+    symbol: "♋",
     message:
       "Today Cancer may feel emotionally sensitive but intuitive. Focus on supportive relationships and give yourself short pauses to recharge.",
   },
   {
     sign: "Leo",
-    iconClass: "fa-solid fa-crown",
+    symbol: "♌",
     message:
       "Today Leo can shine by leading with patience instead of pressure. Balance confidence with listening for better results.",
   },
   {
     sign: "Virgo",
-    iconClass: "fa-solid fa-wheat-awn",
+    symbol: "♍",
     message:
       "Today Virgo may handle complex tasks well if priorities stay clear. Keep your plans simple and avoid perfection overload.",
   },
   {
     sign: "Libra",
-    iconClass: "fa-solid fa-scale-balanced",
+    symbol: "♎",
     message:
       "Today Libra may face a demanding and hectic schedule, requiring extra effort and discipline to manage tasks effectively. It is advisable to avoid major, impulsive decisions and focus on maintaining harmony in personal relationships.",
   },
   {
     sign: "Scorpio",
-    iconClass: "fa-solid fa-bolt",
+    symbol: "♏",
     message:
       "Today Scorpio can benefit from strategic thinking and calm responses. Use your focus wisely and avoid unnecessary confrontations.",
   },
   {
     sign: "Sagittarius",
-    iconClass: "fa-solid fa-bullseye",
+    symbol: "♐",
     message:
       "Today Sagittarius may feel inspired to explore fresh ideas. Keep practical limits in mind while acting on opportunities.",
   },
   {
     sign: "Capricorn",
-    iconClass: "fa-solid fa-mountain",
+    symbol: "♑",
     message:
       "Today Capricorn can make solid progress through disciplined effort. A steady pace will deliver stronger outcomes than quick shortcuts.",
   },
   {
     sign: "Aquarius",
-    iconClass: "fa-solid fa-water",
+    symbol: "♒",
     message:
       "Today Aquarius may discover creative solutions in unexpected places. Collaborate with others and keep your approach adaptable.",
   },
   {
     sign: "Pisces",
-    iconClass: "fa-solid fa-fish",
+    symbol: "♓",
     message:
       "Today Pisces may find clarity by trusting intuition and structure together. Protect your energy and stay grounded in practical steps.",
   },
@@ -718,12 +718,13 @@ function HomePage() {
                 Madhur Bazar content.
               </p>
               <h4 className="text-white">Today's Horoscope</h4>
-              <div className="mt-3 d-flex align-items-center gap-3 horoscope-symbol-row">
-                <i className={`${spinResult.iconClass} text-white horoscope-fa`}></i>
+              <div className="mt-3">
+                <span className="zodiac-symbol">{spinResult.symbol}</span>
+              </div>
+              <div className="mt-2">
                 <p className="text-white mb-0 Poppins-SemiBold horoscope-sign-name">
                   {spinResult.sign}
                 </p>
-                <i className={`${spinResult.iconClass} text-white horoscope-fa`}></i>
               </div>
               <p className="text-white mt-3">
                 {spinResult.message}

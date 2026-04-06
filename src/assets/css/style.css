@@ -718,16 +718,15 @@
   }
 }
 
-.horoscope-fa {
-  font-size: 44px;
-}
-
-.horoscope-symbol-row {
-  justify-content: flex-start;
+.zodiac-symbol {
+  color: #ffd56e;
+  font-size: 56px;
+  line-height: 1;
+  display: inline-block;
 }
 
 .horoscope-sign-name {
-  font-size: 32px;
+  font-size: 34px;
   line-height: 1;
 }
 .Lavender-Purple {
@@ -823,8 +822,8 @@
     width: 30% !important;
   }
 
-  .horoscope-symbol-row {
-    justify-content: center;
+  .zodiac-symbol {
+    font-size: 46px;
   }
 
   .horoscope-sign-name {
