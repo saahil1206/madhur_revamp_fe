@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import ChatBox from "../components/common/ChatBox";
 import Footer from "../components/layout/Footer";
@@ -268,10 +268,24 @@ function HomePage() {
   const [isSpinning, setIsSpinning] = useState(false);
   const [spinResult, setSpinResult] = useState(spinHoroscopeData[6]);
   const [showSpinReveal, setShowSpinReveal] = useState(false);
+  const audioContextRef = useRef(null);
+  const spinSoundTimerRef = useRef(null);
+  const spinSoundStoppedRef = useRef(false);
 
   useEffect(() => {
     const timer = setInterval(() => setNowTick(Date.now()), 1000);
     return () => clearInterval(timer);
+  }, []);
+
+  useEffect(() => {
+    return () => {
+      if (spinSoundTimerRef.current) {
+        window.clearTimeout(spinSoundTimerRef.current);
+      }
+      if (audioContextRef.current) {
+        audioContextRef.current.close();
+      }
+    };
   }, []);
 
   useEffect(() => {
@@ -415,6 +429,64 @@ function HomePage() {
     })
     .filter(Boolean);
 
+  const stopSpinSound = () => {
+    spinSoundStoppedRef.current = true;
+    if (spinSoundTimerRef.current) {
+      window.clearTimeout(spinSoundTimerRef.current);
+      spinSoundTimerRef.current = null;
+    }
+  };
+
+  const playTickSound = (ctx) => {
+    const now = ctx.currentTime;
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+
+    osc.type = "triangle";
+    osc.frequency.setValueAtTime(1200, now);
+    osc.frequency.exponentialRampToValueAtTime(320, now + 0.035);
+
+    gain.gain.setValueAtTime(0.0001, now);
+    gain.gain.exponentialRampToValueAtTime(0.05, now + 0.004);
+    gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.04);
+
+    osc.connect(gain);
+    gain.connect(ctx.destination);
+    osc.start(now);
+    osc.stop(now + 0.045);
+  };
+
+  const startSpinSound = (durationMs) => {
+    stopSpinSound();
+    spinSoundStoppedRef.current = false;
+    const AudioCtx = window.AudioContext || window.webkitAudioContext;
+    if (!AudioCtx) return;
+
+    if (!audioContextRef.current) {
+      audioContextRef.current = new AudioCtx();
+    }
+
+    const ctx = audioContextRef.current;
+    if (ctx.state === "suspended") {
+      ctx.resume();
+    }
+
+    const start = performance.now();
+    const loopTick = () => {
+      if (spinSoundStoppedRef.current) return;
+      const elapsed = performance.now() - start;
+      const progress = Math.min(elapsed / durationMs, 1);
+      const intervalMs = 50 + progress * 170;
+
+      playTickSound(ctx);
+
+      if (progress >= 1) return;
+      spinSoundTimerRef.current = window.setTimeout(loopTick, intervalMs);
+    };
+
+    loopTick();
+  };
+
   const handleSpin = () => {
     if (isSpinning) return;
 
@@ -426,12 +498,14 @@ function HomePage() {
 
     setIsSpinning(true);
     setSpinRotation(nextRotation);
+    startSpinSound(SPIN_DURATION_MS);
 
     window.setTimeout(() => {
       const result = spinHoroscopeData[randomIndex];
       setSpinResult(result);
       setIsSpinning(false);
       setShowSpinReveal(true);
+      stopSpinSound();
 
       window.setTimeout(() => {
         setShowSpinReveal(false);
