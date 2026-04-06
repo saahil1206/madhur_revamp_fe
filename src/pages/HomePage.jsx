@@ -7,6 +7,7 @@ import panaImg from "../assets/images/pana.png";
 import jodiImg from "../assets/images/jodi.png";
 import motorImg from "../assets/images/motor.png";
 import horoscopeMainImg from "../assets/images/Todays-Horoscope.png";
+import horoscopeFallbackIcon from "../assets/images/Horoscope.png";
 import { applySeoFromMetaHeader } from "../utils/applySeoFromMetaHeader";
 
 const SPIN_SEGMENT_DEG = 30;
@@ -102,6 +103,21 @@ const luckyCards = [
   { img: jodiImg, title: "Jodi", numbers: [1, 1, 1, 1] },
   { img: motorImg, title: "Motor", numbers: [1, 1, 1, 1] },
 ];
+
+const zodiacImageBySign = {
+  Aries: "/zodiac/aries.png",
+  Taurus: "/zodiac/taurus.png",
+  Gemini: "/zodiac/gemini.png",
+  Cancer: "/zodiac/cancer.png",
+  Leo: "/zodiac/leo.png",
+  Virgo: "/zodiac/virgo.png",
+  Libra: "/zodiac/libra.png",
+  Scorpio: "/zodiac/scorpio.png",
+  Sagittarius: "/zodiac/sagittarius.png",
+  Capricorn: "/zodiac/capricorn.png",
+  Aquarius: "/zodiac/aquarius.png",
+  Pisces: "/zodiac/pisces.png",
+};
 
 function formatApiTime(value) {
   if (!value) return "--";
@@ -719,7 +735,14 @@ function HomePage() {
               </p>
               <h4 className="text-white">Today's Horoscope</h4>
               <div className="mt-3">
-                <span className="zodiac-symbol">{spinResult.symbol}</span>
+                <img
+                  src={zodiacImageBySign[spinResult.sign] || horoscopeFallbackIcon}
+                  className="zodiac-result-icon"
+                  alt={spinResult.sign}
+                  onError={(e) => {
+                    e.currentTarget.src = horoscopeFallbackIcon;
+                  }}
+                />
               </div>
               <div className="mt-2">
                 <p className="text-white mb-0 Poppins-SemiBold horoscope-sign-name">

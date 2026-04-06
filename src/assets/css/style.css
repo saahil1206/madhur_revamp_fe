@@ -725,6 +725,13 @@
   display: inline-block;
 }
 
+.zodiac-result-icon {
+  width: 64px;
+  height: 64px;
+  object-fit: contain;
+  filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.35));
+}
+
 .horoscope-sign-name {
   font-size: 34px;
   line-height: 1;
@@ -824,6 +831,11 @@
 
   .zodiac-symbol {
     font-size: 46px;
+  }
+
+  .zodiac-result-icon {
+    width: 52px;
+    height: 52px;
   }
 
   .horoscope-sign-name {
