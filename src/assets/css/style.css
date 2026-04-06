@@ -646,6 +646,81 @@
   background-color: #561d5e;
   color: white;
 }
+
+.purple-btn:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.spin-wheel-img {
+  transition: transform 4.2s cubic-bezier(0.2, 0.9, 0.2, 1);
+  transform-origin: center center;
+  will-change: transform;
+}
+
+.spin-wheel-wrap {
+  position: relative;
+  width: 100%;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.spin-pointer {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, calc(-50% - 1px));
+  width: 0;
+  height: 0;
+  border-left: 12px solid transparent;
+  border-right: 12px solid transparent;
+  border-top: 18px solid #ffcf5a;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.5));
+  z-index: 2;
+}
+
+.spin-reveal {
+  position: absolute;
+  bottom: 8px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(0, 0, 0, 0.62);
+  color: #ffd874;
+  padding: 8px 14px;
+  border-radius: 999px;
+  font-size: 14px;
+  letter-spacing: 0.3px;
+  animation: spinRevealPop 0.35s ease, spinRevealFade 2.6s ease forwards;
+  z-index: 2;
+}
+
+@keyframes spinRevealPop {
+  from {
+    opacity: 0;
+    transform: translateX(-50%) translateY(8px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0) scale(1);
+  }
+}
+
+@keyframes spinRevealFade {
+  0% {
+    opacity: 1;
+  }
+  80% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+.horoscope-fa {
+  font-size: 44px;
+}
 .Lavender-Purple {
   background-color: #7a4880;
   border-radius: 20px;

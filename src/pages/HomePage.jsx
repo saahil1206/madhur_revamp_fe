@@ -7,8 +7,85 @@ import panaImg from "../assets/images/pana.png";
 import jodiImg from "../assets/images/jodi.png";
 import motorImg from "../assets/images/motor.png";
 import horoscopeMainImg from "../assets/images/Todays-Horoscope.png";
-import horoscopeIcon from "../assets/images/Horoscope.png";
 import { applySeoFromMetaHeader } from "../utils/applySeoFromMetaHeader";
+
+const SPIN_SEGMENT_DEG = 30;
+const SPIN_DURATION_MS = 4200;
+
+const spinHoroscopeData = [
+  {
+    sign: "Aries",
+    iconClass: "fa-solid fa-aries",
+    message:
+      "Today Aries can gain momentum by taking one bold but focused step. Keep communication clear and avoid rushing into unnecessary arguments.",
+  },
+  {
+    sign: "Taurus",
+    iconClass: "fa-solid fa-cow",
+    message:
+      "Today Taurus may feel steady progress in routine work. Prioritize consistency and avoid overcommitting your time to too many tasks.",
+  },
+  {
+    sign: "Gemini",
+    iconClass: "fa-solid fa-people-arrows",
+    message:
+      "Today Gemini may receive useful updates through conversations. Stay flexible and double-check details before final decisions.",
+  },
+  {
+    sign: "Cancer",
+    iconClass: "fa-solid fa-shield-heart",
+    message:
+      "Today Cancer may feel emotionally sensitive but intuitive. Focus on supportive relationships and give yourself short pauses to recharge.",
+  },
+  {
+    sign: "Leo",
+    iconClass: "fa-solid fa-crown",
+    message:
+      "Today Leo can shine by leading with patience instead of pressure. Balance confidence with listening for better results.",
+  },
+  {
+    sign: "Virgo",
+    iconClass: "fa-solid fa-wheat-awn",
+    message:
+      "Today Virgo may handle complex tasks well if priorities stay clear. Keep your plans simple and avoid perfection overload.",
+  },
+  {
+    sign: "Libra",
+    iconClass: "fa-solid fa-scale-balanced",
+    message:
+      "Today Libra may face a demanding and hectic schedule, requiring extra effort and discipline to manage tasks effectively. It is advisable to avoid major, impulsive decisions and focus on maintaining harmony in personal relationships.",
+  },
+  {
+    sign: "Scorpio",
+    iconClass: "fa-solid fa-bolt",
+    message:
+      "Today Scorpio can benefit from strategic thinking and calm responses. Use your focus wisely and avoid unnecessary confrontations.",
+  },
+  {
+    sign: "Sagittarius",
+    iconClass: "fa-solid fa-bullseye",
+    message:
+      "Today Sagittarius may feel inspired to explore fresh ideas. Keep practical limits in mind while acting on opportunities.",
+  },
+  {
+    sign: "Capricorn",
+    iconClass: "fa-solid fa-mountain",
+    message:
+      "Today Capricorn can make solid progress through disciplined effort. A steady pace will deliver stronger outcomes than quick shortcuts.",
+  },
+  {
+    sign: "Aquarius",
+    iconClass: "fa-solid fa-water",
+    message:
+      "Today Aquarius may discover creative solutions in unexpected places. Collaborate with others and keep your approach adaptable.",
+  },
+  {
+    sign: "Pisces",
+    iconClass: "fa-solid fa-fish",
+    message:
+      "Today Pisces may find clarity by trusting intuition and structure together. Protect your energy and stay grounded in practical steps.",
+  },
+];
 
 const cardVariants = [
   "default",
@@ -187,6 +264,10 @@ function HomePage() {
   const apiBaseUrl =
     import.meta.env.VITE_API_BASE_URL || "http://localhost:5000";
   const [nowTick, setNowTick] = useState(Date.now());
+  const [spinRotation, setSpinRotation] = useState(0);
+  const [isSpinning, setIsSpinning] = useState(false);
+  const [spinResult, setSpinResult] = useState(spinHoroscopeData[6]);
+  const [showSpinReveal, setShowSpinReveal] = useState(false);
 
   useEffect(() => {
     const timer = setInterval(() => setNowTick(Date.now()), 1000);
@@ -333,6 +414,30 @@ function HomePage() {
       return { ...card, timer: { hr, min, sec } };
     })
     .filter(Boolean);
+
+  const handleSpin = () => {
+    if (isSpinning) return;
+
+    const randomIndex = Math.floor(Math.random() * spinHoroscopeData.length);
+    const targetOffset =
+      360 - randomIndex * SPIN_SEGMENT_DEG - SPIN_SEGMENT_DEG / 2;
+    const nextRotation =
+      Math.ceil(spinRotation / 360) * 360 + 5 * 360 + targetOffset;
+
+    setIsSpinning(true);
+    setSpinRotation(nextRotation);
+
+    window.setTimeout(() => {
+      const result = spinHoroscopeData[randomIndex];
+      setSpinResult(result);
+      setIsSpinning(false);
+      setShowSpinReveal(true);
+
+      window.setTimeout(() => {
+        setShowSpinReveal(false);
+      }, 2600);
+    }, SPIN_DURATION_MS);
+  };
 
   useEffect(() => {
     const fetchTimeTable = async () => {
@@ -513,7 +618,21 @@ function HomePage() {
         <div className="container background-img">
           <div className="row p-5 align-items-center">
             <div className="col-xl-5 col-lg-6 col-md-12 col-sm-12 col-12 p-4">
-              <img src={horoscopeMainImg} width="90%" alt="Today's Horoscope" />
+              <div className="spin-wheel-wrap">
+                <span className="spin-pointer" aria-hidden="true"></span>
+                <img
+                  src={horoscopeMainImg}
+                  width="90%"
+                  alt="Today's Horoscope"
+                  className="spin-wheel-img"
+                  style={{ transform: `rotate(${spinRotation}deg)` }}
+                />
+                {showSpinReveal && (
+                  <div className="spin-reveal Poppins-SemiBold">
+                    You got: {spinResult.sign}
+                  </div>
+                )}
+              </div>
             </div>
             <div className="col-xl-7 col-lg-7 col-md-12 col-sm-12 col-12">
               <p className="text-white">
@@ -525,24 +644,23 @@ function HomePage() {
                 Madhur Bazar content.
               </p>
               <h4 className="text-white">Today's Horoscope</h4>
-              <img
-                src={horoscopeIcon}
-                className="mt-3 horoscope-img"
-                width="10%"
-                alt="Horoscope"
-              />
+              <div className="mt-3">
+                <i className={`${spinResult.iconClass} text-white horoscope-fa`}></i>
+              </div>
+              <p className="text-white mt-3 mb-1 Poppins-SemiBold">
+                {spinResult.sign}
+              </p>
               <p className="text-white mt-3">
-                Today Libra may face a demanding and hectic schedule, requiring
-                extra effort and discipline to manage tasks effectively. It is
-                advisable to avoid major, impulsive decisions and focus on
-                maintaining harmony in personal relationships.
+                {spinResult.message}
               </p>
               <div className="mt-5 text-center">
                 <button
                   className="btn purple-btn w-50"
                   style={{ whiteSpace: "nowrap" }}
+                  onClick={handleSpin}
+                  disabled={isSpinning}
                 >
-                  Spin to win
+                  {isSpinning ? "Spinning..." : "Spin to win"}
                 </button>
               </div>
             </div>
