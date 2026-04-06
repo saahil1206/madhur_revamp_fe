@@ -8,6 +8,11 @@ function DetailsPage() {
 
   return (
     <>
+     <SeoHead
+    title="Madhur Bazar Home"
+    description="Latest Madhur Bazar updates and charts."
+    canonical="https://www.madhurbazar123.com/"
+  />
       <div className="container mt-4">
         <div className="d-flex align-items-center gap-3">
           <Link to="/games" className="back-btn">
