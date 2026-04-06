@@ -57,7 +57,7 @@ function Header() {
               </div>
             </div>
           </div>
-          <div className="col-xl-3 col-lg-3 col-md-4 col-sm-4 col-5 contact-none d-flex">
+          {/* <div className="col-xl-3 col-lg-3 col-md-4 col-sm-4 col-5 contact-none d-flex">
             <div className="d-flex justify-content-between maindiv-profile w-100">
               <div className="profile-div py-1">
                 <h5 className="mb-0">Hi,</h5>
@@ -67,7 +67,7 @@ function Header() {
                 <img src={userImg} alt="user-img" width="65%" />
               </div>
             </div>
-          </div>
+          </div> */}
         </div>
       </div>
 
