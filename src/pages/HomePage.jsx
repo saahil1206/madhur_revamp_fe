@@ -104,19 +104,21 @@ const luckyCards = [
   { img: motorImg, title: "Motor", numbers: [1, 1, 1, 1] },
 ];
 
+const zodiacBasePath = `${import.meta.env.BASE_URL}zodiac/`;
+
 const zodiacImageBySign = {
-  Aries: "/zodiac/aries.png",
-  Taurus: "/zodiac/taurus.png",
-  Gemini: "/zodiac/gemini.png",
-  Cancer: "/zodiac/cancer.png",
-  Leo: "/zodiac/leo.png",
-  Virgo: "/zodiac/virgo.png",
-  Libra: "/zodiac/libra.png",
-  Scorpio: "/zodiac/scorpio.png",
-  Sagittarius: "/zodiac/sagittarius.png",
-  Capricorn: "/zodiac/capricorn.png",
-  Aquarius: "/zodiac/aquarius.png",
-  Pisces: "/zodiac/pisces.png",
+  Aries: `${zodiacBasePath}aries.png`,
+  Taurus: `${zodiacBasePath}taurus.png`,
+  Gemini: `${zodiacBasePath}gemini.png`,
+  Cancer: `${zodiacBasePath}cancer.png`,
+  Leo: `${zodiacBasePath}leo.png`,
+  Virgo: `${zodiacBasePath}virgo.png`,
+  Libra: `${zodiacBasePath}libra.png`,
+  Scorpio: `${zodiacBasePath}scorpio.png`,
+  Sagittarius: `${zodiacBasePath}sagittarius.png`,
+  Capricorn: `${zodiacBasePath}capricorn.png`,
+  Aquarius: `${zodiacBasePath}aquarius.png`,
+  Pisces: `${zodiacBasePath}pisces.png`,
 };
 
 function formatApiTime(value) {
