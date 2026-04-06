@@ -718,12 +718,13 @@ function HomePage() {
                 Madhur Bazar content.
               </p>
               <h4 className="text-white">Today's Horoscope</h4>
-              <div className="mt-3">
+              <div className="mt-3 d-flex align-items-center gap-3 horoscope-symbol-row">
+                <i className={`${spinResult.iconClass} text-white horoscope-fa`}></i>
+                <p className="text-white mb-0 Poppins-SemiBold horoscope-sign-name">
+                  {spinResult.sign}
+                </p>
                 <i className={`${spinResult.iconClass} text-white horoscope-fa`}></i>
               </div>
-              <p className="text-white mt-3 mb-1 Poppins-SemiBold">
-                {spinResult.sign}
-              </p>
               <p className="text-white mt-3">
                 {spinResult.message}
               </p>

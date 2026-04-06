@@ -721,6 +721,15 @@
 .horoscope-fa {
   font-size: 44px;
 }
+
+.horoscope-symbol-row {
+  justify-content: flex-start;
+}
+
+.horoscope-sign-name {
+  font-size: 32px;
+  line-height: 1;
+}
 .Lavender-Purple {
   background-color: #7a4880;
   border-radius: 20px;
@@ -812,6 +821,14 @@
 
   .horoscope-img {
     width: 30% !important;
+  }
+
+  .horoscope-symbol-row {
+    justify-content: center;
+  }
+
+  .horoscope-sign-name {
+    font-size: 24px;
   }
 
   .purple-btn {
