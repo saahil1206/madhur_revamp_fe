@@ -10,7 +10,7 @@ import horoscopeMainImg from "../assets/images/Todays-Horoscope.png";
 import { applySeoFromMetaHeader } from "../utils/applySeoFromMetaHeader";
 
 const SPIN_SEGMENT_DEG = 30;
-const SPIN_DURATION_MS = 4200;
+const SPIN_DURATION_MS = 7600;
 
 const spinHoroscopeData = [
   {
