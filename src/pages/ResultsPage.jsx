@@ -6,6 +6,13 @@ const cardThemes = [
   { guessBoxClass: 'rs-guess-box-yellow', bodyClass: 'rs-body-yellow', headerClass: 'rs-header-yellow', cardClass: 'rs-card-yellow' },
 ]
 
+function normalizeBazarType(value) {
+  const text = String(value || '').trim().toLowerCase()
+  if (text === 'elite' || text === 'elite bazar') return 'elite'
+  if (text === 'premium' || text === 'premium bazar') return 'premium'
+  return 'normal'
+}
+
 function ResultsPage() {
   const [searchTerm, setSearchTerm] = useState('')
   const [filter, setFilter] = useState('All')
@@ -50,6 +57,7 @@ function ResultsPage() {
         title: row.bazar?.bazar_name || `Bazar ${row.bazar_id}`,
         type: 'Jodi',
         notice: row.bazar?.Notice || '',
+        bazarType: normalizeBazarType(row.bazar?.bazar_category),
         openPana: '--',
         openAakda: '-',
         closeAakda: '-',
@@ -62,6 +70,7 @@ function ResultsPage() {
       if (row.bazar?.Notice) {
         current.notice = row.bazar.Notice
       }
+      current.bazarType = normalizeBazarType(row.bazar?.bazar_category)
 
       if (row.result_type === 'open') {
         current.openPana = row.result_pana || '--'
@@ -82,7 +91,13 @@ function ResultsPage() {
     const term = searchTerm.trim().toLowerCase()
     return mergedResults.filter((item) => {
       const searchOk = !term || item.title.toLowerCase().includes(term)
-      const filterOk = filter === 'All' || filter === 'Normal Bazar'
+      const filterMap = {
+        'Normal Bazar': 'normal',
+        'Elite Bazar': 'elite',
+        'Premium Bazar': 'premium',
+      }
+      const wanted = filterMap[filter]
+      const filterOk = filter === 'All' || item.bazarType === wanted
       return searchOk && filterOk
     })
   }, [mergedResults, searchTerm, filter])

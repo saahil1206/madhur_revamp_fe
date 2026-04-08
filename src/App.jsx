@@ -10,6 +10,8 @@ import AboutPage from './pages/AboutPage'
 import GamesPage from './pages/GamesPage'
 import DetailsPage from './pages/DetailsPage'
 import CalendarPage from './pages/CalendarPage'
+import TermsConditionPage from './pages/TermsConditionPage'
+import PrivacyPolicyPage from './pages/PrivacyPolicyPage'
 import Login from './admin/login'
 import AdminLayout from './admin/AdminLayout'
 import Dashboard from './admin/Dashboard'
@@ -17,6 +19,7 @@ import EnterResult from './admin/EnterResult'
 import ResultRecord from './admin/ResultRecord'
 import FloatingSetting from './admin/FloatingSetting'
 import GameSeoList from './admin/GameSeoList'
+import BazarCategory from './admin/BazarCategory'
 
 function AdminProtectedRoute({ children }) {
   const token = localStorage.getItem('admin_token')
@@ -43,6 +46,8 @@ function App() {
       <Route element={<SubpageLayout />}>
         <Route path="/results" element={<ResultsPage />} />
         <Route path="/about" element={<AboutPage />} />
+        <Route path="/terms-condition" element={<TermsConditionPage />} />
+        <Route path="/privacy-policy" element={<PrivacyPolicyPage />} />
         <Route path="/games" element={<GamesPage />} />
         <Route path="/games/:gameSlug" element={<DetailsPage />} />
         <Route path="/games/:gameSlug/calendar" element={<CalendarPage />} />
@@ -54,6 +59,7 @@ function App() {
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/enter-result" element={<EnterResult />} />
         <Route path="/result-record" element={<ResultRecord />} />
+        <Route path="/bazar-category" element={<BazarCategory />} />
         <Route path="/floating-setting" element={<FloatingSetting />} />
         <Route path="/game-seo-list" element={<GameSeoList />} />
       </Route>

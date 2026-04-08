@@ -32,6 +32,23 @@ const Dashboard = () => {
           )}
         </div>
 
+        {/* Bazar Dropdown */}
+        <div className="admin-dropdown-wrapper">
+          <button
+            className="admin-action-btn"
+            onClick={() => toggleDropdown("bazar")}
+          >
+            <i className="fas fa-layer-group"></i> Bazar
+          </button>
+          {openDropdown === "bazar" && (
+            <div className="admin-dropdown-menu">
+              <Link to="/bazar-category" className="admin-dropdown-item">
+                Category Setup
+              </Link>
+            </div>
+          )}
+        </div>
+
         {/* Floating Dropdown */}
         <div className="admin-dropdown-wrapper">
           <button

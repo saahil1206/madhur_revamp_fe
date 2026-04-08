@@ -647,6 +647,82 @@
   color: white;
 }
 
+/* Terms Page */
+.terms-page-section {
+  background:
+    radial-gradient(circle at 15% 10%, rgba(160, 91, 179, 0.2), transparent 35%),
+    radial-gradient(circle at 80% 20%, rgba(255, 188, 83, 0.12), transparent 35%),
+    #302530;
+}
+
+.terms-hero {
+  background: linear-gradient(135deg, rgba(122, 72, 128, 0.88), rgba(86, 29, 94, 0.88));
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 18px;
+  padding: 28px 20px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.22);
+}
+
+.terms-title {
+  color: #fff;
+  font-size: 36px;
+  line-height: 1.2;
+}
+
+.terms-subtitle {
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 16px;
+  max-width: 920px;
+  margin: 0 auto;
+}
+
+.terms-grid {
+  display: grid;
+  gap: 14px;
+}
+
+.terms-card {
+  background: rgba(122, 72, 128, 0.72);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 14px;
+  padding: 18px 16px;
+}
+
+.terms-card-title {
+  color: #ffcf7a;
+  font-size: 22px;
+  line-height: 1.2;
+}
+
+.terms-card-body {
+  color: #f7edf9;
+  font-size: 15px;
+  line-height: 1.6;
+}
+
+.terms-updated {
+  color: #ffd477;
+  font-size: 16px;
+}
+
+@media (max-width: 575px) {
+  .terms-title {
+    font-size: 28px;
+  }
+
+  .terms-subtitle {
+    font-size: 14px;
+  }
+
+  .terms-card-title {
+    font-size: 18px;
+  }
+
+  .terms-card-body {
+    font-size: 14px;
+  }
+}
+
 .purple-btn:disabled {
   opacity: 0.7;
   cursor: not-allowed;

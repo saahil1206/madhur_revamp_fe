@@ -1,3 +1,5 @@
+import { Link } from "react-router-dom";
+
 function Footer() {
   return (
     <footer className="footer-bg pt-5 pb-4">
@@ -14,9 +16,9 @@ function Footer() {
           By using this website, users agree to accept this disclaimer in full. If you do not agree with any part of this disclaimer, you are advised to discontinue using the Madhur Bazar website immediately.
         </p>
         <p className="Poppins-SemiBold font-size-16 mb-3">
-          <a href="#" className="text-white text-decoration-none">Terms & Condition</a>
+          <Link to="/terms-condition" className="text-white text-decoration-none">Terms & Condition</Link>
           <span className="mx-1">|</span>
-          <a href="#" className="text-white text-decoration-none">Privacy Policy</a>
+          <Link to="/privacy-policy" className="text-white text-decoration-none">Privacy Policy</Link>
         </p>
         <p className="Poppins-light font-size-14 mb-0">
           Copyright &copy; 2025 madhurbazar1.com. All Right Reserved.

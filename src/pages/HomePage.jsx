@@ -97,12 +97,46 @@ const cardVariants = [
   "blue",
 ];
 
-const luckyCards = [
-  { img: akadaImg, title: "Aakda", numbers: [1, 1, 1, 1] },
-  { img: panaImg, title: "PANA", numbers: [1, 1, 1, 1] },
-  { img: jodiImg, title: "Jodi", numbers: [1, 1, 1, 1] },
-  { img: motorImg, title: "Motor", numbers: [1, 1, 1, 1] },
+const luckyCardsMeta = [
+  { key: "aakda", img: akadaImg, title: "Aakda", digits: 4 },
+  { key: "pana", img: panaImg, title: "PANA", digits: 3, grouped: true, boxCount: 4 },
+  { key: "jodi", img: jodiImg, title: "Jodi", digits: 2, grouped: true, boxCount: 4 },
+  { key: "motor", img: motorImg, title: "Motor", grouped: true, boxCount: 1, fullValue: true },
 ];
+
+function parseLuckyDigits(value, count = 4, grouped = false, boxCount = count, fullValue = false) {
+  const raw = String(value ?? "").trim();
+  const groups = raw
+    .split(/[\s,|/]+/)
+    .map((part) => part.replace(/\D/g, ""))
+    .filter((part) => part.length > 0);
+
+  if (grouped) {
+    if (fullValue) {
+      const first = groups[0] || "-";
+      return [first];
+    }
+    const values = groups
+      .map((group) => group.slice(0, count))
+      .filter((group) => group.length === count)
+      .slice(0, boxCount);
+    while (values.length < boxCount) values.push("-".repeat(count));
+    return values;
+  }
+
+  const flatDigits = raw.replace(/\D/g, "");
+  const digits = flatDigits.slice(0, count).split("");
+  while (digits.length < count) digits.push("-");
+  return digits;
+}
+
+function getLuckyPlaceholder(card) {
+  if (card.grouped) {
+    if (card.fullValue) return ["-"];
+    return Array(card.boxCount || 0).fill("-".repeat(card.digits || 1));
+  }
+  return Array(card.digits || 0).fill("-");
+}
 
 const zodiacBasePath = `${import.meta.env.BASE_URL}zodiac/`;
 
@@ -279,6 +313,13 @@ function HomePage() {
   const [scheduleData, setScheduleData] = useState([]);
   const [scheduleLoading, setScheduleLoading] = useState(true);
   const [scheduleError, setScheduleError] = useState("");
+  const [luckyCards, setLuckyCards] = useState(
+    luckyCardsMeta.map((card) => ({
+      ...card,
+      numbers: getLuckyPlaceholder(card),
+    })),
+  );
+  const [luckyLoading, setLuckyLoading] = useState(true);
   const apiBaseUrl =
     import.meta.env.VITE_API_BASE_URL || "http://localhost:5000";
   const [nowTick, setNowTick] = useState(Date.now());
@@ -532,6 +573,41 @@ function HomePage() {
   };
 
   useEffect(() => {
+    const fetchLuckyNumbers = async () => {
+      setLuckyLoading(true);
+      try {
+        const response = await fetch(`${apiBaseUrl}/api/lucky-number?limit=1`);
+        if (!response.ok) throw new Error("Failed to load lucky numbers");
+        const data = await response.json();
+        const row = Array.isArray(data) && data.length ? data[0] : {};
+
+        const mapped = luckyCardsMeta.map((card) => ({
+          ...card,
+          numbers: parseLuckyDigits(
+            row?.[card.key],
+            card.digits,
+            card.grouped,
+            card.boxCount,
+            card.fullValue,
+          ),
+        }));
+        setLuckyCards(mapped);
+      } catch (_error) {
+        setLuckyCards(
+          luckyCardsMeta.map((card) => ({
+            ...card,
+            numbers: getLuckyPlaceholder(card),
+          })),
+        );
+      } finally {
+        setLuckyLoading(false);
+      }
+    };
+
+    fetchLuckyNumbers();
+  }, [apiBaseUrl]);
+
+  useEffect(() => {
     const fetchTimeTable = async () => {
       setScheduleLoading(true);
       setScheduleError("");
@@ -691,7 +767,10 @@ function HomePage() {
                   </div>
                   <h3 className="text-white mt-4">{card.title}</h3>
                   <div className="d-flex mt-3 mb-3">
-                    {card.numbers.map((n, j) => (
+                    {(luckyLoading
+                      ? getLuckyPlaceholder(card)
+                      : card.numbers
+                    ).map((n, j) => (
                       <div
                         key={j}
                         className={`small-box ${j > 0 ? "ms-2" : ""}`}
