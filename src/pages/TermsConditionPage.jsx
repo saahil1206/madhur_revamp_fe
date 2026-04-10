@@ -71,8 +71,11 @@ function TermsConditionPage() {
   useEffect(() => {
     const loadSeo = async () => {
       try {
-        const apiBaseUrl = import.meta.env.VITE_API_BASE_URL || "http://localhost:5000";
-        const res = await fetch(`${apiBaseUrl}/api/seoPublic?siteId=1&pageName=term-condition&gameId=0`);
+        const apiBaseUrl =
+          import.meta.env.VITE_API_BASE_URL || "http://localhost:5000";
+        const res = await fetch(
+          `${apiBaseUrl}/api/seoPublic?siteId=1&pageName=term-condition&gameId=0`,
+        );
         const data = await res.json();
         applySeoFromMetaHeader(data?.metaHeader || "");
         const raw = String(data?.pageHtml || "").trim();
@@ -94,10 +97,20 @@ function TermsConditionPage() {
         <section className="terms-page-section py-5">
           <div className="container">
             <div className="terms-hero text-center">
-              <h1 className="terms-title Poppins-SemiBold mb-3">Terms & Conditions</h1>
+              <h1 className="terms-title Poppins-SemiBold mb-3">
+                Terms & Conditions
+              </h1>
+              <p className="terms-subtitle Poppins-light mb-0">
+                Welcome to <strong>MadhurBazar.com</strong>. By accessing or
+                using this website, you agree to comply with these Terms and
+                Conditions.
+              </p>
             </div>
             <div className="terms-card mt-4">
-              <div className="seo-page-content" dangerouslySetInnerHTML={{ __html: pageHtml }} />
+              <div
+                className="seo-page-content"
+                dangerouslySetInnerHTML={{ __html: pageHtml }}
+              />
             </div>
           </div>
         </section>
@@ -111,18 +124,24 @@ function TermsConditionPage() {
       <section className="terms-page-section py-5">
         <div className="container">
           <div className="terms-hero text-center">
-            <h1 className="terms-title Poppins-SemiBold mb-3">Terms & Conditions</h1>
+            <h1 className="terms-title Poppins-SemiBold mb-3">
+              Terms & Conditions
+            </h1>
             <p className="terms-subtitle Poppins-light mb-0">
-              Welcome to <strong>MadhurBazar.com</strong>. By accessing or using this
-              website, you agree to comply with these Terms and Conditions.
+              Welcome to <strong>MadhurBazar.com</strong>. By accessing or using
+              this website, you agree to comply with these Terms and Conditions.
             </p>
           </div>
 
           <div className="terms-grid mt-4">
             {termsPoints.map((item) => (
               <article key={item.title} className="terms-card">
-                <h2 className="terms-card-title Poppins-SemiBold mb-2">{item.title}</h2>
-                <p className="terms-card-body Poppins-light mb-0">{item.body}</p>
+                <h2 className="terms-card-title Poppins-SemiBold mb-2">
+                  {item.title}
+                </h2>
+                <p className="terms-card-body Poppins-light mb-0">
+                  {item.body}
+                </p>
               </article>
             ))}
           </div>
