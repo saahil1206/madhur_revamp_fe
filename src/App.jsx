@@ -20,6 +20,7 @@ import ResultRecord from './admin/ResultRecord'
 import FloatingSetting from './admin/FloatingSetting'
 import GameSeoList from './admin/GameSeoList'
 import BazarCategory from './admin/BazarCategory'
+import LuckyNumberRequests from './admin/LuckyNumberRequests'
 
 function AdminProtectedRoute({ children }) {
   const token = localStorage.getItem('admin_token')
@@ -62,6 +63,7 @@ function App() {
         <Route path="/bazar-category" element={<BazarCategory />} />
         <Route path="/floating-setting" element={<FloatingSetting />} />
         <Route path="/game-seo-list" element={<GameSeoList />} />
+        <Route path="/lucky-number-requests" element={<LuckyNumberRequests />} />
       </Route>
     </Routes>
   )

@@ -28,6 +28,9 @@ const Dashboard = () => {
               <Link to="/result-record" className="admin-dropdown-item">
                 Result Records
               </Link>
+              <Link to="/lucky-number-requests" className="admin-dropdown-item">
+                Lucky Number Requests
+              </Link>
             </div>
           )}
         </div>

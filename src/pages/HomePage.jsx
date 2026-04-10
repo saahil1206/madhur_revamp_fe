@@ -320,6 +320,10 @@ function HomePage() {
     })),
   );
   const [luckyLoading, setLuckyLoading] = useState(true);
+  const [mobileNumber, setMobileNumber] = useState("");
+  const [luckyDigitResult, setLuckyDigitResult] = useState(null);
+  const [luckySubmitLoading, setLuckySubmitLoading] = useState(false);
+  const [luckySubmitError, setLuckySubmitError] = useState("");
   const apiBaseUrl =
     import.meta.env.VITE_API_BASE_URL || "http://localhost:5000";
   const [nowTick, setNowTick] = useState(Date.now());
@@ -570,6 +574,35 @@ function HomePage() {
         setShowSpinReveal(false);
       }, 2600);
     }, SPIN_DURATION_MS);
+  };
+
+  const handleLuckyDigitSubmit = async () => {
+    setLuckySubmitError("");
+    setLuckyDigitResult(null);
+
+    if (mobileNumber.length !== 10) {
+      setLuckySubmitError("Please enter a valid 10-digit mobile number.");
+      return;
+    }
+
+    setLuckySubmitLoading(true);
+    try {
+      const response = await fetch(`${apiBaseUrl}/api/lucky-number/generate`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ mobileNumber }),
+      });
+      const data = await response.json();
+      if (!response.ok) {
+        throw new Error(data?.message || "Failed to generate lucky number");
+      }
+      setLuckyDigitResult(data?.luckyDigit);
+      setMobileNumber("");
+    } catch (error) {
+      setLuckySubmitError(error.message || "Failed to generate lucky number");
+    } finally {
+      setLuckySubmitLoading(false);
+    }
   };
 
   useEffect(() => {
@@ -861,6 +894,10 @@ function HomePage() {
                   placeholder="Enter mobile number"
                   maxLength="10"
                   inputMode="numeric"
+                  value={mobileNumber}
+                  onChange={(e) =>
+                    setMobileNumber(e.target.value.replace(/[^0-9]/g, ""))
+                  }
                 />
               </div>
               <p className="text-white mt-4 text-center Poppins-light font-size-14">
@@ -868,8 +905,22 @@ function HomePage() {
                 Interdum et malesuada fames ac ante ipsum primis in faucibus.
               </p>
               <div className="mt-3 mb-5">
-                <button className="btn purple-btn">Show Lucky Number</button>
+                <button
+                  className="btn purple-btn"
+                  onClick={handleLuckyDigitSubmit}
+                  disabled={luckySubmitLoading}
+                >
+                  {luckySubmitLoading ? "Please wait..." : "Show Lucky Number"}
+                </button>
               </div>
+              {luckySubmitError && (
+                <p className="text-danger text-center">{luckySubmitError}</p>
+              )}
+              {luckyDigitResult !== null && (
+                <p className="text-white text-center Poppins-SemiBold">
+                  Your lucky number is: {luckyDigitResult}
+                </p>
+              )}
             </div>
           </div>
         </div>
