@@ -99,12 +99,39 @@ const cardVariants = [
 
 const luckyCardsMeta = [
   { key: "aakda", img: akadaImg, title: "Aakda", digits: 4 },
-  { key: "pana", img: panaImg, title: "PANA", digits: 3, grouped: true, boxCount: 4 },
-  { key: "jodi", img: jodiImg, title: "Jodi", digits: 2, grouped: true, boxCount: 4 },
-  { key: "motor", img: motorImg, title: "Motor", grouped: true, boxCount: 1, fullValue: true },
+  {
+    key: "pana",
+    img: panaImg,
+    title: "PANA",
+    digits: 3,
+    grouped: true,
+    boxCount: 4,
+  },
+  {
+    key: "jodi",
+    img: jodiImg,
+    title: "Jodi",
+    digits: 2,
+    grouped: true,
+    boxCount: 4,
+  },
+  {
+    key: "motor",
+    img: motorImg,
+    title: "Motor",
+    grouped: true,
+    boxCount: 1,
+    fullValue: true,
+  },
 ];
 
-function parseLuckyDigits(value, count = 4, grouped = false, boxCount = count, fullValue = false) {
+function parseLuckyDigits(
+  value,
+  count = 4,
+  grouped = false,
+  boxCount = count,
+  fullValue = false,
+) {
   const raw = String(value ?? "").trim();
   const groups = raw
     .split(/[\s,|/]+/)
@@ -335,6 +362,12 @@ function HomePage() {
   const spinSoundTimerRef = useRef(null);
   const spinSoundStoppedRef = useRef(false);
 
+  const purpleBarData = [
+    { name: "Madhur Morning", numbers: [1, 7, 2, 4] },
+    { name: "Madhur Night", numbers: [1, 7, 2, 4] },
+    { name: "Madhur Day", numbers: [1, 7, 2, 4] },
+  ];
+
   useEffect(() => {
     const timer = setInterval(() => setNowTick(Date.now()), 1000);
     return () => clearInterval(timer);
@@ -354,8 +387,11 @@ function HomePage() {
   useEffect(() => {
     const loadSeo = async () => {
       try {
-        const apiBaseUrl = import.meta.env.VITE_API_BASE_URL || "http://localhost:5000";
-        const res = await fetch(`${apiBaseUrl}/api/seoPublic?siteId=1&pageName=home&gameId=0`);
+        const apiBaseUrl =
+          import.meta.env.VITE_API_BASE_URL || "http://localhost:5000";
+        const res = await fetch(
+          `${apiBaseUrl}/api/seoPublic?siteId=1&pageName=home&gameId=0`,
+        );
         const data = await res.json();
         applySeoFromMetaHeader(data?.metaHeader || "");
       } catch (_error) {}
@@ -665,6 +701,41 @@ function HomePage() {
     fetchTimeTable();
   }, [apiBaseUrl]);
 
+  const speakText = (text) => {
+    if (!("speechSynthesis" in window)) return;
+
+    const speech = new SpeechSynthesisUtterance(text);
+    speech.lang = "en-IN"; // or "hi-IN"
+    speech.rate = 1;
+    speech.pitch = 1;
+
+    window.speechSynthesis.cancel(); // stop previous
+    window.speechSynthesis.speak(speech);
+  };
+
+  const handleSpeakResults = () => {
+    if (!("speechSynthesis" in window)) return;
+
+    window.speechSynthesis.cancel();
+
+    purpleBarData.forEach((item, index) => {
+      const text = `${item.name} ${item.numbers.join(" ")}`;
+
+      const speech = new SpeechSynthesisUtterance(text);
+      speech.lang = "en-IN";
+      speech.rate = 0.9; // more natural
+
+      setTimeout(() => {
+        window.speechSynthesis.speak(speech);
+      }, index * 2500);
+    });
+  };
+
+  const unlockAudio = () => {
+    const dummy = new SpeechSynthesisUtterance(" ");
+    window.speechSynthesis.speak(dummy);
+  };
+
   return (
     <>
       {/* Purple Bar */}
@@ -725,9 +796,26 @@ function HomePage() {
               </div>
             </div>
             <div className="col-xl-1 col-lg-1 col-sm-2 col-2 d-flex align-items-center justify-content-center">
-              <div className="bg-volume">
+              {/* <div className="bg-volume">
                 <i className="fas fa-volume-up text-white volume-iocn"></i>
-              </div>
+              </div> */}
+
+              {/* <div
+  className="bg-volume"
+  onClick={handleSpeakResults}
+  style={{ cursor: "pointer" }}
+>
+  <i className="fas fa-volume-up text-white volume-iocn"></i>
+</div> */}
+
+              <div
+                className="bg-volume"
+                onClick={() => {
+                  unlockAudio();
+                  handleSpeakResults();
+                }}
+                style={{ cursor: "pointer" }}
+              ></div>
             </div>
           </div>
         </div>
@@ -850,7 +938,9 @@ function HomePage() {
               <h4 className="text-white">Today's Horoscope</h4>
               <div className="mt-3">
                 <img
-                  src={zodiacImageBySign[spinResult.sign] || horoscopeFallbackIcon}
+                  src={
+                    zodiacImageBySign[spinResult.sign] || horoscopeFallbackIcon
+                  }
                   className="zodiac-result-icon"
                   alt={spinResult.sign}
                   onError={(e) => {
@@ -863,9 +953,7 @@ function HomePage() {
                   {spinResult.sign}
                 </p>
               </div>
-              <p className="text-white mt-3">
-                {spinResult.message}
-              </p>
+              <p className="text-white mt-3">{spinResult.message}</p>
               <div className="mt-5 text-center">
                 <button
                   className="btn purple-btn w-50"
