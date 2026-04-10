@@ -1,8 +1,17 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { applySeoFromMetaHeader } from "../utils/applySeoFromMetaHeader";
 
+function normalizePageHtml(html) {
+  const raw = String(html || "").trim();
+  if (!raw) return "";
+  const parser = new DOMParser();
+  const doc = parser.parseFromString(raw, "text/html");
+  const bodyHtml = doc.body?.innerHTML?.trim();
+  return bodyHtml || raw;
+}
 
 function AboutPage() {
+  const [pageHtml, setPageHtml] = useState("");
 
   useEffect(() => {
     const loadSeo = async () => {
@@ -11,10 +20,20 @@ function AboutPage() {
         const res = await fetch(`${apiBaseUrl}/api/seoPublic?siteId=1&pageName=about-us&gameId=0`);
         const data = await res.json();
         applySeoFromMetaHeader(data?.metaHeader || "");
+        setPageHtml(normalizePageHtml(data?.pageHtml));
       } catch (_error) {}
     };
     loadSeo();
   }, []);
+
+  if (pageHtml) {
+    return (
+      <div className="container mt-4">
+        <div className="about-content-box" dangerouslySetInnerHTML={{ __html: pageHtml }} />
+      </div>
+    );
+  }
+
   return (
     <>
       <div className="container mt-4">

@@ -1,4 +1,6 @@
+import { useEffect, useState } from "react";
 import Footer from "../components/layout/Footer";
+import { applySeoFromMetaHeader } from "../utils/applySeoFromMetaHeader";
 
 const termsPoints = [
   {
@@ -64,6 +66,43 @@ const termsPoints = [
 ];
 
 function TermsConditionPage() {
+  const [pageHtml, setPageHtml] = useState("");
+
+  useEffect(() => {
+    const loadSeo = async () => {
+      try {
+        const apiBaseUrl = import.meta.env.VITE_API_BASE_URL || "http://localhost:5000";
+        const res = await fetch(`${apiBaseUrl}/api/seoPublic?siteId=1&pageName=term-condition&gameId=0`);
+        const data = await res.json();
+        applySeoFromMetaHeader(data?.metaHeader || "");
+        const raw = String(data?.pageHtml || "").trim();
+        if (raw) {
+          const parser = new DOMParser();
+          const doc = parser.parseFromString(raw, "text/html");
+          setPageHtml(doc.body?.innerHTML?.trim() || raw);
+        } else {
+          setPageHtml("");
+        }
+      } catch (_error) {}
+    };
+    loadSeo();
+  }, []);
+
+  if (pageHtml) {
+    return (
+      <>
+        <section className="terms-page-section py-5">
+          <div className="container">
+            <div className="terms-card mt-4">
+              <div className="terms-card-body Poppins-light" dangerouslySetInnerHTML={{ __html: pageHtml }} />
+            </div>
+          </div>
+        </section>
+        <Footer />
+      </>
+    );
+  }
+
   return (
     <>
       <section className="terms-page-section py-5">
