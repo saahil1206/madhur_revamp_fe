@@ -876,6 +876,15 @@
   color: #7a4880;
 }
 
+.seo-page-content h1,
+.seo-page-content h2,
+.seo-page-content h3,
+.seo-page-content h4,
+.seo-page-content h5,
+.seo-page-content h6 {
+  color: #ffcf7a;
+}
+
 .profile-input:focus {
   box-shadow: 0 0 0 2px #55205d !important;
   border-color: #55205d !important;
