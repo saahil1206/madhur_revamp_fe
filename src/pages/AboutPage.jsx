@@ -28,9 +28,14 @@ function AboutPage() {
 
   if (pageHtml) {
     return (
-      <div className="container mt-4">
-        <div className="about-content-box" dangerouslySetInnerHTML={{ __html: pageHtml }} />
-      </div>
+      <>
+        <div className="container mt-4">
+          <h1 className="text-white poppins-bold mb-0">About Madhur</h1>
+        </div>
+        <div className="container mt-4">
+          <div className="about-content-box seo-page-content" dangerouslySetInnerHTML={{ __html: pageHtml }} />
+        </div>
+      </>
     );
   }
 

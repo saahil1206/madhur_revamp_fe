@@ -93,8 +93,11 @@ function TermsConditionPage() {
       <>
         <section className="terms-page-section py-5">
           <div className="container">
+            <div className="terms-hero text-center">
+              <h1 className="terms-title Poppins-SemiBold mb-3">Terms & Conditions</h1>
+            </div>
             <div className="terms-card mt-4">
-              <div className="terms-card-body Poppins-light" dangerouslySetInnerHTML={{ __html: pageHtml }} />
+              <div className="seo-page-content" dangerouslySetInnerHTML={{ __html: pageHtml }} />
             </div>
           </div>
         </section>

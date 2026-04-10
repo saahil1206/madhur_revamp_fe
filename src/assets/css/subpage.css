@@ -820,6 +820,58 @@
   color: #333 !important;
 }
 
+/* SEO managed page html typography */
+.seo-page-content {
+  color: #ffffff;
+  font-family: poppins-regular;
+  line-height: 1.7;
+}
+
+.seo-page-content h1,
+.seo-page-content h2,
+.seo-page-content h3,
+.seo-page-content h4,
+.seo-page-content h5,
+.seo-page-content h6 {
+  color: #ffffff;
+  font-family: Poppins-SemiBold;
+  line-height: 1.35;
+  margin-top: 1rem;
+  margin-bottom: 0.5rem;
+}
+
+.seo-page-content h1 { font-size: 2rem; }
+.seo-page-content h2 { font-size: 1.65rem; }
+.seo-page-content h3 { font-size: 1.35rem; }
+
+.seo-page-content p,
+.seo-page-content li {
+  font-size: 1rem;
+  color: rgba(255, 255, 255, 0.95);
+}
+
+.seo-page-content ul,
+.seo-page-content ol {
+  padding-left: 1.25rem;
+}
+
+.seo-page-content a {
+  color: #ffcf70;
+  text-decoration: underline;
+}
+
+.seo-page-content table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 0.75rem 0;
+}
+
+.seo-page-content table th,
+.seo-page-content table td {
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  padding: 0.5rem 0.6rem;
+}
+
 .profile-input::placeholder {
   color: #7a4880;
 }
