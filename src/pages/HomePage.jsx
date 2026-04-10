@@ -815,7 +815,7 @@ function HomePage() {
                   handleSpeakResults();
                 }}
                 style={{ cursor: "pointer" }}
-              ></div>
+              ><i className="fas fa-volume-up text-white volume-iocn"></i></div>
             </div>
           </div>
         </div>
