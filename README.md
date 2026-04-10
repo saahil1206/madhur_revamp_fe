@@ -16,3 +16,8 @@ CREATE TABLE IF NOT EXISTS lucky_number_request (
   created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
+
+
+ALTER TABLE lucky_number_request
+ADD UNIQUE KEY uk_lucky_mobile_number (mobile_number);
+
