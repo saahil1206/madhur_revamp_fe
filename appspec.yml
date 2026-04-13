@@ -1,0 +1,15 @@
+version: 0.0
+os: linux
+
+files:
+  - source: madhurbazarbackend
+    destination: /var/www/madhurbazarbackend
+
+  - source: madhurbazar
+    destination: /var/www/madhurbazar
+
+hooks:
+  AfterInstall:
+    - location: scripts/start.sh
+      timeout: 300
+      runas: root
