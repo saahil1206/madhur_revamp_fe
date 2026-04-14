@@ -7,9 +7,19 @@ phases:
 
   pre_build:
     commands:
-      - cd madhurbazarbackend
-      - npm install
+      - echo "Moving to backend folder..."
+      - cd madhurbazarbackend || exit 1
+      - echo "Installing dependencies..."
+      - npm install || exit 1
 
   build:
     commands:
-      - npm run build
+      - echo "Skipping build step (backend project)"
+
+  post_build:
+    commands:
+      - echo "Build completed successfully"
+
+artifacts:
+  files:
+    - '**/*'

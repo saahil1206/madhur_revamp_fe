@@ -10,13 +10,13 @@ echo "Starting deployment..."
 ##############################
 echo "Deploying backend..."
 
-cd /var/www/madhurbazarbackend || exit
+cd /var/www/madhurbazar/madhurbazarbackend || exit
 
 echo "Installing backend dependencies..."
 /usr/bin/npm install
 
 echo "Restarting backend with PM2..."
-/usr/bin/pm2 restart madhur-backend || /usr/bin/pm2 start app.js --name madhur-backend
+/usr/bin/pm2 restart madhur-backend
 
 ##############################
 # Frontend Deploy
