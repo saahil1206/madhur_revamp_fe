@@ -1,6 +1,31 @@
 const { Op } = require("sequelize");
 const { GameResult, GameBazar } = require("../../models");
 
+const ALLOWED_PANNA_VALUES = new Set([
+  "128", "129", "120", "130", "140", "123", "124", "125", "126", "127",
+  "137", "138", "139", "149", "159", "150", "160", "134", "135", "136",
+  "146", "147", "148", "158", "168", "169", "179", "170", "180", "145",
+  "236", "156", "157", "167", "230", "178", "250", "189", "270", "190",
+  "245", "237", "238", "239", "249", "240", "269", "260", "234", "280",
+  "290", "246", "247", "248", "258", "259", "278", "279", "289", "235",
+  "380", "345", "256", "257", "267", "268", "340", "350", "360", "370",
+  "470", "390", "346", "347", "348", "349", "359", "369", "379", "389",
+  "489", "480", "490", "356", "357", "358", "368", "378", "450", "460",
+  "560", "570", "580", "590", "456", "367", "458", "459", "469", "479",
+  "579", "589", "670", "680", "690", "457", "467", "468", "478", "569",
+  "678", "679", "689", "789", "780", "790", "890", "567", "568", "578",
+  "100", "200", "300", "400", "500", "600", "700", "800", "900", "550",
+  "119", "110", "166", "112", "113", "114", "115", "116", "117", "118",
+  "155", "228", "229", "220", "122", "277", "133", "224", "144", "226",
+  "227", "255", "337", "266", "177", "330", "188", "233", "199", "244",
+  "335", "336", "355", "338", "339", "448", "223", "288", "225", "299",
+  "344", "499", "445", "446", "366", "466", "377", "440", "388", "334",
+  "399", "660", "599", "455", "447", "556", "449", "477", "559", "488",
+  "588", "688", "779", "699", "799", "880", "557", "558", "577", "668",
+  "669", "778", "788", "770", "889", "899", "566", "990", "667", "677",
+  "777", "444", "111", "888", "555", "222", "999", "666", "333", "000",
+]);
+
 function computeAakda(numberText) {
   const digits = String(numberText || "").replace(/\D/g, "").split("");
   if (digits.length === 0) return null;
@@ -10,11 +35,7 @@ function computeAakda(numberText) {
 
 function isValidPanna(numberText) {
   const value = String(numberText || "");
-  if (!/^\d{3}$/.test(value)) return false;
-  const [a, b, c] = value.split("").map(Number);
-  const isTriple = a === b && b === c;
-  const isAscendingConsecutive = b === a + 1 && c === b + 1;
-  return isTriple || isAscendingConsecutive;
+  return /^\d{3}$/.test(value) && ALLOWED_PANNA_VALUES.has(value);
 }
 
 function addMinutes(dateObj, minutes) {
@@ -112,7 +133,7 @@ async function create(payload, actor = {}) {
   }
   if (!isValidPanna(number)) {
     throw new Error(
-      "Invalid panna number. Use exactly 3 digits in ascending order (e.g. 123) or all same digits (e.g. 111)."
+      "Invalid panna number. Please enter a valid panna from the approved chart."
     );
   }
 
@@ -166,7 +187,7 @@ async function update(id, payload) {
   if (updates.number) {
     if (!isValidPanna(updates.number)) {
       throw new Error(
-        "Invalid panna number. Use exactly 3 digits in ascending order (e.g. 123) or all same digits (e.g. 111)."
+        "Invalid panna number. Please enter a valid panna from the approved chart."
       );
     }
     updates.result_pana = String(updates.number);
@@ -198,3 +219,4 @@ async function remove(id) {
 }
 
 module.exports = { list, getById, create, update, remove };
+
