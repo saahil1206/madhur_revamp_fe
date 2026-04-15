@@ -222,7 +222,7 @@ const ResultRecord = () => {
         </table>
       </div>
       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginTop: "10px" }}>
-        <div style={{ color: "#fff", fontSize: "14px" }}>
+        <div style={{ color: "#000", fontSize: "14px" }}>
           Total: {totalRecords} | Page {currentPage} of {totalPages}
         </div>
         <div style={{ display: "flex", gap: "8px" }}>

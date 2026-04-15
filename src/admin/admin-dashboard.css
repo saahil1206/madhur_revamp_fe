@@ -184,7 +184,7 @@
   width: 56px;
   height: 56px;
   border-radius: 50%;
-  background: #fde8e8;
+  background: #f0e4f2;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -193,7 +193,7 @@
 
 .logout-modal-icon i {
   font-size: 24px;
-  color: #e53935;
+  color: #561d5e;
 }
 
 .logout-modal h3 {
@@ -236,12 +236,12 @@
 }
 
 .logout-modal-btn.confirm {
-  background: #e53935;
+  background: #561d5e;
   color: #fff;
 }
 
 .logout-modal-btn.confirm:hover {
-  background: #c62828;
+  background: #451749;
 }
 
 /* Body Section */

@@ -887,14 +887,14 @@ function HomePage() {
                     <img src={card.img} width="60%" alt={card.title} />
                   </div>
                   <h3 className="text-white mt-2 mt-md-4">{card.title}</h3>
-                  <div className="d-flex mt-3 mb-3">
+                  <div className="d-flex mt-3 mb-3 gap-2">
                     {(luckyLoading
                       ? getLuckyPlaceholder(card)
                       : card.numbers
                     ).map((n, j) => (
                       <div
                         key={j}
-                        className={`small-box ${j > 0 ? "ms-2" : ""}`}
+                        className="small-box"
                       >
                         <span className="Poppins-Medium font-size-16">{n}</span>
                       </div>
