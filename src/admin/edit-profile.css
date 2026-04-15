@@ -1,0 +1,260 @@
+/* Edit Profile Page */
+.edit-profile-page {
+  padding: 24px;
+  max-width: 550px;
+  margin: 0 auto;
+  font-family: "Poppins", sans-serif;
+}
+
+/* Header with back button */
+.edit-profile-header {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 28px;
+}
+
+.edit-profile-header .back-btn {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: none;
+  background: #7b2d8e;
+  color: #fff;
+  font-size: 15px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s;
+}
+
+.edit-profile-header .back-btn:hover {
+  background: #5e1d6e;
+}
+
+.edit-profile-header h2 {
+  font-size: 22px;
+  font-weight: 700;
+  color: #2d1235;
+  margin: 0;
+}
+
+/* Form */
+.edit-profile-form {
+  background: #ffffff;
+  border-radius: 14px;
+  padding: 30px 24px;
+  box-shadow: 0 2px 16px rgba(123, 45, 142, 0.1);
+}
+
+/* Photo Upload */
+.photo-upload {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 28px;
+  cursor: pointer;
+  position: relative;
+}
+
+.photo-preview {
+  width: 90px;
+  height: 90px;
+  border-radius: 50%;
+  background: #f3e8f9;
+  border: 3px solid #7b2d8e;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.photo-preview img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.photo-preview i {
+  font-size: 36px;
+  color: #b580c9;
+}
+
+.photo-edit-icon {
+  position: absolute;
+  bottom: 24px;
+  right: calc(50% - 58px);
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: #7b2d8e;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  border: 2px solid #fff;
+}
+
+.photo-label {
+  margin-top: 8px;
+  font-size: 13px;
+  color: #7b2d8e;
+  font-weight: 500;
+}
+
+/* Fields */
+.profile-field {
+  margin-bottom: 20px;
+}
+
+.profile-field label {
+  display: block;
+  font-size: 13px;
+  font-weight: 600;
+  color: #555;
+  margin-bottom: 6px;
+}
+
+.profile-input-group {
+  display: flex;
+  align-items: center;
+  border: 1.5px solid #ddd;
+  border-radius: 10px;
+  padding: 0 14px;
+  background: #faf7fc;
+  transition: border-color 0.2s;
+}
+
+.profile-input-group:focus-within {
+  border-color: #7b2d8e;
+}
+
+.profile-input-group i {
+  color: #7b2d8e;
+  font-size: 15px;
+  width: 20px;
+  text-align: center;
+  flex-shrink: 0;
+}
+
+.profile-input-group input {
+  flex: 1;
+  border: none;
+  outline: none;
+  background: transparent;
+  padding: 12px 12px;
+  font-size: 14px;
+  font-family: "Poppins", sans-serif;
+  color: #333;
+}
+
+.profile-input-group input::placeholder {
+  color: #aaa;
+}
+
+/* Field validation error */
+.profile-input-group.input-error {
+  border-color: #e53935;
+}
+
+.field-error {
+  display: block;
+  font-size: 12px;
+  color: #e53935;
+  margin-top: 4px;
+  padding-left: 2px;
+}
+
+/* Password toggle button */
+.profile-toggle-pw {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  color: #999;
+  font-size: 15px;
+  flex-shrink: 0;
+  transition: color 0.2s;
+}
+
+.profile-toggle-pw:hover {
+  color: #7b2d8e;
+}
+
+/* Message */
+.profile-msg {
+  text-align: center;
+  font-size: 13px;
+  margin: 14px 0 0;
+  padding: 8px 12px;
+  border-radius: 8px;
+}
+
+.profile-msg.success {
+  background: #e8f5e9;
+  color: #2e7d32;
+}
+
+.profile-msg.error {
+  background: #fde8e8;
+  color: #e53935;
+}
+
+/* Save Button */
+.profile-save-btn {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  width: 100%;
+  max-width: 250px;
+  padding: 13px;
+  border: none;
+  border-radius: 10px;
+  background: #7b2d8e;
+  color: #ffffff;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  margin-top: 20px;
+  transition: background 0.2s;
+  font-family: "Poppins", sans-serif;
+}
+
+.profile-save-btn:hover {
+  background: #5e1d6e;
+}
+
+.profile-save-btn:disabled {
+  background: #b580c9;
+  cursor: not-allowed;
+}
+
+/* ========= Responsive ========= */
+@media (max-width: 576px) {
+  .edit-profile-page {
+    padding: 16px;
+  }
+
+  .edit-profile-form {
+    padding: 24px 18px;
+  }
+
+  .edit-profile-header h2 {
+    font-size: 19px;
+  }
+
+  .photo-preview {
+    width: 76px;
+    height: 76px;
+  }
+
+  .photo-preview i {
+    font-size: 30px;
+  }
+
+  .photo-edit-icon {
+    right: calc(50% - 50px);
+  }
+}

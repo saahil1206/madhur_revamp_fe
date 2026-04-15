@@ -1,0 +1,12 @@
+version: 0.0
+os: linux
+
+files:
+  - source: .
+    destination: /var/www/madhurbazar
+
+hooks:
+  AfterInstall:
+    - location: scripts/start.sh
+      timeout: 300
+      runas: root

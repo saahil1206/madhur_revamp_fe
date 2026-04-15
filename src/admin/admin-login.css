@@ -1,6 +1,7 @@
 /* Admin Login Page */
 .admin-login-page {
   min-height: 100vh;
+  min-height: 100dvh;
   background-image: url("./admin-img/login-bg.png");
   background-size: cover;
   background-position: center;
@@ -11,17 +12,19 @@
   justify-content: center;
   font-family: "Poppins", sans-serif;
   position: relative;
+  overflow-x: hidden;
+  box-sizing: border-box;
+  padding: 20px 16px 40px;
+  gap: 20px;
 }
 
-/* Top Logo */
+/* Top Logo — normal flow so circle never overlaps it */
 .admin-login-page .top-logo {
-  position: absolute;
-  top: 20px;
-  left: 50%;
-  transform: translateX(-50%);
   display: flex;
   align-items: center;
   gap: 10px;
+  flex-shrink: 0;
+  z-index: 5;
 }
 
 .admin-login-page .top-logo img {
@@ -247,91 +250,231 @@
 
 /* Footer */
 .admin-login-footer {
-  position: absolute;
+  position: fixed;
   bottom: 0px;
+  left: 0;
   color: white;
   font-size: 12px;
   text-align: center;
   background: #00000099;
   width: 100%;
   padding: 15px;
+  z-index: 10;
 }
 
-/* Responsive */
-@media (max-width: 560px) {
+/* ========= Responsive ========= */
+
+/* 768px — small tablets */
+@media (max-width: 768px) {
+  .admin-login-page {
+    gap: 16px;
+    padding: 16px 16px 40px;
+  }
+
   .login-circle-wrapper {
-    width: 380px;
-    height: 380px;
+    width: 420px;
+    height: 420px;
   }
 
   .login-form-inner {
-    width: 350px;
-    height: 350px;
-    padding: 35px 40px;
+    width: 390px;
+    height: 390px;
+    padding: 40px 45px;
   }
 
   .login-form-inner h2 {
-    font-size: 24px;
-    margin-bottom: 20px;
+    font-size: 26px;
+    margin-bottom: 22px;
   }
 
   .admin-input-group {
-    max-width: 250px;
-    margin-bottom: 14px;
+    max-width: 280px;
   }
 
   .admin-submit-btn {
-    max-width: 250px;
+    max-width: 280px;
+  }
+
+  .admin-login-page .top-logo img {
+    width: 200px;
+    height: auto;
+  }
+}
+
+/* 576px — large phones */
+@media (max-width: 576px) {
+  .admin-login-page {
+    gap: 14px;
+    padding: 12px 14px 40px;
+  }
+
+  .login-circle-wrapper {
+    width: 340px;
+    height: 340px;
+  }
+
+  .login-form-inner {
+    width: 310px;
+    height: 310px;
+    padding: 30px 32px;
+  }
+
+  .login-form-inner h2 {
+    font-size: 22px;
+    margin-bottom: 16px;
+  }
+
+  .admin-input-group {
+    max-width: 240px;
+    margin-bottom: 12px;
+  }
+
+  .admin-input-group input {
+    padding: 10px 38px 10px 42px;
+    font-size: 13px;
+  }
+
+  .admin-submit-btn {
+    max-width: 240px;
+    padding: 10px;
+    font-size: 15px;
+  }
+
+  .admin-login-page .top-logo img {
+    width: 170px;
+    height: auto;
+  }
+
+  .login-circle-glow::before {
+    top: -30px;
+    width: 160px;
+    height: 80px;
+  }
+
+  .login-circle-glow::after {
+    top: -15px;
+    width: 110px;
+    height: 55px;
+  }
+
+  .register-link {
+    font-size: 12px;
+    margin-top: 10px;
+  }
+}
+
+/* 480px — medium phones: circle -> card */
+@media (max-width: 480px) {
+  .admin-login-page {
+    gap: 14px;
+    padding: 12px 14px 40px;
+  }
+
+  .login-circle-wrapper {
+    width: 88vw;
+    max-width: 340px;
+    height: auto;
+  }
+
+  .login-circle-glow {
+    border-radius: 22px;
+  }
+
+  .login-circle-glow::before {
+    top: -22px;
+    width: 130px;
+    height: 55px;
+  }
+
+  .login-circle-glow::after {
+    top: -10px;
+    width: 85px;
+    height: 40px;
+  }
+
+  .login-form-inner {
+    border-radius: 18px;
+    width: 100%;
+    height: auto;
+    padding: 30px 22px 24px;
+  }
+
+  .login-form-inner h2 {
+    font-size: 22px;
+    margin-bottom: 16px;
+  }
+
+  .admin-input-group {
+    max-width: 100%;
+    margin-bottom: 14px;
+  }
+
+  .admin-input-group input {
+    padding: 12px 42px 12px 44px;
+    font-size: 14px;
+  }
+
+  .admin-submit-btn {
+    max-width: 100%;
     padding: 12px;
     font-size: 16px;
   }
 
   .admin-login-page .top-logo img {
-    width: 200px;
-    height: 60px;
-  }
-}
-
-@media (max-width: 400px) {
-  .login-circle-wrapper {
-    width: 300px;
-    height: 300px;
-  }
-
-  .login-form-inner {
-    width: 280px;
-    height: 280px;
-    padding: 25px 30px;
-  }
-
-  .login-form-inner h2 {
-    font-size: 20px;
-    margin-bottom: 14px;
-  }
-
-  .admin-input-group {
-    max-width: 210px;
-    margin-bottom: 10px;
-  }
-
-  .admin-input-group input {
-    padding: 8px 10px;
-    font-size: 13px;
-  }
-
-  .admin-submit-btn {
-    max-width: 210px;
-    padding: 10px;
-    font-size: 14px;
-  }
-
-  .admin-login-page .top-logo img {
     width: 160px;
-    height: 50px;
+  }
+
+  .register-link {
+    margin-top: 14px;
+    font-size: 13px;
   }
 
   .admin-login-footer {
     font-size: 11px;
+    padding: 12px;
+  }
+}
+
+/* 380px — small phones */
+@media (max-width: 380px) {
+  .admin-login-page {
+    gap: 10px;
+    padding: 10px 10px 40px;
+  }
+
+  .admin-login-page .top-logo img {
+    width: 140px;
+  }
+
+  .login-circle-wrapper {
+    width: 92vw;
+  }
+
+  .login-form-inner {
+    padding: 24px 16px 20px;
+  }
+
+  .login-form-inner h2 {
+    font-size: 19px;
+    margin-bottom: 12px;
+  }
+
+  .admin-input-group input {
+    padding: 10px 36px 10px 38px;
+    font-size: 13px;
+  }
+
+  .admin-input-group .input-icon {
+    left: 12px;
+    font-size: 14px;
+  }
+
+  .admin-submit-btn {
     padding: 10px;
+    font-size: 14px;
+  }
+
+  .register-link {
+    font-size: 12px;
   }
 }
