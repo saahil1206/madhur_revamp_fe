@@ -33,6 +33,7 @@ const EditProfile = () => {
         const response = await fetch(`${apiBaseUrl}/api/users/profile`, {
           headers: { Authorization: `Bearer ${token}` },
         });
+        console.log("response,response",response)
         const data = await response.json();
         if (!response.ok) return;
 
