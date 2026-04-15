@@ -87,7 +87,6 @@ const LuckyNumberRequests = () => {
         </div>
       </div>
 
-      {loading ? <p style={{ color: "#fff" }}>Loading requests...</p> : null}
       {error ? <p style={{ color: "#c92a2a" }}>{error}</p> : null}
 
       <div className="record-table-wrapper">
@@ -119,8 +118,8 @@ const LuckyNumberRequests = () => {
         </table>
       </div>
 
-      <div className="d-flex justify-content-between align-items-center mt-3">
-        <p style={{ color: "#fff", margin: 0 }}>
+      <div className="d-flex justify-content-between align-items-center mt-3 mb-3">
+        <p style={{ color: "#000", margin: 0 }}>
           Page {currentPage} of {totalPages} | Total: {pagination.total}
         </p>
         <div className="d-flex gap-2">

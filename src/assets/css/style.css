@@ -626,7 +626,7 @@ img {
 }
 .card-back-color {
   background-color: #7a4880;
-  border: 1px solid #551d5e;
+  border: none;
   box-shadow: 0px 0px 10px 2px #474447;
 }
 .img-outer-div {
@@ -639,10 +639,14 @@ img {
   border-radius: 4px;
 }
 .small-box {
-  background-color: #996c9b;
-  padding: 8px 16px;
+  background-color: #4ecdc4;
+  padding: 8px 10px;
   color: white;
   border-radius: 2px;
+  flex: 1;
+  text-align: center;
+  min-width: 0;
+  border: none;
 }
 
 .background-img {
@@ -916,7 +920,7 @@ img {
 /* Timer responsive - 575px */
 @media (max-width: 575px) {
   .small-box {
-    padding: 3px 10px;
+    padding: 3px 4px;
   }
 
   .horoscope-img {
