@@ -6,6 +6,11 @@ files:
     destination: /var/www/madhurbazar
 
 hooks:
+  BeforeInstall:  
+    - location: scripts/cleanup.sh
+      timeout: 300
+      runas: root
+
   AfterInstall:
     - location: scripts/start.sh
       timeout: 300
