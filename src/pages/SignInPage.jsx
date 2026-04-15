@@ -18,7 +18,7 @@ function SignInPage() {
         </Link>
       </div>
 
-      <div className="d-flex justify-content-center mb-4">
+      <div className="d-flex justify-content-center mb-4 px-3">
         <div className="tab-container">
           <button
             className={`tab-btn ${activeTab === 'signin' ? 'active' : ''}`}
@@ -35,7 +35,7 @@ function SignInPage() {
         </div>
       </div>
 
-      <div className="d-flex justify-content-center pb-5">
+      <div className="d-flex justify-content-center pb-5 px-2">
         <div className="form-card">
           {activeTab === 'signin' && (
             <form onSubmit={(e) => e.preventDefault()}>

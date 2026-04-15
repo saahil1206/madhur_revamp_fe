@@ -26,29 +26,29 @@ function ProfilePage() {
         </Link>
       </div>
 
-      <div className="container pb-5">
+      <div className="container pb-5 px-2 px-md-3">
         <div className="profile-card">
-          <div className="row g-3 mb-3">
-            <div className="col-md-6">
+          <div className="row g-2 g-md-3 mb-3">
+            <div className="col-12 col-md-6">
               <input type="email" className="form-control profile-input" placeholder="Email" value={formData.email} onChange={(e) => handleChange('email', e.target.value)} />
             </div>
-            <div className="col-md-6">
+            <div className="col-12 col-md-6">
               <input type="text" className="form-control profile-input" placeholder="Last Name" value={formData.lastName} onChange={(e) => handleChange('lastName', e.target.value)} />
             </div>
           </div>
-          <div className="row g-3 mb-3">
-            <div className="col-md-6">
+          <div className="row g-2 g-md-3 mb-3">
+            <div className="col-12 col-md-6">
               <input type="password" className="form-control profile-input" placeholder="Password" value={formData.password} onChange={(e) => handleChange('password', e.target.value)} />
             </div>
-            <div className="col-md-6">
+            <div className="col-12 col-md-6">
               <input type="text" className="form-control profile-input" placeholder="First Name" value={formData.firstName} onChange={(e) => handleChange('firstName', e.target.value)} />
             </div>
           </div>
-          <div className="row g-3 mb-4">
-            <div className="col-md-6">
+          <div className="row g-2 g-md-3 mb-4">
+            <div className="col-12 col-md-6">
               <input type="tel" className="form-control profile-input" placeholder="Mobile Number" value={formData.mobile} maxLength="10" inputMode="numeric" onChange={(e) => handleChange('mobile', e.target.value)} />
             </div>
-            <div className="col-md-6">
+            <div className="col-12 col-md-6">
               <div className="position-relative">
                 <input type="text" className="form-control profile-input" placeholder="Username" value={formData.username} onChange={(e) => handleChange('username', e.target.value)} />
                 <span className="username-available">Available</span>
