@@ -139,19 +139,80 @@
   text-decoration: underline;
 }
 
-/* Responsive */
+/* Responsive - Tablets */
+@media (max-width: 768px) {
+  .tab-container {
+    max-width: 100%;
+  }
+
+  .tab-btn.active {
+    width: auto;
+    flex: 1;
+  }
+}
+
+/* Responsive - Mobile */
 @media (max-width: 576px) {
   .form-card {
-    margin: 0 16px;
-    padding: 28px 20px;
+    margin: 0 12px;
+    padding: 24px 16px;
+  }
+
+  .tab-container {
+    height: 48px;
   }
 
   .tab-btn {
-    padding: 8px 28px;
-    font-size: 14px;
+    padding: 8px 12px;
+    font-size: 13px;
+    height: 48px;
+  }
+
+  .tab-btn.active {
+    height: 48px;
   }
 
   .signin-logo {
-    width: 160px;
+    width: 150px;
+  }
+
+  .signin-input {
+    padding: 12px 14px !important;
+    font-size: 14px;
+  }
+
+  .signin-btn {
+    padding: 10px;
+    font-size: 14px;
+  }
+
+  .form-check-label {
+    font-size: 12px;
+  }
+
+  .footer-text {
+    font-size: 11px;
+  }
+}
+
+/* Extra small phones */
+@media (max-width: 400px) {
+  .form-card {
+    margin: 0 8px;
+    padding: 20px 14px;
+  }
+
+  .signin-logo {
+    width: 130px;
+  }
+
+  .tab-btn {
+    font-size: 12px;
+    padding: 6px 8px;
+  }
+
+  .signin-input {
+    padding: 10px 12px !important;
+    font-size: 13px;
   }
 }

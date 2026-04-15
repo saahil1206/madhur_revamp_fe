@@ -860,10 +860,23 @@
   text-decoration: underline;
 }
 
+.seo-page-content {
+  overflow-x: hidden;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+}
+
+.seo-page-content img {
+  max-width: 100%;
+  height: auto;
+}
+
 .seo-page-content table {
   width: 100%;
   border-collapse: collapse;
   margin: 0.75rem 0;
+  display: block;
+  overflow-x: auto;
 }
 
 .seo-page-content table th,
@@ -1084,19 +1097,246 @@
 
 @media (max-width: 480px) {
   .profile-card {
-    padding: 20px 16px;
+    padding: 16px 12px;
   }
 
   .profile-logo {
-    width: 160px;
+    width: 140px;
   }
 
   .profile-desc {
-    font-size: 12px;
+    font-size: 11px;
   }
 
   .profile-input {
-    padding: 12px 14px !important;
+    padding: 10px 12px !important;
+    font-size: 12px;
+  }
+
+  .profile-upgrade-btn,
+  .profile-save-btn,
+  .profile-cancel-btn,
+  .profile-delete-btn {
+    height: 42px;
+    padding: 10px;
     font-size: 13px;
+  }
+
+  .username-available {
+    font-size: 10px;
+    right: 10px;
+  }
+}
+
+/* ================================================ */
+/* SUBPAGE EXTRA MOBILE RESPONSIVE FIXES            */
+/* ================================================ */
+
+/* ===== 575px - Games page ===== */
+@media (max-width: 575px) {
+  .game-tab-btn {
+    font-size: 13px;
+    padding: 5px 8px;
+  }
+
+  .games-list-container {
+    padding: 10px !important;
+  }
+
+  .game-accordion-btn {
+    font-size: 13px;
+    padding: 10px 14px;
+  }
+
+  .game-accordion-body {
+    padding: 12px 10px;
+  }
+
+  .game-card {
+    padding: 14px 8px;
+    border-radius: 10px;
+  }
+
+  .game-card-icon {
+    font-size: 24px;
+    margin-bottom: 8px;
+  }
+
+  .game-card-label {
+    font-size: 11px;
+  }
+
+  /* Game accordion 2 columns on mobile */
+  .game-accordion-body .row .col {
+    flex: 0 0 50%;
+    max-width: 50%;
+  }
+}
+
+/* ===== 575px - Result screen cards ===== */
+@media (max-width: 575px) {
+  .rs-result-number {
+    font-size: 20px;
+    letter-spacing: 1px;
+  }
+
+  .rs-guessing-label {
+    font-size: 10px;
+  }
+
+  .rs-guess-box,
+  .rs-guess-box-blue,
+  .rs-guess-box-yellow {
+    width: 18px;
+    height: 18px;
+    font-size: 9px;
+  }
+
+  .rs-time-range {
+    font-size: 10px;
+  }
+
+  .rs-card-header {
+    padding: 8px 12px;
+  }
+
+  .rs-card-header h6 {
+    font-size: 12px;
+  }
+
+  .rs-panel-btn {
+    font-size: 11px;
+    padding: 4px 14px;
+  }
+
+  .rs-card-body {
+    padding: 12px 10px 10px;
+  }
+
+  /* Result search */
+  .result-search-box {
+    max-width: 100%;
+  }
+
+  .result-search-input {
+    font-size: 12px;
+    padding: 7px 10px;
+  }
+
+  .result-refresh-btn {
+    padding: 5px 10px;
+    font-size: 11px;
+  }
+
+  .result-filter-select {
+    padding: 5px 8px;
+    font-size: 11px;
+    min-width: 60px;
+  }
+}
+
+/* ===== 575px - Calendar table ===== */
+@media (max-width: 575px) {
+  .calendar-section {
+    flex-direction: column;
+  }
+
+  .cal-table thead th {
+    font-size: 9px;
+    padding: 6px 2px;
+  }
+
+  .cal-table thead th:first-child {
+    min-width: 52px;
+    width: 52px;
+    font-size: 8px;
+    padding-left: 4px;
+  }
+
+  .cal-table tbody td {
+    height: 32px;
+  }
+
+  .cal-table tbody td:first-child {
+    font-size: 7px;
+    padding: 2px 4px;
+  }
+
+  .rc {
+    padding: 2px 3px;
+  }
+
+  .rc .j {
+    font-size: 10px;
+  }
+
+  .rc .s {
+    font-size: 5px;
+    min-width: 6px;
+  }
+
+  .cal-sidebar {
+    padding: 12px;
+  }
+
+  .cal-sidebar select,
+  .cal-sidebar input[type="text"],
+  .cal-sidebar input[type="date"] {
+    padding: 10px 12px;
+    font-size: 13px;
+  }
+
+  .btn-show-panel,
+  .btn-download-pdf {
+    font-size: 13px;
+    padding: 10px 14px;
+  }
+}
+
+/* ===== 575px - About page ===== */
+@media (max-width: 575px) {
+  .about-content-box {
+    padding: 12px !important;
+  }
+
+  .about-content-box h5 {
+    font-size: 15px;
+  }
+
+  .about-content-box p {
+    font-size: 12px;
+  }
+
+  .seo-page-content h1 { font-size: 1.4rem; }
+  .seo-page-content h2 { font-size: 1.2rem; }
+  .seo-page-content h3 { font-size: 1.05rem; }
+
+  .seo-page-content p,
+  .seo-page-content li {
+    font-size: 0.85rem;
+  }
+}
+
+/* ===== 480px - Delete modal ===== */
+@media (max-width: 480px) {
+  .delete-modal-content {
+    width: 100%;
+    margin: 0 10px;
+    padding: 14px;
+  }
+
+  .delete-modal-body {
+    padding: 16px 10px;
+  }
+
+  .delete-modal-text {
+    font-size: 14px;
+  }
+
+  .delete-modal-delete-btn,
+  .delete-modal-cancel-btn {
+    width: 120px;
+    height: 40px;
+    font-size: 14px;
   }
 }

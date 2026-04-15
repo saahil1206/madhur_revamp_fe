@@ -55,8 +55,8 @@ function GamesPage() {
         </div>
       </div>
 
-      <div className="container-fluid">
-        <div className="container mt-4">
+      <div className="container mt-4 px-2 px-md-3">
+        <div>
           {activeTab === 'bazaar' && (
             <div className="games-list-container p-4">
               <div className="accordion" id="bazaarAccordion">
@@ -76,9 +76,9 @@ function GamesPage() {
                       </h2>
                       <div id={collapseId} className="accordion-collapse collapse" data-bs-parent="#bazaarAccordion">
                         <div className="accordion-body game-accordion-body">
-                          <div className="row g-3">
+                          <div className="row g-2 g-md-3">
                             {category.games.map((game, j) => (
-                              <div className="col" key={j}>
+                              <div className="col-6 col-sm-4 col-md-3" key={j}>
                                 <Link to={`/games/${game.slug}/calendar`} className="text-decoration-none">
                                   <div className="game-card">
                                     <div className="game-card-icon">

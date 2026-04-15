@@ -22,8 +22,8 @@ function DetailsPage() {
         </div>
       </div>
 
-      <div className="container mt-4">
-        <div className="details-info-box p-4">
+      <div className="container mt-4 px-2 px-md-3">
+        <div className="details-info-box p-3 p-md-4">
           <h5 className="text-white poppins-bold mb-3">Welcome to the {gameName} Panel Chart</h5>
           <p className="text-white-70 font-size-14 mb-2">
             Your go-to destination for the latest panel combinations and result archives of the {gameName} session from Madhur Bazar. On this page, you'll find a comprehensive list of panel results, recorded date-wise, so you can easily trace patterns and previous outcomes.
@@ -46,22 +46,22 @@ function DetailsPage() {
         </div>
       </div>
 
-      <div className="container mt-4">
-        <div className="details-filter-box p-4">
-          <div className="row g-3 align-items-end">
-            <div className="col-lg-3 col-md-6 col-sm-6 col-12">
+      <div className="container mt-4 px-2 px-md-3">
+        <div className="details-filter-box p-3 p-md-4">
+          <div className="row g-2 g-md-3 align-items-end">
+            <div className="col-6 col-md-6 col-lg-3">
               <select className="input-style w-100 details-select">
                 <option value="">Select year</option>
                 {years.map((y) => <option key={y} value={y}>{y}</option>)}
               </select>
             </div>
-            <div className="col-lg-3 col-md-6 col-sm-6 col-12">
+            <div className="col-6 col-md-6 col-lg-3">
               <input type="date" className="input-style w-100" />
             </div>
-            <div className="col-lg-3 col-md-6 col-sm-6 col-12">
+            <div className="col-6 col-md-6 col-lg-3">
               <input type="date" className="input-style w-100" />
             </div>
-            <div className="col-lg-3 col-md-6 col-sm-6 col-12">
+            <div className="col-6 col-md-6 col-lg-3">
               <button className="show-panel-btn w-100">Show Panel</button>
             </div>
           </div>

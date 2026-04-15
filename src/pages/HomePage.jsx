@@ -822,27 +822,27 @@ function HomePage() {
       </div>
 
       {/* Hero Section */}
-      <div className="container">
+      <div className="container px-3">
         <h5 className="font-size-48 Poppins-Medium text-white text-center pt-5">
           Welcome To Madhur
         </h5>
-        <h3 className="Poppins-Medium font-size-64 text-center text-white mt-4">
+        <h3 className="Poppins-Medium font-size-64 text-center text-white mt-3 mt-md-4">
           India's<span className="poppins-bold"> No 1</span> Satta Market Site.
         </h3>
-        <p className="Poppins-light text-center text-white">
+        <p className="Poppins-light text-center text-white font-size-14">
           To get more regular updates stay connected
         </p>
-        <div className="d-flex justify-content-center">
+        <div className="d-flex justify-content-center gap-3">
           <div className="telegram">
             <i className="fab fa-telegram-plane text-white font-20"></i>
           </div>
-          <div className="whatup ms-4">
+          <div className="whatup">
             <i className="fab fa-whatsapp text-white font-20"></i>
           </div>
         </div>
-        <div className="d-flex justify-content-center mt-4 pb-4">
+        <div className="d-flex justify-content-center flex-wrap gap-2 gap-md-3 mt-3 mt-md-4 pb-4">
           <button className="btn bg-purple-btn">Guess Matka</button>
-          <Link to="/results" className="btn outline-purple-btn ms-4">
+          <Link to="/results" className="btn outline-purple-btn">
             Check Results
           </Link>
         </div>
@@ -851,8 +851,8 @@ function HomePage() {
 
       {/* Result Cards Section */}
       <section className="section-bg pb-5">
-        <div className="container-fluid pt-3">
-          <div className="px-3 bg-gray minus-margin-top">
+        <div className="container pt-3 px-2 px-md-3">
+          <div className="bg-gray minus-margin-top px-2 px-md-3">
             <div className="row pt-2">
               {resultLoading && (
                 <p className="text-white px-3 mb-3">
@@ -872,21 +872,21 @@ function HomePage() {
         </div>
 
         {/* Lucky Number Section */}
-        <div className="container-fluid pt-5 pb-4">
+        <div className="container pt-4 pt-md-5 pb-4 px-2 px-md-3">
           <h3 className="Poppins-SemiBold font-size-24 text-white text-center">
             Today Lucky Number
           </h3>
-          <div className="row pt-4">
+          <div className="row pt-3 pt-md-4 g-2 g-md-3">
             {luckyCards.map((card, i) => (
               <div
                 key={i}
-                className="col-xl-3 col-lg-4 col-md-6 col-sm-6 col-6 mb-2"
+                className="col-6 col-md-6 col-lg-4 col-xl-3 mb-2"
               >
-                <div className="card p-4 card-back-color">
+                <div className="card p-2 p-md-4 card-back-color h-100">
                   <div className="img-outer-div">
                     <img src={card.img} width="60%" alt={card.title} />
                   </div>
-                  <h3 className="text-white mt-4">{card.title}</h3>
+                  <h3 className="text-white mt-2 mt-md-4">{card.title}</h3>
                   <div className="d-flex mt-3 mb-3">
                     {(luckyLoading
                       ? getLuckyPlaceholder(card)
@@ -908,8 +908,8 @@ function HomePage() {
 
         {/* Horoscope Section */}
         <div className="container background-img">
-          <div className="row p-5 align-items-center">
-            <div className="col-xl-5 col-lg-6 col-md-12 col-sm-12 col-12 p-4">
+          <div className="row p-2 p-md-4 p-lg-5 align-items-center">
+            <div className="col-12 col-lg-5 p-2 p-md-4">
               <div className="spin-wheel-wrap">
                 <span className="spin-pointer" aria-hidden="true"></span>
                 <img
@@ -926,8 +926,8 @@ function HomePage() {
                 )}
               </div>
             </div>
-            <div className="col-xl-7 col-lg-7 col-md-12 col-sm-12 col-12">
-              <p className="text-white">
+            <div className="col-12 col-lg-7">
+              <p className="text-white font-size-14">
                 The Spin to Win feature does not involve real money, real
                 predictions, or guaranteed outcomes. All numbers generated
                 through this tool are completely random and should be treated as
@@ -954,10 +954,9 @@ function HomePage() {
                 </p>
               </div>
               <p className="text-white mt-3">{spinResult.message}</p>
-              <div className="mt-5 text-center">
+              <div className="mt-3 mt-md-5 text-center">
                 <button
-                  className="btn purple-btn w-50"
-                  style={{ whiteSpace: "nowrap" }}
+                  className="btn purple-btn w-100 w-md-50"
                   onClick={handleSpin}
                   disabled={isSpinning}
                 >
@@ -969,13 +968,13 @@ function HomePage() {
         </div>
 
         {/* Lucky Number Input */}
-        <div className="container card-dark-bg mt-4 p-4">
-          <div className="row Lavender-Purple pt-3 g-0 align-items-center justify-content-center">
-            <h3 className="text-white text-center pt-4">
+        <div className="container card-dark-bg mt-4 p-2 p-md-4">
+          <div className="row Lavender-Purple pt-3 g-0 align-items-center justify-content-center p-2 p-md-3">
+            <h3 className="text-white text-center pt-3 pt-md-4 font-size-24">
               Show today's Lucky Number!!!
             </h3>
-            <div className="col-md-8 col-12 d-flex justify-content-center flex-column align-items-center">
-              <div className="w-75">
+            <div className="col-12 col-md-8 d-flex justify-content-center flex-column align-items-center">
+              <div className="w-100 w-md-75 px-2 px-md-0">
                 <input
                   className="input-style mt-4 w-100"
                   type="tel"
@@ -1014,12 +1013,9 @@ function HomePage() {
         </div>
 
         {/* Time Table */}
-        <div className="container card-dark-bg mt-4 p-4">
-          <div className="d-flex align-items-center gap-3 mb-3">
-            <h4
-              className="text-white poppins-bold mb-0"
-              style={{ whiteSpace: "nowrap" }}
-            >
+        <div className="container card-dark-bg mt-4 p-2 p-md-4">
+          <div className="d-flex flex-column flex-md-row align-items-md-center gap-2 gap-md-3 mb-3">
+            <h4 className="text-white poppins-bold mb-0">
               Time Table
             </h4>
             <p className="text-white Poppins-light font-size-14 mb-0">

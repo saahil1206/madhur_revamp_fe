@@ -1,3 +1,21 @@
+/* ===== Global overflow fix ===== */
+html,
+body {
+  overflow-x: hidden;
+  width: 100%;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+}
+
 @font-face {
   font-family: poppins-regular;
   src: url(../fonts/Poppins/Poppins-Regular.ttf);
@@ -998,5 +1016,343 @@
 
   .font-size-24 {
     font-size: 18px !important;
+  }
+
+  .font-size-16 {
+    font-size: 12px !important;
+  }
+
+  .font-size-14 {
+    font-size: 12px !important;
+  }
+
+  /* Hero buttons */
+  .bg-purple-btn,
+  .outline-purple-btn {
+    padding: 8px 16px;
+    font-size: 13px;
+  }
+
+  .lettalk-btn {
+    padding: 12px 24px;
+    font-size: 13px;
+  }
+
+  /* Social icons smaller */
+  .telegram,
+  .whatup {
+    width: 40px;
+    height: 40px;
+  }
+
+  .font-20 {
+    font-size: 18px;
+  }
+
+  /* Lucky number card */
+  .small-box {
+    padding: 3px 6px;
+  }
+
+  .small-box .font-size-16,
+  .small-box .Poppins-Medium {
+    font-size: 10px !important;
+  }
+
+  .card-back-color {
+    box-shadow: 0px 0px 5px 1px #474447;
+  }
+
+  .card-back-color h3 {
+    font-size: 15px;
+  }
+
+  .img-outer-div {
+    width: 32px;
+    height: 32px;
+  }
+
+  /* Time table */
+  .time-table thead th {
+    font-size: 12px;
+    padding: 8px 8px;
+  }
+
+  .time-table tbody tr td {
+    font-size: 11px;
+    padding: 8px 8px;
+  }
+
+  /* Terms page */
+  .terms-hero {
+    padding: 16px 12px;
+  }
+
+  .terms-title {
+    font-size: 22px;
+  }
+
+  .terms-card {
+    padding: 14px 12px;
+  }
+
+  .terms-card-title {
+    font-size: 16px;
+  }
+
+  .terms-card-body {
+    font-size: 13px;
+  }
+
+  .terms-updated {
+    font-size: 13px;
+  }
+
+  /* Horoscope */
+  .horoscope-sign-name {
+    font-size: 20px;
+  }
+
+  .zodiac-symbol {
+    font-size: 38px;
+  }
+
+  .zodiac-result-icon {
+    width: 44px;
+    height: 44px;
+  }
+}
+
+/* ================================================ */
+/* COMPREHENSIVE MOBILE RESPONSIVE FIXES            */
+/* ================================================ */
+
+/* Fix container-fluid overflow */
+.container-fluid {
+  overflow-x: hidden;
+}
+
+/* ===== 991px - Tablet ===== */
+@media (max-width: 991px) {
+  .background-img-ban {
+    height: auto;
+    min-height: auto;
+  }
+}
+
+/* ===== 767px - Large Phones ===== */
+@media (max-width: 767px) {
+  /* Purple bar */
+  .Purple-bg .container {
+    padding-left: 8px;
+    padding-right: 8px;
+  }
+
+  .Purple-bg .row {
+    margin-left: 0;
+    margin-right: 0;
+  }
+
+  .font-w-500 {
+    font-size: 16px;
+  }
+
+  /* Horoscope section */
+  .background-img {
+    border-radius: 14px;
+  }
+
+  /* Input style */
+  .input-style {
+    font-size: 13px;
+    padding: 10px 12px;
+  }
+
+  /* Offcanvas mobile menu */
+  .offcanvas.offcanvas-end {
+    width: 200px;
+    height: auto;
+    max-height: 320px;
+    top: 70px;
+    right: 10px;
+  }
+
+  /* Footer */
+  .footer-bg {
+    padding-left: 10px;
+    padding-right: 10px;
+  }
+}
+
+/* ===== 575px - Small Phones ===== */
+@media (max-width: 575px) {
+  /* Result card body stacks vertically */
+  .result-card-body {
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .result-numbers {
+    justify-content: center;
+  }
+
+  /* Lucky number input w-75 fix */
+  .Lavender-Purple .w-75 {
+    width: 100% !important;
+  }
+
+  /* Card dark bg */
+  .card-dark-bg {
+    padding: 10px !important;
+    border-radius: 14px;
+  }
+
+  .Lavender-Purple {
+    border-radius: 14px;
+  }
+
+  /* Lucky cards flex wrap */
+  .card-back-color .d-flex {
+    flex-wrap: wrap;
+    gap: 4px;
+  }
+
+  .card-back-color .d-flex .ms-2 {
+    margin-left: 0 !important;
+  }
+
+  /* bg-gray result wrapper */
+  .bg-gray {
+    padding-left: 8px !important;
+    padding-right: 8px !important;
+  }
+
+  /* Footer text */
+  .footer-bg .font-size-14 {
+    font-size: 12px !important;
+  }
+
+  .footer-bg .font-size-16 {
+    font-size: 14px !important;
+  }
+}
+
+/* ===== 480px - Extra Small Phones ===== */
+@media (max-width: 480px) {
+  /* Purple bar */
+  .Purple-bg .container {
+    padding-left: 4px;
+    padding-right: 4px;
+  }
+
+  .purple-light-box {
+    width: 18px;
+    height: 18px;
+    font-size: 10px;
+  }
+
+  .maindiv-profile {
+    padding: 4px 8px 4px 10px;
+  }
+
+  /* Header */
+  .header-rounded {
+    padding: 4px 6px;
+  }
+
+  .circle-bg.mobile-profile {
+    width: 36px;
+    height: 36px;
+    min-width: 36px;
+  }
+
+  /* Offcanvas */
+  .offcanvas.offcanvas-end {
+    width: 180px;
+    top: 60px;
+    right: 8px;
+  }
+
+  /* Timer boxes even smaller */
+  .timer-box,
+  .timer-box-yellow,
+  .timer-box-blue {
+    min-width: 38px;
+    height: 56px;
+    padding: 8px 8px;
+    border-radius: 8px;
+  }
+
+  .timer-value {
+    font-size: 16px;
+  }
+
+  .timer-colon {
+    font-size: 16px;
+  }
+
+  .timer-label {
+    font-size: 7px;
+  }
+
+  .timer-section {
+    gap: 2px;
+  }
+
+  /* Result digits */
+  .result-digit {
+    font-size: 13px;
+  }
+
+  .result-dash {
+    font-size: 13px;
+    margin: 0;
+  }
+
+  /* Result card header */
+  .result-card-header {
+    padding: 8px 10px;
+  }
+
+  .result-card-header h6 {
+    font-size: 11px;
+  }
+
+  .live-badge {
+    font-size: 10px;
+  }
+
+  /* Hero text */
+  .font-size-64 {
+    font-size: 22px !important;
+  }
+
+  .font-size-48 {
+    font-size: 18px !important;
+  }
+
+  .font-size-24 {
+    font-size: 16px !important;
+  }
+
+  .font-size-16 {
+    font-size: 11px !important;
+  }
+
+  /* Spin button */
+  .purple-btn {
+    padding: 8px 16px;
+    font-size: 13px;
+  }
+
+  /* Background img section */
+  .background-img {
+    border-radius: 10px;
+  }
+
+  /* Minus margin top remove */
+  .minus-margin-top {
+    margin-top: 0;
   }
 }
