@@ -4,8 +4,8 @@ const { profileController } = require("../controllers/user.controller");
 
 const router = express.Router();
 
-// router.get("/profile", authMiddleware, profileController);
-router.get("/profile", profileController);
+ router.get("/profile", authMiddleware, profileController);
+// router.get("/profile", profileController);
 module.exports = router;
 
 
