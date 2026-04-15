@@ -12,18 +12,20 @@ async function getProfile(userId) {
       "img",
       "transaction_status",
     ],
-    include: [
-      {
-        model: UserAccount,
-        as: "account",
-        required: false,
-        attributes: ["creditrefrence", "exposurelimit", "game_group_id"],
-      },
-    ],
   });
 
   if (!user) {
     return null;
+  }
+
+  let account = null;
+  try {
+    account = await UserAccount.findOne({
+      where: { game_user_id: user.id },
+      attributes: ["creditrefrence", "exposurelimit", "game_group_id"],
+    });
+  } catch (_err) {
+    account = null;
   }
 
   return {
@@ -34,9 +36,9 @@ async function getProfile(userId) {
     city: user.city,
     photo: user.img || null,
     transactionStatus: user.transaction_status,
-    creditReference: user.account ? user.account.creditrefrence : null,
-    exposureLimit: user.account ? user.account.exposurelimit : null,
-    accessLevel: user.account ? user.account.game_group_id : null,
+    creditReference: account ? account.creditrefrence : null,
+    exposureLimit: account ? account.exposurelimit : null,
+    accessLevel: account ? account.game_group_id : null,
   };
 }
 
