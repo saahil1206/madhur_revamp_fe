@@ -1,18 +1,34 @@
 const { UserPersonal, UserAccount } = require("../models");
 
 async function getProfile(userId) {
-  const user = await UserPersonal.findOne({
-    where: { id: userId },
-    attributes: [
-      "id",
-      "username",
-      "fullname",
-      "phonenumber",
-      "city",
-      "img",
-      "transaction_status",
-    ],
-  });
+  let user = null;
+  try {
+    user = await UserPersonal.findOne({
+      where: { id: userId },
+      attributes: [
+        "id",
+        "username",
+        "fullname",
+        "phonenumber",
+        "city",
+        "img",
+        "transaction_status",
+      ],
+    });
+  } catch (_err) {
+    // Fallback for environments where img column is not available yet
+    user = await UserPersonal.findOne({
+      where: { id: userId },
+      attributes: [
+        "id",
+        "username",
+        "fullname",
+        "phonenumber",
+        "city",
+        "transaction_status",
+      ],
+    });
+  }
 
   if (!user) {
     return null;
