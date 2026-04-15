@@ -12,7 +12,7 @@ const ResultRecord = () => {
   const [records, setRecords] = useState([]);
   const [bazars, setBazars] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
-  const [pageSize] = useState(20);
+  const [pageSize] = useState(10);
   const [totalPages, setTotalPages] = useState(1);
   const [totalRecords, setTotalRecords] = useState(0);
   const [loading, setLoading] = useState(false);
