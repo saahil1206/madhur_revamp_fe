@@ -10,6 +10,7 @@ const UserPersonal = sequelize.define(
     fullname: { type: DataTypes.STRING },
     phonenumber: { type: DataTypes.STRING },
     city: { type: DataTypes.STRING },
+    img: { type: DataTypes.TEXT("long") },
     blocked_status: { type: DataTypes.TINYINT },
     transaction_status: { type: DataTypes.TINYINT },
     deleted_at: { type: DataTypes.DATE },

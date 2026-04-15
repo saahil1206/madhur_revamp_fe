@@ -9,6 +9,7 @@ async function getProfile(userId) {
       "fullname",
       "phonenumber",
       "city",
+      "img",
       "transaction_status",
     ],
     include: [
@@ -31,6 +32,7 @@ async function getProfile(userId) {
     fullname: user.fullname,
     phone: user.phonenumber,
     city: user.city,
+    photo: user.img || null,
     transactionStatus: user.transaction_status,
     creditReference: user.account ? user.account.creditrefrence : null,
     exposureLimit: user.account ? user.account.exposurelimit : null,
