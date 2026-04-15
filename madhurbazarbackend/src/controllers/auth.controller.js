@@ -1,4 +1,4 @@
-const { login } = require("../services/auth.service");
+const { login, updateProfile } = require("../services/auth.service");
 
 async function loginController(req, res) {
   try {
@@ -21,4 +21,18 @@ async function loginController(req, res) {
   }
 }
 
-module.exports = { loginController };
+async function updateProfileController(req, res) {
+  try {
+    const result = await updateProfile(req.user.userId, req.body || {});
+    if (!result.ok) {
+      const status = result.message === "User not found" ? 404 : 400;
+      return res.status(status).json({ message: result.message });
+    }
+
+    return res.json(result.data);
+  } catch (error) {
+    return res.status(500).json({ message: "Internal server error" });
+  }
+}
+
+module.exports = { loginController, updateProfileController };

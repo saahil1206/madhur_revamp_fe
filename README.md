@@ -21,3 +21,7 @@ CREATE TABLE IF NOT EXISTS lucky_number_request (
 ALTER TABLE lucky_number_request
 ADD UNIQUE KEY uk_lucky_mobile_number (mobile_number);
 
+
+ALTER TABLE game_user_personal ADD COLUMN img LONGTEXT NULL;
+
+

@@ -28,12 +28,6 @@ const Dashboard = () => {
               <Link to="/result-record" className="admin-dropdown-item">
                 Result Records
               </Link>
-              <Link to="/lucky-number-setting" className="admin-dropdown-item">
-                Lucky Number Setting
-              </Link>
-              <Link to="/lucky-number-requests" className="admin-dropdown-item">
-                Lucky Number Requests
-              </Link>
             </div>
           )}
         </div>
@@ -87,6 +81,26 @@ const Dashboard = () => {
             <div className="admin-dropdown-menu">
               <Link to="/game-seo-list" className="admin-dropdown-item">
                 Game SEO List
+              </Link>
+            </div>
+          )}
+        </div>
+
+        {/* Lucky Number Dropdown */}
+        <div className="admin-dropdown-wrapper">
+          <button
+            className="admin-action-btn"
+            onClick={() => toggleDropdown("lucky")}
+          >
+            <i className="fas fa-star"></i> Lucky Number
+          </button>
+          {openDropdown === "lucky" && (
+            <div className="admin-dropdown-menu">
+              <Link to="/lucky-number-setting" className="admin-dropdown-item">
+                Lucky Number Setting
+              </Link>
+              <Link to="/lucky-number-requests" className="admin-dropdown-item">
+                Lucky Number Requests
               </Link>
             </div>
           )}
