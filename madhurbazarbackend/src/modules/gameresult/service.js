@@ -8,6 +8,15 @@ function computeAakda(numberText) {
   return String(sum % 10);
 }
 
+function isValidPanna(numberText) {
+  const value = String(numberText || "");
+  if (!/^\d{3}$/.test(value)) return false;
+  const [a, b, c] = value.split("").map(Number);
+  const isTriple = a === b && b === c;
+  const isAscendingConsecutive = b === a + 1 && c === b + 1;
+  return isTriple || isAscendingConsecutive;
+}
+
 function addMinutes(dateObj, minutes) {
   const date = new Date(dateObj);
   date.setMinutes(date.getMinutes() + minutes);
@@ -101,6 +110,11 @@ async function create(payload, actor = {}) {
   if (!date || !number || !bazar || !category) {
     throw new Error("date, number, bazar and category are required");
   }
+  if (!isValidPanna(number)) {
+    throw new Error(
+      "Invalid panna number. Use exactly 3 digits in ascending order (e.g. 123) or all same digits (e.g. 111)."
+    );
+  }
 
   const resultType = String(category).toLowerCase();
   if (!["open", "close"].includes(resultType)) {
@@ -150,6 +164,11 @@ async function update(id, payload) {
 
   const updates = { ...payload };
   if (updates.number) {
+    if (!isValidPanna(updates.number)) {
+      throw new Error(
+        "Invalid panna number. Use exactly 3 digits in ascending order (e.g. 123) or all same digits (e.g. 111)."
+      );
+    }
     updates.result_pana = String(updates.number);
     updates.result_AAkda = computeAakda(updates.number);
     delete updates.number;

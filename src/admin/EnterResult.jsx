@@ -1,6 +1,14 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
+function isValidPanna(value) {
+  if (!/^\d{3}$/.test(value)) return false;
+  const [a, b, c] = value.split("").map(Number);
+  const isTriple = a === b && b === c;
+  const isAscendingConsecutive = b === a + 1 && c === b + 1;
+  return isTriple || isAscendingConsecutive;
+}
+
 const EnterResult = () => {
   const navigate = useNavigate();
   const [visitDate, setVisitDate] = useState(new Date().toISOString().slice(0, 10));
@@ -36,6 +44,10 @@ const EnterResult = () => {
 
     if (!visitDate || !category || !bazarId || !number) {
       setError("All fields are required.");
+      return;
+    }
+    if (!isValidPanna(String(number))) {
+      setError("Enter valid panna: 3 digits only, like 111 or 123. Descending values like 321 are not allowed.");
       return;
     }
 
@@ -121,11 +133,16 @@ const EnterResult = () => {
                   <div className="col-md-6">
                     <label className="form-label-custom">Number</label>
                     <input
-                      type="number"
+                      type="text"
                       className="custom-input"
-                      placeholder="Enter number"
+                      placeholder="Enter 3-digit panna"
                       value={number}
-                      onChange={(e) => setNumber(e.target.value)}
+                      inputMode="numeric"
+                      maxLength={3}
+                      onChange={(e) => {
+                        const digitsOnly = e.target.value.replace(/\D/g, "").slice(0, 3);
+                        setNumber(digitsOnly);
+                      }}
                     />
                   </div>
                 </div>
