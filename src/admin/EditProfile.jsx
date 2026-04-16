@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./edit-profile.css";
 
@@ -12,14 +12,48 @@ const EditProfile = () => {
     mobile: user?.mobile || "",
     city: user?.city || "",
   });
-  const [photo, setPhoto] = useState(user?.photo || null);
-  const [photoPreview, setPhotoPreview] = useState(user?.photo || null);
+  const [photo, setPhoto] = useState(user?.photo || user?.img || null);
+  const [photoPreview, setPhotoPreview] = useState(user?.photo || user?.img || null);
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState({ text: "", type: "" });
   const [errors, setErrors] = useState({});
 
   const apiBaseUrl =
     import.meta.env.VITE_API_BASE_URL || "http://localhost:5000";
+
+  useEffect(() => {
+    const loadProfile = async () => {
+      const token = localStorage.getItem("admin_token");
+      if (!token) {
+        navigate("/login");
+        return;
+      }
+
+      try {
+        const response = await fetch(`${apiBaseUrl}/api/users/profile`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        console.log("response,response",response)
+        const data = await response.json();
+        if (!response.ok) return;
+
+        setFormData({
+          fullName: data?.fullname || user?.fullName || "",
+          mobile: data?.phone || user?.mobile || "",
+          city: data?.city || user?.city || "",
+        });
+        if (data?.photo) {
+          setPhoto(data.photo);
+          setPhotoPreview(data.photo);
+        }
+      } catch (_err) {
+        // Keep localStorage fallback values
+      }
+    };
+
+    loadProfile();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -31,7 +65,7 @@ const EditProfile = () => {
   };
 
   const handlePhotoChange = (e) => {
-    const file = e.target.files[0];
+    const file = e.target.files?.[0];
     if (!file) return;
 
     const allowedTypes = ["image/jpeg", "image/png", "image/webp", "image/gif"];
@@ -44,9 +78,17 @@ const EditProfile = () => {
       return;
     }
 
-    setErrors({ ...errors, photo: "" });
-    setPhoto(file);
-    setPhotoPreview(URL.createObjectURL(file));
+    const reader = new FileReader();
+    reader.onload = () => {
+      const dataUrl = typeof reader.result === "string" ? reader.result : "";
+      setPhoto(dataUrl);
+      setPhotoPreview(dataUrl);
+      setErrors({ ...errors, photo: "" });
+    };
+    reader.onerror = () => {
+      setErrors({ ...errors, photo: "Failed to read photo file." });
+    };
+    reader.readAsDataURL(file);
   };
 
   const validate = () => {
@@ -90,18 +132,19 @@ const EditProfile = () => {
     setLoading(true);
     try {
       const token = localStorage.getItem("admin_token");
-      const body = new FormData();
-      body.append("fullName", formData.fullName.trim());
-      body.append("mobile", formData.mobile.trim());
-      body.append("city", formData.city.trim());
-      if (photo instanceof File) {
-        body.append("photo", photo);
-      }
 
       const response = await fetch(`${apiBaseUrl}/api/auth/update-profile`, {
         method: "PUT",
-        headers: { Authorization: `Bearer ${token}` },
-        body,
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          fullName: formData.fullName.trim(),
+          mobile: formData.mobile.trim(),
+          city: formData.city.trim(),
+          photo: photo || null,
+        }),
       });
 
       const data = await response.json();

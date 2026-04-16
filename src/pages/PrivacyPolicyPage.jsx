@@ -28,8 +28,8 @@ function PrivacyPolicyPage() {
   if (pageHtml) {
     return (
       <>
-        <section className="terms-page-section py-5">
-          <div className="container">
+        <section className="terms-page-section py-3 py-md-5">
+          <div className="container px-2 px-md-3">
             <div className="terms-hero text-center">
               <h1 className="terms-title Poppins-SemiBold mb-3">Privacy Policy</h1>
             </div>
@@ -45,8 +45,8 @@ function PrivacyPolicyPage() {
 
   return (
     <>
-      <section className="terms-page-section py-5">
-        <div className="container">
+      <section className="terms-page-section py-3 py-md-5">
+        <div className="container px-2 px-md-3">
           <div className="terms-hero text-center">
             <h1 className="terms-title Poppins-SemiBold mb-3">Privacy Policy</h1>
             <p className="terms-subtitle Poppins-light mb-0">

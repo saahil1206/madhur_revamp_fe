@@ -6,6 +6,7 @@ const AdminHeader = () => {
   const navigate = useNavigate();
   const user = JSON.parse(localStorage.getItem("admin_user") || "{}");
   const displayName = user?.username || "Admin";
+  const profilePhoto = user?.photo || user?.img || madhurLogo;
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [showLogoutModal, setShowLogoutModal] = useState(false);
   const dropdownRef = useRef(null);
@@ -41,7 +42,7 @@ const AdminHeader = () => {
               onClick={() => setDropdownOpen(!dropdownOpen)}
             >
               <div className="user-avatar">
-                <img src={madhurLogo} alt="Profile" />
+                <img src={profilePhoto} alt="Profile" />
               </div>
               <span>{displayName}</span>
               <i className={`fas fa-chevron-down ${dropdownOpen ? "rotated" : ""}`}></i>

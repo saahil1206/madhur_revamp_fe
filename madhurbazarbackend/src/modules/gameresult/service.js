@@ -1,11 +1,41 @@
 const { Op } = require("sequelize");
 const { GameResult, GameBazar } = require("../../models");
 
+const ALLOWED_PANNA_VALUES = new Set([
+  "128", "129", "120", "130", "140", "123", "124", "125", "126", "127",
+  "137", "138", "139", "149", "159", "150", "160", "134", "135", "136",
+  "146", "147", "148", "158", "168", "169", "179", "170", "180", "145",
+  "236", "156", "157", "167", "230", "178", "250", "189", "270", "190",
+  "245", "237", "238", "239", "249", "240", "269", "260", "234", "280",
+  "290", "246", "247", "248", "258", "259", "278", "279", "289", "235",
+  "380", "345", "256", "257", "267", "268", "340", "350", "360", "370",
+  "470", "390", "346", "347", "348", "349", "359", "369", "379", "389",
+  "489", "480", "490", "356", "357", "358", "368", "378", "450", "460",
+  "560", "570", "580", "590", "456", "367", "458", "459", "469", "479",
+  "579", "589", "670", "680", "690", "457", "467", "468", "478", "569",
+  "678", "679", "689", "789", "780", "790", "890", "567", "568", "578",
+  "100", "200", "300", "400", "500", "600", "700", "800", "900", "550",
+  "119", "110", "166", "112", "113", "114", "115", "116", "117", "118",
+  "155", "228", "229", "220", "122", "277", "133", "224", "144", "226",
+  "227", "255", "337", "266", "177", "330", "188", "233", "199", "244",
+  "335", "336", "355", "338", "339", "448", "223", "288", "225", "299",
+  "344", "499", "445", "446", "366", "466", "377", "440", "388", "334",
+  "399", "660", "599", "455", "447", "556", "449", "477", "559", "488",
+  "588", "688", "779", "699", "799", "880", "557", "558", "577", "668",
+  "669", "778", "788", "770", "889", "899", "566", "990", "667", "677",
+  "777", "444", "111", "888", "555", "222", "999", "666", "333", "000",
+]);
+
 function computeAakda(numberText) {
   const digits = String(numberText || "").replace(/\D/g, "").split("");
   if (digits.length === 0) return null;
   const sum = digits.reduce((acc, d) => acc + Number(d), 0);
   return String(sum % 10);
+}
+
+function isValidPanna(numberText) {
+  const value = String(numberText || "");
+  return /^\d{3}$/.test(value) && ALLOWED_PANNA_VALUES.has(value);
 }
 
 function addMinutes(dateObj, minutes) {
@@ -24,8 +54,14 @@ function formatDateTime(dateObj) {
 }
 
 async function list(query = {}) {
-  const limit = Number(query.limit || 100);
-  const offset = Number(query.offset || 0);
+  const hasPage = query.page !== undefined;
+  const hasLimit = query.limit !== undefined;
+  const shouldPaginate = query.paginate === "true" || query.paginate === "1" || hasPage || hasLimit;
+  const parsedPage = Number(query.page || 1);
+  const parsedLimit = Number(query.limit || 20);
+  const page = Number.isFinite(parsedPage) && parsedPage > 0 ? parsedPage : 1;
+  const limit = Number.isFinite(parsedLimit) && parsedLimit > 0 ? parsedLimit : 20;
+  const offset = (page - 1) * limit;
   const where = {};
 
   if (query.fromDate && query.toDate) {
@@ -40,20 +76,41 @@ async function list(query = {}) {
     where.result_type = String(query.category).toLowerCase();
   }
 
-  return GameResult.findAll({
+  const include = [
+    {
+      model: GameBazar,
+      as: "bazar",
+      attributes: ["id", "bazar_name", "open_time", "close_time"],
+      required: false,
+    },
+  ];
+  const order = [["result_date", "DESC"], ["id", "DESC"]];
+
+  if (!shouldPaginate) {
+    return GameResult.findAll({
+      where,
+      include,
+      order,
+    });
+  }
+
+  const { rows, count } = await GameResult.findAndCountAll({
     where,
-    include: [
-      {
-        model: GameBazar,
-        as: "bazar",
-        attributes: ["id", "bazar_name", "open_time", "close_time"],
-        required: false,
-      },
-    ],
-    order: [["result_date", "DESC"], ["id", "DESC"]],
+    include,
+    order,
     limit,
     offset,
   });
+
+  return {
+    data: rows,
+    pagination: {
+      total: count,
+      page,
+      limit,
+      totalPages: Math.max(1, Math.ceil(count / limit)),
+    },
+  };
 }
 
 async function getById(id) {
@@ -73,6 +130,11 @@ async function create(payload, actor = {}) {
   const { date, number, bazar, category } = payload;
   if (!date || !number || !bazar || !category) {
     throw new Error("date, number, bazar and category are required");
+  }
+  if (!isValidPanna(number)) {
+    throw new Error(
+      "Invalid panna number. Please enter a valid panna from the approved chart."
+    );
   }
 
   const resultType = String(category).toLowerCase();
@@ -123,6 +185,11 @@ async function update(id, payload) {
 
   const updates = { ...payload };
   if (updates.number) {
+    if (!isValidPanna(updates.number)) {
+      throw new Error(
+        "Invalid panna number. Please enter a valid panna from the approved chart."
+      );
+    }
     updates.result_pana = String(updates.number);
     updates.result_AAkda = computeAakda(updates.number);
     delete updates.number;
@@ -152,3 +219,4 @@ async function remove(id) {
 }
 
 module.exports = { list, getById, create, update, remove };
+

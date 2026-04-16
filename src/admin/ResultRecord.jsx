@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 const ResultRecord = () => {
@@ -11,6 +11,10 @@ const ResultRecord = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [records, setRecords] = useState([]);
   const [bazars, setBazars] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [pageSize] = useState(10);
+  const [totalPages, setTotalPages] = useState(1);
+  const [totalRecords, setTotalRecords] = useState(0);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const apiBaseUrl = import.meta.env.VITE_API_BASE_URL || "http://localhost:5000";
@@ -27,7 +31,7 @@ const ResultRecord = () => {
     }
   };
 
-  const loadResults = async () => {
+  const loadResults = async (page = currentPage) => {
     if (!token) {
       navigate("/login");
       return;
@@ -41,6 +45,9 @@ const ResultRecord = () => {
       params.set("toDate", toDate);
       if (bazar !== "SelectAll") params.set("bazarId", bazar);
       if (category !== "SelectAll") params.set("category", category);
+      params.set("paginate", "true");
+      params.set("page", String(page));
+      params.set("limit", String(pageSize));
 
       const response = await fetch(`${apiBaseUrl}/api/gameresult?${params.toString()}`, {
         headers: {
@@ -51,10 +58,24 @@ const ResultRecord = () => {
       if (!response.ok) {
         throw new Error(data?.message || "Failed to load records.");
       }
-      setRecords(Array.isArray(data) ? data : []);
+      if (Array.isArray(data)) {
+        setRecords(data);
+        setTotalRecords(data.length);
+        setTotalPages(1);
+        setCurrentPage(1);
+      } else {
+        const nextRecords = Array.isArray(data?.data) ? data.data : [];
+        const pagination = data?.pagination || {};
+        setRecords(nextRecords);
+        setTotalRecords(Number(pagination.total || 0));
+        setTotalPages(Number(pagination.totalPages || 1));
+        setCurrentPage(Number(pagination.page || page));
+      }
     } catch (err) {
       setError(err.message || "Failed to load records.");
       setRecords([]);
+      setTotalRecords(0);
+      setTotalPages(1);
     } finally {
       setLoading(false);
     }
@@ -70,7 +91,7 @@ const ResultRecord = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const filteredRecords = useMemo(() => {
+  const filteredRecords = (() => {
     const term = searchTerm.trim().toLowerCase();
     if (!term) return records;
     return records.filter((rec) => {
@@ -83,7 +104,21 @@ const ResultRecord = () => {
         String(date).toLowerCase().includes(term)
       );
     });
-  }, [records, searchTerm]);
+  })();
+
+  const handleSearch = () => {
+    if (currentPage !== 1) {
+      setCurrentPage(1);
+      loadResults(1);
+      return;
+    }
+    loadResults(1);
+  };
+
+  const goToPage = (page) => {
+    if (page < 1 || page > totalPages || page === currentPage) return;
+    loadResults(page);
+  };
 
   const handleDelete = async (id) => {
     if (!window.confirm("Delete this result?")) return;
@@ -146,7 +181,7 @@ const ResultRecord = () => {
             </select>
           </div>
           <div className="col-md-12 mt-2">
-            <button className="btn-submit" type="button" onClick={loadResults}>Search</button>
+            <button className="btn-submit" type="button" onClick={handleSearch}>Search</button>
           </div>
         </div>
       </div>
@@ -185,6 +220,19 @@ const ResultRecord = () => {
             ))}
           </tbody>
         </table>
+      </div>
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginTop: "10px" }}>
+        <div style={{ color: "#000", fontSize: "14px" }}>
+          Total: {totalRecords} | Page {currentPage} of {totalPages}
+        </div>
+        <div style={{ display: "flex", gap: "8px" }}>
+          <button className="btn-submit" type="button" onClick={() => goToPage(currentPage - 1)} disabled={currentPage <= 1 || loading}>
+            Previous
+          </button>
+          <button className="btn-submit" type="button" onClick={() => goToPage(currentPage + 1)} disabled={currentPage >= totalPages || loading}>
+            Next
+          </button>
+        </div>
       </div>
 
       {/* Disclaimer */}

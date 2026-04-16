@@ -1,28 +1,47 @@
 const { UserPersonal, UserAccount } = require("../models");
 
 async function getProfile(userId) {
-  const user = await UserPersonal.findOne({
-    where: { id: userId },
-    attributes: [
-      "id",
-      "username",
-      "fullname",
-      "phonenumber",
-      "city",
-      "transaction_status",
-    ],
-    include: [
-      {
-        model: UserAccount,
-        as: "account",
-        required: false,
-        attributes: ["creditrefrence", "exposurelimit", "game_group_id"],
-      },
-    ],
-  });
+  let user = null;
+  try {
+    user = await UserPersonal.findOne({
+      where: { id: userId },
+      attributes: [
+        "id",
+        "username",
+        "fullname",
+        "phonenumber",
+        "city",
+        "img",
+        "transaction_status",
+      ],
+    });
+  } catch (_err) {
+    // Fallback for environments where img column is not available yet
+    user = await UserPersonal.findOne({
+      where: { id: userId },
+      attributes: [
+        "id",
+        "username",
+        "fullname",
+        "phonenumber",
+        "city",
+        "transaction_status",
+      ],
+    });
+  }
 
   if (!user) {
     return null;
+  }
+
+  let account = null;
+  try {
+    account = await UserAccount.findOne({
+      where: { game_user_id: user.id },
+      attributes: ["creditrefrence", "exposurelimit", "game_group_id"],
+    });
+  } catch (_err) {
+    account = null;
   }
 
   return {
@@ -31,10 +50,11 @@ async function getProfile(userId) {
     fullname: user.fullname,
     phone: user.phonenumber,
     city: user.city,
+    photo: user.img || null,
     transactionStatus: user.transaction_status,
-    creditReference: user.account ? user.account.creditrefrence : null,
-    exposureLimit: user.account ? user.account.exposurelimit : null,
-    accessLevel: user.account ? user.account.game_group_id : null,
+    creditReference: account ? account.creditrefrence : null,
+    exposureLimit: account ? account.exposurelimit : null,
+    accessLevel: account ? account.game_group_id : null,
   };
 }
 

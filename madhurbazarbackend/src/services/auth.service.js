@@ -9,7 +9,7 @@ const ALLOWED_GROUPS = [1, 2, 3, 4, 7];
 async function login(username, password) {
   const user = await UserPersonal.findOne({
     where: { username },
-    attributes: ["id", "username", "password", "blocked_status"],
+    attributes: ["id", "username", "password", "blocked_status", "fullname", "phonenumber", "city", "img"],
   });
 
   if (!user) {
@@ -53,10 +53,71 @@ async function login(username, password) {
       user: {
         id: user.id,
         username: user.username,
+        fullName: user.fullname || "",
+        mobile: user.phonenumber || "",
+        city: user.city || "",
+        photo: user.img || null,
         accessLevel: account.game_group_id,
       },
     },
   };
 }
 
-module.exports = { login };
+async function updateProfile(userId, payload = {}) {
+  const fullName = String(payload.fullName || "").trim();
+  const mobile = String(payload.mobile || "").trim();
+  const city = String(payload.city || "").trim();
+  const photo = payload.photo;
+
+  if (!fullName || !mobile || !city) {
+    return { ok: false, message: "fullName, mobile and city are required" };
+  }
+  if (!/^[a-zA-Z\s]{3,}$/.test(fullName)) {
+    return { ok: false, message: "Invalid full name" };
+  }
+  if (!/^[6-9]\d{9}$/.test(mobile)) {
+    return { ok: false, message: "Enter a valid 10-digit mobile number" };
+  }
+  if (!/^[a-zA-Z\s]{2,}$/.test(city)) {
+    return { ok: false, message: "Invalid city" };
+  }
+  if (photo !== undefined && photo !== null) {
+    const photoText = String(photo);
+    const looksLikeDataUrl = /^data:image\/(jpeg|jpg|png|webp|gif);base64,/i.test(photoText);
+    if (!looksLikeDataUrl) {
+      return { ok: false, message: "Invalid photo format" };
+    }
+  }
+
+  const user = await UserPersonal.findByPk(userId);
+  if (!user) {
+    return { ok: false, message: "User not found" };
+  }
+
+  const updateData = {
+    fullname: fullName,
+    phonenumber: mobile,
+    city,
+  };
+  if (photo !== undefined) {
+    updateData.img = photo || null;
+  }
+
+  await user.update(updateData);
+
+  return {
+    ok: true,
+    data: {
+      user: {
+        id: user.id,
+        username: user.username,
+        fullName: user.fullname,
+        mobile: user.phonenumber,
+        city: user.city,
+        photo: user.img || null,
+      },
+    },
+  };
+}
+
+module.exports = { login, updateProfile };

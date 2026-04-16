@@ -48,7 +48,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 161px;
+  gap: 20px;
 }
 .chatbox-buttons { width: 100%; }
 .chatbox-btn {
@@ -85,10 +85,19 @@
 @media (max-width: 768px) {
   .chatbox-btn { width: 80%; }
 }
-@media (max-width: 500px) {
-  .chatbox-container { width: calc(100% - 20px); height: 520px; right: 10px; bottom: 10px; }
-  .chatbox-btn { width: 100%; }
-  .chatbox-body { padding: 20px 16px 10px; }
+@media (max-width: 576px) {
+  .chatbox-container {
+    width: calc(100% - 20px);
+    height: auto;
+    max-height: 480px;
+    right: 10px;
+    bottom: 10px;
+  }
+  .chatbox-btn { width: 100%; font-size: 13px; padding: 10px 16px; }
+  .chatbox-body { padding: 16px 14px 10px; gap: 12px; }
+  .chatbox-header { padding: 10px 14px; font-size: 14px; }
+  .chatbox-footer { padding: 10px 14px; }
+  .chatbox-input { padding: 10px 14px; font-size: 13px; }
 }
 
 .toggle-password {
