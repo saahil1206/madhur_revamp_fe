@@ -25,3 +25,8 @@ ADD UNIQUE KEY uk_lucky_mobile_number (mobile_number);
 ALTER TABLE game_user_personal ADD COLUMN img LONGTEXT NULL;
 
 
+ALTER TABLE game_user_personal
+ADD COLUMN active_session_id VARCHAR(255) NULL;
+
+
+

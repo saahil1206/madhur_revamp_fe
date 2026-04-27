@@ -38,7 +38,7 @@
 }
 
 .background-img-ban {
-  background-image: url("../img/Home-page-bg.png");
+  background-image: url("../img/Home-page-bg.avif");
   background-size: cover;
   background-repeat: no-repeat;
   height: 900px;
@@ -628,7 +628,7 @@
 }
 
 .background-img {
-  background-image: url("../img/background-img.png");
+  background-image: url("../img/background-img.avif");
   background-repeat: no-repeat;
   background-size: cover;
   border-radius: 20px;

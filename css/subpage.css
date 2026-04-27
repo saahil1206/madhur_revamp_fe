@@ -522,6 +522,7 @@
 
 .calendar-left {
   flex: 1;
+  min-width: 0;
   overflow-x: auto;
 }
 
@@ -530,7 +531,7 @@
   width: 100%;
   border-collapse: collapse;
   border-radius: 10px;
-  overflow: hidden;
+  /* overflow: hidden; */
 }
 
 .cal-table thead th {
@@ -580,7 +581,7 @@
   padding: 7px 18px;
 }
 
-.rc .s {
+/* .rc .s {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -589,6 +590,19 @@
   line-height: 1.15;
   gap: 0px;
   min-width: 10px;
+} */
+
+.rc .s {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-size: 13px;
+  font-weight: 700;
+  color: #fff;
+  line-height: 1.05;
+  gap: 0;
+  min-width: 12px;
+  text-shadow: 0 1px 1px rgba(0, 0, 0, 0.35);
 }
 
 .rc .j {
@@ -695,12 +709,18 @@
   }
   .rc {
     padding: 5px 10px;
+    gap: 14px;
   }
   .rc .j {
     font-size: 15px;
   }
-  .rc .s {
+  /* .rc .s {
     font-size: 8px;
+  } */
+
+  .rc .s {
+    font-size: 11px;
+    font-weight: 700;
   }
 }
 
@@ -741,8 +761,11 @@
   .rc .j {
     font-size: 13px;
   }
-  .rc .s {
+  /* .rc .s {
     font-size: 7px;
+  } */
+  .rc .s {
+    font-size: 10px;
   }
   .cal-sidebar {
     padding: 14px;
@@ -751,32 +774,47 @@
 
 /* Mobile */
 @media (max-width: 480px) {
+  .calendar-section {
+    /* flex-direction: column; */
+    max-width: 100%;
+  }
+  .cal-table {
+    min-width: 600px;
+  }
   .cal-table thead th {
-    font-size: 10px;
+    font-size: 12px;
     padding: 6px 2px;
   }
   .cal-table thead th:first-child {
-    min-width: 60px;
-    width: 60px;
-    font-size: 9px;
-    padding-left: 5px;
+    min-width: 52px;
+    width: 52px;
+    font-size: 12px;
+    padding-left: 4px;
   }
   .cal-table tbody td {
     height: 34px;
   }
   .cal-table tbody td:first-child {
-    font-size: 8px;
-    padding: 3px 5px;
+    font-size: 12px;
+    padding: 2px 4px;
   }
   .rc {
-    padding: 3px 4px;
+    padding: 8px 16px;
   }
   .rc .j {
-    font-size: 11px;
+    font-size: 16px;
   }
   .rc .s {
     font-size: 6px;
-    min-width: 8px;
+    min-width: 36px;
+  }
+}
+
+/* Calendar 575px */
+@media (max-width: 575px) {
+  .rc .s {
+    font-size: 12px;
+    min-width: 11px;
   }
 }
 

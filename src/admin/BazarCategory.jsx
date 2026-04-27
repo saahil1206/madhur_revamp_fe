@@ -3,7 +3,8 @@ import { useNavigate } from "react-router-dom";
 
 function BazarCategory() {
   const navigate = useNavigate();
-  const apiBaseUrl = import.meta.env.VITE_API_BASE_URL || "http://localhost:5000";
+  const apiBaseUrl =
+    import.meta.env.VITE_API_BASE_URL || "http://localhost:5000";
   const [rows, setRows] = useState([]);
   const [savingId, setSavingId] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -59,7 +60,11 @@ function BazarCategory() {
       if (!response.ok) throw new Error(data?.message || "Update failed");
       setMessage("Bazar category updated.");
       setRows((prev) =>
-        prev.map((r) => (r.id === id ? { ...r, bazar_type: data?.bazar_type || r.bazar_type } : r)),
+        prev.map((r) =>
+          r.id === id
+            ? { ...r, bazar_type: data?.bazar_type || r.bazar_type }
+            : r,
+        ),
       );
     } catch (err) {
       setError(err.message || "Update failed");
@@ -70,8 +75,8 @@ function BazarCategory() {
 
   return (
     <>
-      <div className="enter-result-card">
-        <div className="enter-result-header">
+      <div className="enter-result-card enter-result-purple">
+        <div className="enter-result-header bazar-category-header">
           <h4>Bazar Category</h4>
         </div>
         <div className="enter-result-body">
@@ -79,19 +84,30 @@ function BazarCategory() {
             <p className="mb-0" style={{ color: "#5a3a6b" }}>
               Set each bazar as Normal, Elite, or Premium.
             </p>
-            <button className="btn-submit" type="button" onClick={loadBazars}>
+            {/* <button className="btn-submit" type="button" onClick={loadBazars}>
               Refresh
+            </button> */}
+            <button
+              type="button"
+              className="btn-back"
+              onClick={() => navigate("/dashboard")}
+            >
+              Back
             </button>
           </div>
 
-          {message ? <p style={{ color: "#2f9e44", marginBottom: 12 }}>{message}</p> : null}
-          {error ? <p style={{ color: "#c92a2a", marginBottom: 12 }}>{error}</p> : null}
+          {message ? (
+            <p style={{ color: "#2f9e44", marginBottom: 12 }}>{message}</p>
+          ) : null}
+          {error ? (
+            <p style={{ color: "#c92a2a", marginBottom: 12 }}>{error}</p>
+          ) : null}
 
           {loading ? (
             <p>Loading bazars...</p>
           ) : (
-            <div className="table-responsive">
-              <table className="table">
+            <div className="record-table-wrapper">
+              <table className="record-table">
                 <thead>
                   <tr>
                     <th>Bazar</th>
@@ -108,14 +124,18 @@ function BazarCategory() {
                         <select
                           className="custom-input"
                           value={row.bazar_type}
-                          onChange={(e) => handleTypeChange(row.id, e.target.value)}
+                          onChange={(e) =>
+                            handleTypeChange(row.id, e.target.value)
+                          }
                         >
                           <option value="normal">Normal Bazar</option>
                           <option value="elite">Elite Bazar</option>
                           <option value="premium">Premium Bazar</option>
                         </select>
                       </td>
-                      <td>{Number(row.status) === 1 ? "Active" : "Inactive"}</td>
+                      <td>
+                        {Number(row.status) === 1 ? "Active" : "Inactive"}
+                      </td>
                       <td>
                         <button
                           className="btn-submit"
@@ -134,7 +154,11 @@ function BazarCategory() {
           )}
 
           <div className="enter-result-actions mt-3">
-            <button type="button" className="btn-back" onClick={() => navigate("/dashboard")}>
+            <button
+              type="button"
+              className="btn-back"
+              onClick={() => navigate("/dashboard")}
+            >
               Back
             </button>
           </div>
@@ -145,4 +169,3 @@ function BazarCategory() {
 }
 
 export default BazarCategory;
-

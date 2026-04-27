@@ -18,8 +18,24 @@ const ChangePassword = () => {
   const apiBaseUrl =
     import.meta.env.VITE_API_BASE_URL || "http://localhost:5000";
 
+  const emojiRegex = /[\p{Extended_Pictographic}\p{Emoji_Presentation}]/u;
+
   const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+    const { name, value } = e.target;
+    const sanitizedValue = value.replace(/[\p{Extended_Pictographic}\p{Emoji_Presentation}]/gu, "");
+
+    setFormData({ ...formData, [name]: sanitizedValue });
+
+    if (sanitizedValue !== value) {
+      setMessage({ text: "Emoji are not allowed in password fields.", type: "error" });
+    } else if (message.text === "Emoji are not allowed in password fields.") {
+      setMessage({ text: "", type: "" });
+    }
+  };
+
+  const isStrongPassword = (value) => {
+    // 8-20 chars, one uppercase, one lowercase, one number, one special char, no spaces
+    return /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9])\S{8,20}$/.test(value);
   };
 
   const handleSubmit = async (e) => {
@@ -31,8 +47,25 @@ const ChangePassword = () => {
       return;
     }
 
-    if (formData.newPassword.length < 6) {
-      setMessage({ text: "New password must be at least 6 characters.", type: "error" });
+    if (
+      emojiRegex.test(formData.oldPassword) ||
+      emojiRegex.test(formData.newPassword) ||
+      emojiRegex.test(formData.confirmPassword)
+    ) {
+      setMessage({ text: "Emoji are not allowed in password fields.", type: "error" });
+      return;
+    }
+
+    if (!isStrongPassword(formData.newPassword)) {
+      setMessage({
+        text: "Password must be 8-20 chars with uppercase, lowercase, number and special character.",
+        type: "error",
+      });
+      return;
+    }
+
+    if (formData.oldPassword === formData.newPassword) {
+      setMessage({ text: "New password must be different from old password.", type: "error" });
       return;
     }
 
@@ -113,6 +146,8 @@ const ChangePassword = () => {
               placeholder="Enter new password"
               value={formData.newPassword}
               onChange={handleChange}
+              maxLength={20}
+              title="Format: 8-20 characters, including uppercase, lowercase, number, and special character."
             />
             <button
               type="button"
@@ -135,6 +170,7 @@ const ChangePassword = () => {
               placeholder="Confirm new password"
               value={formData.confirmPassword}
               onChange={handleChange}
+              maxLength={20}
             />
             <button
               type="button"

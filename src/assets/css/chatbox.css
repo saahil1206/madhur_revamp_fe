@@ -83,6 +83,11 @@
 .chatbox-input::placeholder { color: #aaa; }
 .chatbox-input:focus { border-color: #561d5e; }
 @media (max-width: 768px) {
+  .chatbox-container {
+    width: 360px;
+    right: 16px;
+    bottom: 16px;
+  }
   .chatbox-btn { width: 80%; }
 }
 @media (max-width: 576px) {

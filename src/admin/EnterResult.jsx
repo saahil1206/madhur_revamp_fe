@@ -41,6 +41,7 @@ const EnterResult = () => {
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
   const apiBaseUrl = import.meta.env.VITE_API_BASE_URL || "http://localhost:5000";
+  const today = new Date().toISOString().slice(0, 10);
 
   useEffect(() => {
     const loadBazars = async () => {
@@ -58,6 +59,37 @@ const EnterResult = () => {
     loadBazars();
   }, [apiBaseUrl]);
 
+  const checkOpenResultExists = async (token) => {
+    const params = new URLSearchParams();
+    params.set("fromDate", visitDate);
+    params.set("toDate", visitDate);
+    params.set("bazarId", String(bazarId));
+    params.set("category", "open");
+    params.set("paginate", "false");
+
+    const response = await fetch(
+      `${apiBaseUrl}/api/gameresult?${params.toString()}`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      },
+    );
+
+    const data = await response.json();
+    if (!response.ok) {
+      throw new Error(data?.message || "Unable to verify open result.");
+    }
+
+    const rows = Array.isArray(data) ? data : Array.isArray(data?.data) ? data.data : [];
+    return rows.some(
+      (row) =>
+        String(row?.bazar?.id ?? row?.bazar ?? "") === String(bazarId) &&
+        row?.result_type === "open" &&
+        row?.result_date === visitDate,
+    );
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
@@ -65,6 +97,10 @@ const EnterResult = () => {
 
     if (!visitDate || !category || !bazarId || !number) {
       setError("All fields are required.");
+      return;
+    }
+    if (visitDate > today) {
+      setError("Future date is not allowed.");
       return;
     }
     if (!isValidPanna(String(number))) {
@@ -75,12 +111,21 @@ const EnterResult = () => {
     const token = localStorage.getItem("admin_token");
     if (!token) {
       setError("Session expired. Please login again.");
-      navigate("/login");
+      navigate("/adminlogin");
       return;
     }
 
     setLoading(true);
     try {
+      if (category === "close") {
+        const hasOpenResult = await checkOpenResultExists(token);
+        if (!hasOpenResult) {
+          setError("Open result is not declared for this market on selected date. Please submit open result first.");
+          setLoading(false);
+          return;
+        }
+      }
+
       const response = await fetch(`${apiBaseUrl}/api/gameresult`, {
         method: "POST",
         headers: {
@@ -114,7 +159,7 @@ const EnterResult = () => {
       {/* Enter Result Form */}
       <div className="row justify-content-center align-items-center">
         <div className="col-8">
-          <div className="enter-result-card">
+          <div className="enter-result-card enter-result-purple">
             <div className="enter-result-header">
               <h4>Enter Result</h4>
             </div>
@@ -128,6 +173,7 @@ const EnterResult = () => {
                         type="date"
                         className="custom-input"
                         value={visitDate}
+                        max={today}
                         onChange={(e) => setVisitDate(e.target.value)}
                       />
                     </div>
@@ -204,4 +250,5 @@ const EnterResult = () => {
 };
 
 export default EnterResult;
+
 

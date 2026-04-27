@@ -33,7 +33,7 @@ const ResultRecord = () => {
 
   const loadResults = async (page = currentPage) => {
     if (!token) {
-      navigate("/login");
+      navigate("/adminlogin");
       return;
     }
 
@@ -107,6 +107,14 @@ const ResultRecord = () => {
   })();
 
   const handleSearch = () => {
+    if (fromDate > today || toDate > today) {
+      setError("Future date is not allowed.");
+      return;
+    }
+    if (fromDate > toDate) {
+      setError("From Date must be less than or equal to To Date.");
+      return;
+    }
     if (currentPage !== 1) {
       setCurrentPage(1);
       loadResults(1);
@@ -118,6 +126,12 @@ const ResultRecord = () => {
   const goToPage = (page) => {
     if (page < 1 || page > totalPages || page === currentPage) return;
     loadResults(page);
+  };
+
+  const formatDateTime = (value) => {
+    if (!value) return "-";
+    const date = new Date(value);
+    return Number.isNaN(date.getTime()) ? value : date.toLocaleString();
   };
 
   const handleDelete = async (id) => {
@@ -157,11 +171,32 @@ const ResultRecord = () => {
         <div className="row">
           <div className="col-md-3">
             <label className="form-label-custom">From Date</label>
-            <input type="date" className="custom-input" value={fromDate} onChange={(e) => setFromDate(e.target.value)} />
+            <input
+              type="date"
+              className="custom-input"
+              value={fromDate}
+              max={toDate > today ? today : toDate}
+              onChange={(e) => {
+                const value = e.target.value;
+                setFromDate(value);
+                if (toDate && value > toDate) setToDate(value);
+              }}
+            />
           </div>
           <div className="col-md-3">
             <label className="form-label-custom">To Date</label>
-            <input type="date" className="custom-input" value={toDate} onChange={(e) => setToDate(e.target.value)} />
+            <input
+              type="date"
+              className="custom-input"
+              value={toDate}
+              min={fromDate}
+              max={today}
+              onChange={(e) => {
+                const value = e.target.value;
+                setToDate(value);
+                if (fromDate && value < fromDate) setFromDate(value);
+              }}
+            />
           </div>
           <div className="col-md-3">
             <label className="form-label-custom">Bazar</label>
@@ -185,7 +220,7 @@ const ResultRecord = () => {
           </div>
         </div>
       </div>
-      {loading ? <p style={{ color: "#fff" }}>Loading records...</p> : null}
+      {loading ? <p style={{ color: "#141414" }}>Loading records...</p> : null}
       {error ? <p style={{ color: "#c92a2a" }}>{error}</p> : null}
 
       {/* Table */}
@@ -193,36 +228,44 @@ const ResultRecord = () => {
         <table className="record-table">
           <thead>
             <tr>
-              <th>Date <span className="sort-icons"><i className="fas fa-caret-up"></i><i className="fas fa-caret-down"></i></span></th>
-              <th>Bazar <span className="sort-icons"><i className="fas fa-caret-up"></i><i className="fas fa-caret-down"></i></span></th>
-              <th>Category <span className="sort-icons"><i className="fas fa-caret-up"></i><i className="fas fa-caret-down"></i></span></th>
-              <th>Pana No. <span className="sort-icons"><i className="fas fa-caret-up"></i><i className="fas fa-caret-down"></i></span></th>
-              <th>Aakda <span className="sort-icons"><i className="fas fa-caret-up"></i><i className="fas fa-caret-down"></i></span></th>
-              <th>Entry Time <span className="sort-icons"><i className="fas fa-caret-up"></i><i className="fas fa-caret-down"></i></span></th>
-              <th>Crated By <span className="sort-icons"><i className="fas fa-caret-up"></i><i className="fas fa-caret-down"></i></span></th>
+              <th>Date</th>
+              <th>Bazar</th>
+              <th>Category</th>
+              <th>Pana No.</th>
+              <th>Aakda</th>
+              <th>Entry Time</th>
+              <th>Crated By</th>
               <th>Action</th>
             </tr>
           </thead>
           <tbody>
-            {filteredRecords.map((rec, idx) => (
-              <tr key={idx}>
-                <td>{rec.result_date}</td>
-                <td>{rec?.bazar?.bazar_name || "-"}</td>
-                <td style={{ textTransform: "capitalize" }}>{rec.result_type}</td>
-                <td>{rec.result_pana}</td>
-                <td>{rec.result_AAkda}</td>
-                <td>{rec.after_time || "-"}</td>
-                <td>{rec.createdby || "-"}</td>
-                <td className="action-btns">
-                  <button className="action-delete" onClick={() => handleDelete(rec.id)}><i className="fas fa-trash"></i></button>
+            {filteredRecords.length === 0 ? (
+              <tr>
+                <td colSpan="8" style={{ textAlign: "center" }}>
+                  No record found.
                 </td>
               </tr>
-            ))}
+            ) : (
+              filteredRecords.map((rec, idx) => (
+                <tr key={idx}>
+                  <td>{rec.result_date}</td>
+                  <td>{rec?.bazar?.bazar_name || "-"}</td>
+                  <td style={{ textTransform: "capitalize" }}>{rec.result_type}</td>
+                  <td>{rec.result_pana}</td>
+                  <td>{rec.result_AAkda}</td>
+                  <td>{formatDateTime(rec.after_time)}</td>
+                  <td>{rec.createdby || "-"}</td>
+                  <td className="action-btns">
+                    <button className="action-delete" onClick={() => handleDelete(rec.id)}><i className="fas fa-trash"></i></button>
+                  </td>
+                </tr>
+              ))
+            )}
           </tbody>
         </table>
       </div>
       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginTop: "10px" }}>
-        <div style={{ color: "#000", fontSize: "14px" }}>
+        <div style={{ color: "#181717", fontSize: "14px" }}>
           Total: {totalRecords} | Page {currentPage} of {totalPages}
         </div>
         <div style={{ display: "flex", gap: "8px" }}>

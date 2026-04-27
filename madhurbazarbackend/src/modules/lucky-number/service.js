@@ -1,6 +1,15 @@
 const { LuckyNumber, LuckyNumberRequest } = require("../../models");
 const { Op } = require("sequelize");
 
+function getIndiaDateKey(value = new Date()) {
+  return new Intl.DateTimeFormat("en-CA", {
+    timeZone: "Asia/Kolkata",
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  }).format(value);
+}
+
 async function list(query = {}) {
   const limit = Number(query.limit || 1);
   const offset = Number(query.offset || 0);
@@ -27,24 +36,41 @@ async function generate(body = {}) {
     throw new Error("Please provide a valid 10-digit mobile number");
   }
 
-  const luckyDigit = Math.floor(Math.random() * 10);
-
   await LuckyNumberRequest.sync();
   const existing = await LuckyNumberRequest.findOne({
     where: { mobile_number: mobileNumber },
+    order: [["id", "DESC"]],
   });
 
+  const todayKey = getIndiaDateKey();
+
   if (existing) {
+    const existingDateKey = getIndiaDateKey(existing.created_at);
+
+    if (existingDateKey === todayKey) {
+      return {
+        mobileNumber,
+        luckyDigit: Number(existing.lucky_digit),
+      };
+    }
+
+    const luckyDigit = Math.floor(Math.random() * 10);
     await existing.update({
       lucky_digit: luckyDigit,
       created_at: new Date(),
     });
-  } else {
-    await LuckyNumberRequest.create({
-      mobile_number: mobileNumber,
-      lucky_digit: luckyDigit,
-    });
+
+    return {
+      mobileNumber,
+      luckyDigit,
+    };
   }
+
+  const luckyDigit = Math.floor(Math.random() * 10);
+  await LuckyNumberRequest.create({
+    mobile_number: mobileNumber,
+    lucky_digit: luckyDigit,
+  });
 
   return {
     mobileNumber,

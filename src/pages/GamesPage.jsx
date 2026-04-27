@@ -1,44 +1,83 @@
-import { useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
 
-const bazaarGames = [
-  { name: 'Madhur', games: [
-    { label: 'Madhur Morning', icon: 'fas fa-cloud-sun', slug: 'madhur-morning' },
-    { label: 'Madhur Day', icon: 'fas fa-sun', slug: 'madhur-day' },
-    { label: 'Madhur Evening', icon: 'fas fa-cloud-moon', slug: 'madhur-evening' },
-    { label: 'Madhur Night', icon: 'fas fa-moon', slug: 'madhur-night' },
-    { label: 'Madhur Shubhank', icon: 'fas fa-water', slug: 'madhur-shubhank' },
-  ]},
-  { name: 'Kamdhenu', games: [
-    { label: 'Kamdhenu Day', icon: 'fas fa-sun', slug: 'kamdhenu-day' },
-    { label: 'Kamdhenu Night', icon: 'fas fa-moon', slug: 'kamdhenu-night' },
-  ]},
-  { name: 'Dhanalakshmi', games: [
-    { label: 'Dhanlaxmi Morning', icon: 'fas fa-cloud-sun', slug: 'dhanlaxmi-morning' },
-    { label: 'Dhanlaxmi Day', icon: 'fas fa-sun', slug: 'dhanlaxmi-day' },
-    { label: 'Dhanlaxmi Night', icon: 'fas fa-moon', slug: 'dhanlaxmi-night' },
-  ]},
-  { name: 'Milan', games: [
-    { label: 'Milan Day', icon: 'fas fa-sun', slug: 'milan-day' },
-    { label: 'Milan Night', icon: 'fas fa-moon', slug: 'milan-night' },
-  ]},
-  { name: 'Rajdhani', games: [
-    { label: 'Rajdhani Day', icon: 'fas fa-sun', slug: 'rajdhani-day' },
-    { label: 'Rajdhani Night', icon: 'fas fa-moon', slug: 'rajdhani-night' },
-  ]},
-  { name: 'Kalyan', games: [
-    { label: 'Kalyan', icon: 'fas fa-sun', slug: 'kalyan' },
-  ]},
-  { name: 'Main', games: [
-    { label: 'Main', icon: 'fas fa-sun', slug: 'main' },
-  ]},
-  { name: 'Time', games: [
-    { label: 'Time', icon: 'fas fa-clock', slug: 'time' },
-  ]},
-]
+function toSlug(value) {
+  return String(value || '')
+    .toLowerCase()
+    .trim()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '');
+}
+
+function getGameIcon(name) {
+  const text = String(name || '').toLowerCase();
+  if (text.includes('morning')) return 'fas fa-cloud-sun';
+  if (text.includes('evening')) return 'fas fa-cloud-moon';
+  if (text.includes('night')) return 'fas fa-moon';
+  if (text.includes('day')) return 'fas fa-sun';
+  if (text.includes('time')) return 'fas fa-clock';
+  if (text.includes('shubhank')) return 'fas fa-water';
+  return 'fas fa-circle';
+}
+
+function getGroupName(name) {
+  const base = String(name || '').trim();
+  if (!base) return 'Others';
+  const firstWord = base.split(/\s+/)[0];
+  return firstWord || 'Others';
+}
 
 function GamesPage() {
   const [activeTab, setActiveTab] = useState('bazaar')
+  const [rows, setRows] = useState([])
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState('')
+
+  const apiBaseUrl = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000'
+
+  useEffect(() => {
+    const fetchBazars = async () => {
+      setLoading(true)
+      setError('')
+      try {
+        const response = await fetch(`${apiBaseUrl}/api/bazar`)
+        const data = await response.json()
+        if (!response.ok) {
+          throw new Error(data?.message || 'Failed to load bazaar games')
+        }
+        setRows(Array.isArray(data) ? data : [])
+      } catch (err) {
+        setError(err.message || 'Failed to load bazaar games')
+        setRows([])
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    fetchBazars()
+  }, [apiBaseUrl])
+
+  const bazaarGames = useMemo(() => {
+    const grouped = new Map()
+
+    rows.forEach((row) => {
+      const label = row?.bazar_name || ''
+      if (!label) return
+
+      const groupName = getGroupName(label)
+      if (!grouped.has(groupName)) {
+        grouped.set(groupName, { name: groupName, games: [] })
+      }
+
+      grouped.get(groupName).games.push({
+        label,
+        icon: getGameIcon(label),
+        slug: toSlug(label),
+      })
+    })
+
+    return Array.from(grouped.values())
+  }, [rows])
 
   return (
     <>
@@ -59,43 +98,47 @@ function GamesPage() {
         <div>
           {activeTab === 'bazaar' && (
             <div className="games-list-container p-4">
-              <div className="accordion" id="bazaarAccordion">
-                {bazaarGames.map((category, i) => {
-                  const collapseId = `collapse${category.name.replace(/\s/g, '')}`
-                  return (
-                    <div className="accordion-item game-accordion-item" key={i}>
-                      <h2 className="accordion-header">
-                        <button
-                          className="accordion-button collapsed game-accordion-btn"
-                          type="button"
-                          data-bs-toggle="collapse"
-                          data-bs-target={`#${collapseId}`}
-                        >
-                          {category.name}
-                        </button>
-                      </h2>
-                      <div id={collapseId} className="accordion-collapse collapse" data-bs-parent="#bazaarAccordion">
-                        <div className="accordion-body game-accordion-body">
-                          <div className="row g-2 g-md-3">
-                            {category.games.map((game, j) => (
-                              <div className="col-6 col-sm-4 col-md-3" key={j}>
-                                <Link to={`/games/${game.slug}/calendar`} className="text-decoration-none">
-                                  <div className="game-card">
-                                    <div className="game-card-icon">
-                                      <i className={game.icon}></i>
+              {loading && <p className="text-white mb-0">Loading bazaar games...</p>}
+              {!loading && error && <p className="text-danger mb-0">{error}</p>}
+              {!loading && !error && (
+                <div className="accordion" id="bazaarAccordion">
+                  {bazaarGames.map((category, i) => {
+                    const collapseId = `collapse${category.name.replace(/\s/g, '')}`
+                    return (
+                      <div className="accordion-item game-accordion-item" key={i}>
+                        <h2 className="accordion-header">
+                          <button
+                            className="accordion-button collapsed game-accordion-btn"
+                            type="button"
+                            data-bs-toggle="collapse"
+                            data-bs-target={`#${collapseId}`}
+                          >
+                            {category.name}
+                          </button>
+                        </h2>
+                        <div id={collapseId} className="accordion-collapse collapse" data-bs-parent="#bazaarAccordion">
+                          <div className="accordion-body game-accordion-body">
+                            <div className="row g-2 g-md-3">
+                              {category.games.map((game, j) => (
+                                <div className="col-6 col-sm-4 col-md-3" key={j}>
+                                  <Link to={`/games/${game.slug}/calendar`} className="text-decoration-none">
+                                    <div className="game-card">
+                                      <div className="game-card-icon">
+                                        <i className={game.icon}></i>
+                                      </div>
+                                      <p className="game-card-label">{game.label}</p>
                                     </div>
-                                    <p className="game-card-label">{game.label}</p>
-                                  </div>
-                                </Link>
-                              </div>
-                            ))}
+                                  </Link>
+                                </div>
+                              ))}
+                            </div>
                           </div>
                         </div>
                       </div>
-                    </div>
-                  )
-                })}
-              </div>
+                    )
+                  })}
+                </div>
+              )}
             </div>
           )}
 

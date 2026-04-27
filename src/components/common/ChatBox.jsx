@@ -5,14 +5,12 @@ function ChatBox() {
 
   return (
     <>
-      <div className="d-flex justify-content-end mt-4">
-        <button
-          className="btn lettalk-btn ms-4 Poppins-SemiBold"
-          onClick={() => setIsOpen(true)}
-        >
-          Lets Talk!
-        </button>
-      </div>
+      <button
+        className="btn lettalk-btn Poppins-SemiBold"
+        onClick={() => setIsOpen(true)}
+      >
+        Lets Talk!
+      </button>
 
       {isOpen && (
         <div className="chatbox-container" style={{ display: 'flex' }}>

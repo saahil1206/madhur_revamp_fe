@@ -11,6 +11,7 @@ const GameBazarDay = require("./gameBazarDay.model");
 const GameTicket = require("./gameTicket.model");
 const UserPassbook = require("./userPassbook.model");
 const GameUserCommission = require("./gameUserCommission.model");
+const BazarGuessing = require("./bazarGuessing.model");
 
 UserPersonal.hasOne(UserAccount, {
   foreignKey: "game_user_id",
@@ -48,4 +49,5 @@ module.exports = {
   GameTicket,
   UserPassbook,
   GameUserCommission,
+  BazarGuessing,
 };

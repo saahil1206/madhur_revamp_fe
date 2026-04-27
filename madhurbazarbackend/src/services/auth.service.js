@@ -1,5 +1,6 @@
 const jwt = require("jsonwebtoken");
 const md5 = require("md5");
+const { randomUUID } = require("crypto");
 const { Op } = require("sequelize");
 const { jwtSecret } = require("../config/env");
 const { UserPersonal, UserAccount } = require("../models");
@@ -36,11 +37,15 @@ async function login(username, password) {
     return { ok: false, message: "something wrong contact admin" };
   }
 
+  const activeSessionId = randomUUID();
+  await user.update({ active_session_id: activeSessionId });
+
   const token = jwt.sign(
     {
       userId: user.id,
       username: user.username,
       accessLevel: account.game_group_id,
+      activeSessionId,
     },
     jwtSecret,
     { expiresIn: "7d" }
@@ -120,4 +125,46 @@ async function updateProfile(userId, payload = {}) {
   };
 }
 
-module.exports = { login, updateProfile };
+async function changePassword(userId, payload = {}) {
+  const oldPassword = String(payload.oldPassword || "");
+  const newPassword = String(payload.newPassword || "");
+  const strongPasswordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9])\S{8,20}$/;
+
+  if (!oldPassword || !newPassword) {
+    return { ok: false, message: "oldPassword and newPassword are required" };
+  }
+
+  if (!strongPasswordRegex.test(newPassword)) {
+    return { ok: false, message: "Password must be 8-20 chars with uppercase, lowercase, number and special character" };
+  }
+
+  if (oldPassword === newPassword) {
+    return { ok: false, message: "New password must be different from old password" };
+  }
+
+  const user = await UserPersonal.findByPk(userId, {
+    attributes: ["id", "password"],
+  });
+
+  if (!user) {
+    return { ok: false, message: "User not found" };
+  }
+
+  if (user.password !== md5(oldPassword)) {
+    return { ok: false, message: "Old password is incorrect" };
+  }
+
+  await user.update({
+    password: md5(newPassword),
+    active_session_id: randomUUID(),
+  });
+
+  return {
+    ok: true,
+    data: {
+      message: "Password changed successfully",
+    },
+  };
+}
+
+module.exports = { login, updateProfile, changePassword };

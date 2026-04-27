@@ -151,3 +151,60 @@
     font-size: 15px;
   }
 }
+
+/* ===== 575px - Small phones ===== */
+@media (max-width: 575px) {
+  .year-grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 6px;
+  }
+
+  .year-btn {
+    font-size: 11px;
+    padding: 8px 4px;
+  }
+
+  .details-info-box {
+    padding: 10px !important;
+    border-radius: 12px;
+  }
+
+  .details-filter-box {
+    padding: 10px !important;
+    border-radius: 12px;
+  }
+
+  .show-panel-btn {
+    font-size: 12px;
+    padding: 8px 12px;
+    width: 100%;
+  }
+
+  .back-btn {
+    width: 30px;
+    height: 30px;
+    min-width: 30px;
+    font-size: 14px;
+  }
+}
+
+/* ===== Tablet (768px - 991px) ===== */
+@media (min-width: 768px) and (max-width: 991px) {
+  .year-grid {
+    grid-template-columns: repeat(5, 1fr);
+    gap: 10px;
+  }
+
+  .year-btn {
+    font-size: 14px;
+    padding: 10px 14px;
+  }
+
+  .details-info-box {
+    padding: 20px !important;
+  }
+
+  .details-filter-box {
+    padding: 20px !important;
+  }
+}

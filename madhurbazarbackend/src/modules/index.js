@@ -25,6 +25,7 @@ const modules = {
   balancereport: require("./balancereport/routes"),
   batcontroller: require("./batcontroller/routes"),
   bazar: require("./bazar/routes"),
+  "bazar-guessing": require("./bazar-guessing/routes"),
   client: require("./client/routes"),
   double: require("./double/routes"),
   dpmotor: require("./dpmotor/routes"),

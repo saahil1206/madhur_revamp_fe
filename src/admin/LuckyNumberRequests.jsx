@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 const LuckyNumberRequests = () => {
@@ -7,7 +7,7 @@ const LuckyNumberRequests = () => {
   const [rows, setRows] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-  const [pagination, setPagination] = useState({ total: 0, limit: 50, offset: 0 });
+  const [pagination, setPagination] = useState({ total: 0, limit: 10, offset: 0 });
 
   const apiBaseUrl = import.meta.env.VITE_API_BASE_URL || "http://localhost:5000";
 
@@ -48,12 +48,6 @@ const LuckyNumberRequests = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const filteredRows = useMemo(() => {
-    const term = searchTerm.trim().toLowerCase();
-    if (!term) return rows;
-    return rows.filter((row) => String(row.mobile_number || "").toLowerCase().includes(term));
-  }, [rows, searchTerm]);
-
   const handleSearch = () => {
     loadRequests(0);
   };
@@ -93,21 +87,21 @@ const LuckyNumberRequests = () => {
         <table className="record-table">
           <thead>
             <tr>
-              <th>ID</th>
+              <th>S/No</th>
               <th>Mobile Number</th>
               <th>Lucky Digit</th>
               <th>Created At</th>
             </tr>
           </thead>
           <tbody>
-            {filteredRows.length === 0 ? (
+            {rows.length === 0 ? (
               <tr>
                 <td colSpan="4" style={{ textAlign: "center" }}>No records found.</td>
               </tr>
             ) : (
-              filteredRows.map((row) => (
+              rows.map((row, index) => (
                 <tr key={row.id}>
-                  <td>{row.id}</td>
+                  <td>{pagination.offset + index + 1}</td>
                   <td>{row.mobile_number}</td>
                   <td>{row.lucky_digit}</td>
                   <td>{row.created_at ? new Date(row.created_at).toLocaleString() : "-"}</td>

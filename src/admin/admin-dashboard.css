@@ -372,6 +372,26 @@
   color: #1a1a2e;
 }
 
+.bazar-category-header {
+  background: #6f2c82;
+}
+
+.bazar-category-header h4 {
+  color: #ffffff;
+}
+
+.enter-result-purple {
+  border-color: #6f2c82;
+}
+
+.enter-result-purple .enter-result-header {
+  background: #6f2c82;
+}
+
+.enter-result-purple .enter-result-header h4 {
+  color: #ffffff;
+}
+
 .enter-result-body {
   padding: 28px 24px;
 }
@@ -537,7 +557,7 @@
 }
 
 .record-table thead tr {
-  background: linear-gradient(135deg, #7b3f8e, #55205d);
+  background: #6f2c82;
   color: #ffffff;
 }
 
@@ -886,6 +906,25 @@
 
 .seo-btn-purple:hover {
   background: #6b2a75;
+}
+
+.seo-btn-yellow {
+  width: 92px;
+  height: 42px;
+  border: none;
+  border-bottom: 3px solid #000000;
+  border-radius: 8px;
+  background: #efbf04;
+  color: #1a1a2e;
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1.1;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.seo-btn-yellow:hover {
+  background: #e0b200;
 }
 
 /* SEO Modal */

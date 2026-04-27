@@ -1,4 +1,4 @@
-const { login, updateProfile } = require("../services/auth.service");
+const { login, updateProfile, changePassword } = require("../services/auth.service");
 
 async function loginController(req, res) {
   try {
@@ -35,4 +35,24 @@ async function updateProfileController(req, res) {
   }
 }
 
-module.exports = { loginController, updateProfileController };
+async function changePasswordController(req, res) {
+  try {
+    const result = await changePassword(req.user.userId, req.body || {});
+    if (!result.ok) {
+      const badRequestMessages = [
+        "oldPassword and newPassword are required",
+        "Password must be 8-20 chars with uppercase, lowercase, number and special character",
+        "New password must be different from old password",
+        "Old password is incorrect",
+      ];
+      const status = result.message === "User not found" ? 404 : badRequestMessages.includes(result.message) ? 400 : 500;
+      return res.status(status).json({ message: result.message });
+    }
+
+    return res.json(result.data);
+  } catch (error) {
+    return res.status(500).json({ message: "Internal server error" });
+  }
+}
+
+module.exports = { loginController, updateProfileController, changePasswordController };

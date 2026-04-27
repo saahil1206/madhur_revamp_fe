@@ -1,5 +1,6 @@
+import { useEffect } from 'react'
 import { Routes, Route } from 'react-router-dom'
-import { Navigate } from 'react-router-dom'
+import { Navigate, useLocation, useNavigate } from 'react-router-dom'
 import HomeLayout from './components/layout/HomeLayout'
 import SubpageLayout from './components/layout/SubpageLayout'
 import HomePage from './pages/HomePage'
@@ -12,6 +13,7 @@ import DetailsPage from './pages/DetailsPage'
 import CalendarPage from './pages/CalendarPage'
 import TermsConditionPage from './pages/TermsConditionPage'
 import PrivacyPolicyPage from './pages/PrivacyPolicyPage'
+import NotFoundPage from './pages/NotFoundPage'
 import Login from './admin/login'
 import AdminLayout from './admin/AdminLayout'
 import Dashboard from './admin/Dashboard'
@@ -22,19 +24,21 @@ import GameSeoList from './admin/GameSeoList'
 import BazarCategory from './admin/BazarCategory'
 import LuckyNumberRequests from './admin/LuckyNumberRequests'
 import LuckyNumberSetting from './admin/LuckyNumberSetting'
+import BazarGuessingSetting from './admin/BazarGuessingSetting'
 import EditProfile from './admin/EditProfile'
 import ChangePassword from './admin/ChangePassword'
+import { clearAdminSession, getAdminToken } from './admin/adminSession'
 
 function AdminProtectedRoute({ children }) {
-  const token = localStorage.getItem('admin_token')
+  const token = getAdminToken()
   if (!token) {
-    return <Navigate to="/login" replace />
+    return <Navigate to="/adminlogin" replace />
   }
   return children
 }
 
 function AdminPublicRoute({ children }) {
-  const token = localStorage.getItem('admin_token')
+  const token = getAdminToken()
   if (token) {
     return <Navigate to="/dashboard" replace />
   }
@@ -42,6 +46,32 @@ function AdminPublicRoute({ children }) {
 }
 
 function App() {
+  const navigate = useNavigate()
+  const location = useLocation()
+
+  useEffect(() => {
+    const originalFetch = window.fetch.bind(window)
+
+    window.fetch = async (...args) => {
+      const response = await originalFetch(...args)
+      const token = getAdminToken()
+
+      if (response.status === 401 && token) {
+        clearAdminSession("Your account was logged in from another browser. Please sign in again.")
+
+        if (location.pathname !== '/adminlogin') {
+          navigate('/adminlogin', { replace: true })
+        }
+      }
+
+      return response
+    }
+
+    return () => {
+      window.fetch = originalFetch
+    }
+  }, [location.pathname, navigate])
+
   return (
     <Routes>
       <Route element={<HomeLayout />}>
@@ -58,12 +88,13 @@ function App() {
       </Route>
       <Route path="/signin" element={<SignInPage />} />
       <Route path="/profile" element={<ProfilePage />} />
-      <Route path="/login" element={<AdminPublicRoute><Login /></AdminPublicRoute>} />
+      <Route path="/adminlogin" element={<AdminPublicRoute><Login /></AdminPublicRoute>} />
       <Route element={<AdminProtectedRoute><AdminLayout /></AdminProtectedRoute>}>
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/enter-result" element={<EnterResult />} />
         <Route path="/result-record" element={<ResultRecord />} />
         <Route path="/lucky-number-setting" element={<LuckyNumberSetting />} />
+        <Route path="/bazar-guessing-setting" element={<BazarGuessingSetting />} />
         <Route path="/bazar-category" element={<BazarCategory />} />
         <Route path="/floating-setting" element={<FloatingSetting />} />
         <Route path="/game-seo-list" element={<GameSeoList />} />
@@ -71,6 +102,7 @@ function App() {
         <Route path="/edit-profile" element={<EditProfile />} />
         <Route path="/change-password" element={<ChangePassword />} />
       </Route>
+      <Route path="*" element={<NotFoundPage />} />
     </Routes>
   )
 }

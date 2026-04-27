@@ -24,7 +24,7 @@ const GameSeoList = () => {
 
   const openModal = async (entry, pageName, titleText) => {
     if (!token) {
-      navigate("/login");
+      navigate("/adminlogin");
       return;
     }
     setModalTitle(titleText);
@@ -85,7 +85,7 @@ const GameSeoList = () => {
 
   const loadBaseData = async () => {
     if (!token) {
-      navigate("/login");
+      navigate("/adminlogin");
       return;
     }
     setLoading(true);
@@ -118,7 +118,7 @@ const GameSeoList = () => {
 
   const saveSeo = async () => {
     if (!token) {
-      navigate("/login");
+      navigate("/adminlogin");
       return;
     }
     setSaveLoading(true);
@@ -185,8 +185,8 @@ const GameSeoList = () => {
                 <td>{idx + 1}.</td>
                 <td>{name.bazar_name}</td>
                 <td className="seo-action-btns">
-                  <button className="seo-btn-purple" onClick={() => openModal(name, "jodi", "Edit SEO for Jodi page")}>Edit Jodi</button>
-                  <button className="seo-btn-purple" onClick={() => openModal(name, "pana", "Edit SEO for Pana page")}>Edit Pana</button>
+                  <button className="seo-btn-yellow" onClick={() => openModal(name, "jodi", "Edit SEO for Jodi page")}>Edit Jodi</button>
+                  <button className="seo-btn-yellow" onClick={() => openModal(name, "pana", "Edit SEO for Pana page")}>Edit Pana</button>
                 </td>
               </tr>
             ))}

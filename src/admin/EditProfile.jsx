@@ -17,15 +17,19 @@ const EditProfile = () => {
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState({ text: "", type: "" });
   const [errors, setErrors] = useState({});
+  const MAX_FILE_SIZE_BYTES = 2 * 1024 * 1024;
+  const MAX_BASE64_LENGTH = 3_000_000;
 
   const apiBaseUrl =
     import.meta.env.VITE_API_BASE_URL || "http://localhost:5000";
+  const nameRegex = /^[a-zA-Z\s]+$/;
+  const cityRegex = /^[a-zA-Z0-9\s]+$/;
 
   useEffect(() => {
     const loadProfile = async () => {
       const token = localStorage.getItem("admin_token");
       if (!token) {
-        navigate("/login");
+        navigate("/adminlogin");
         return;
       }
 
@@ -73,22 +77,76 @@ const EditProfile = () => {
       setErrors({ ...errors, photo: "Only JPG, PNG, WEBP, GIF allowed." });
       return;
     }
-    if (file.size > 2 * 1024 * 1024) {
+    if (file.size > MAX_FILE_SIZE_BYTES) {
       setErrors({ ...errors, photo: "Photo must be less than 2MB." });
       return;
     }
 
-    const reader = new FileReader();
-    reader.onload = () => {
-      const dataUrl = typeof reader.result === "string" ? reader.result : "";
-      setPhoto(dataUrl);
-      setPhotoPreview(dataUrl);
-      setErrors({ ...errors, photo: "" });
+    const compressAndSetPhoto = async () => {
+      try {
+        const readAsDataUrl = () =>
+          new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.onload = () => resolve(typeof reader.result === "string" ? reader.result : "");
+            reader.onerror = reject;
+            reader.readAsDataURL(file);
+          });
+
+        const originalDataUrl = await readAsDataUrl();
+
+        // For GIF, keep original to avoid frame loss; apply payload guard below.
+        if (file.type === "image/gif") {
+          if (originalDataUrl.length > MAX_BASE64_LENGTH) {
+            setErrors({ ...errors, photo: "GIF is too large. Please upload a smaller image." });
+            return;
+          }
+          setPhoto(originalDataUrl);
+          setPhotoPreview(originalDataUrl);
+          setErrors({ ...errors, photo: "" });
+          return;
+        }
+
+        const img = new Image();
+        img.src = originalDataUrl;
+        await new Promise((resolve, reject) => {
+          img.onload = resolve;
+          img.onerror = reject;
+        });
+
+        const maxWidth = 900;
+        const scale = Math.min(1, maxWidth / img.width);
+        const canvas = document.createElement("canvas");
+        canvas.width = Math.round(img.width * scale);
+        canvas.height = Math.round(img.height * scale);
+        const ctx = canvas.getContext("2d");
+        if (!ctx) {
+          setErrors({ ...errors, photo: "Failed to process photo." });
+          return;
+        }
+        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+
+        // Reduce quality only when payload goes above safe 2MB upload target.
+        let quality = 0.82;
+        let compressed = canvas.toDataURL("image/jpeg", quality);
+        while (compressed.length > MAX_BASE64_LENGTH && quality > 0.4) {
+          quality -= 0.08;
+          compressed = canvas.toDataURL("image/jpeg", quality);
+        }
+
+        if (compressed.length > MAX_BASE64_LENGTH) {
+          setErrors({ ...errors, photo: "Photo is too large after compression. Please use a smaller image." });
+          return;
+        }
+
+        setPhoto(compressed);
+        setPhotoPreview(compressed);
+        setErrors({ ...errors, photo: "" });
+      } catch (_err) {
+        setErrors({ ...errors, photo: "Failed to read photo file." });
+      }
     };
-    reader.onerror = () => {
-      setErrors({ ...errors, photo: "Failed to read photo file." });
-    };
-    reader.readAsDataURL(file);
+
+    compressAndSetPhoto();
   };
 
   const validate = () => {
@@ -97,9 +155,9 @@ const EditProfile = () => {
     // Full Name
     if (!formData.fullName.trim()) {
       newErrors.fullName = "Full name is required.";
-    } else if (formData.fullName.trim().length < 3) {
-      newErrors.fullName = "Name must be at least 3 characters.";
-    } else if (!/^[a-zA-Z\s]+$/.test(formData.fullName.trim())) {
+    } else if (formData.fullName.trim().length < 1 || formData.fullName.trim().length > 50) {
+      newErrors.fullName = "Name must be 1 to 50 characters.";
+    } else if (!nameRegex.test(formData.fullName.trim())) {
       newErrors.fullName = "Name can only contain letters and spaces.";
     }
 
@@ -113,10 +171,10 @@ const EditProfile = () => {
     // City
     if (!formData.city.trim()) {
       newErrors.city = "City is required.";
-    } else if (formData.city.trim().length < 2) {
-      newErrors.city = "City must be at least 2 characters.";
-    } else if (!/^[a-zA-Z\s]+$/.test(formData.city.trim())) {
-      newErrors.city = "City can only contain letters and spaces.";
+    } else if (formData.city.trim().length < 1 || formData.city.trim().length > 50) {
+      newErrors.city = "City must be 1 to 50 characters.";
+    } else if (!cityRegex.test(formData.city.trim())) {
+      newErrors.city = "City can only contain letters, numbers, and spaces.";
     }
 
     setErrors(newErrors);
@@ -208,6 +266,7 @@ const EditProfile = () => {
               placeholder="Enter full name"
               value={formData.fullName}
               onChange={handleChange}
+              maxLength={50}
             />
           </div>
           {errors.fullName && <span className="field-error">{errors.fullName}</span>}
@@ -241,6 +300,7 @@ const EditProfile = () => {
               placeholder="Enter city"
               value={formData.city}
               onChange={handleChange}
+              maxLength={50}
             />
           </div>
           {errors.city && <span className="field-error">{errors.city}</span>}

@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from "react";
 import madhurLogo from "./admin-img/madhur-logo.png";
 import { Link, useNavigate } from "react-router-dom";
+import { clearAdminSession } from "./adminSession";
 
 const AdminHeader = () => {
   const navigate = useNavigate();
@@ -23,9 +24,8 @@ const AdminHeader = () => {
   }, []);
 
   const handleLogout = () => {
-    localStorage.removeItem("admin_token");
-    localStorage.removeItem("admin_user");
-    navigate("/login");
+    clearAdminSession();
+    navigate("/adminlogin");
   };
 
   return (

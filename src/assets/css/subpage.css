@@ -522,6 +522,7 @@
 
 .calendar-left {
   flex: 1;
+  min-width: 0;
   overflow-x: auto;
 }
 
@@ -530,7 +531,7 @@
   width: 100%;
   border-collapse: collapse;
   border-radius: 10px;
-  overflow: hidden;
+
 }
 
 .cal-table thead th {
@@ -577,19 +578,35 @@
   align-items: center;
   justify-content: space-between;
   height: 100%;
-  padding: 7px 18px;
+  padding: 18px 18px;
 }
 
 .rc .s {
   display: flex;
   flex-direction: column;
   align-items: center;
-  font-size: 9px;
+  font-size: 14px;
   color: rgba(255, 255, 255, 0.7);
   line-height: 1.15;
   gap: 0px;
   min-width: 10px;
+  font-weight: 600;
 }
+
+/* .rc .s {
+   font-family: Poppins-SemiBold;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-size: 11px;
+  font-weight: 500;
+  color: #fff;
+  line-height: 1.05;
+  gap: 0;
+  min-width: 12px;
+  text-shadow: 0 1px 1px rgba(0, 0, 0, 0.35);
+} */
+
 
 .rc .j {
   font-family: Poppins-SemiBold;
@@ -695,6 +712,7 @@
   }
   .rc {
     padding: 5px 10px;
+    gap: 14px;
   }
   .rc .j {
     font-size: 15px;
@@ -776,7 +794,7 @@
   }
   .rc .s {
     font-size: 6px;
-    min-width: 8px;
+    min-width: 36px;
   }
 }
 
@@ -1238,18 +1256,23 @@
 /* ===== 575px - Calendar table ===== */
 @media (max-width: 575px) {
   .calendar-section {
-    flex-direction: column;
+    /* flex-direction: column; */
+    max-width: 100%;
+  }
+
+  .cal-table {
+    min-width: 600px;
   }
 
   .cal-table thead th {
-    font-size: 9px;
+    font-size: 12px;
     padding: 6px 2px;
   }
 
   .cal-table thead th:first-child {
     min-width: 52px;
     width: 52px;
-    font-size: 8px;
+    font-size: 12px;
     padding-left: 4px;
   }
 
@@ -1258,21 +1281,21 @@
   }
 
   .cal-table tbody td:first-child {
-    font-size: 7px;
+    font-size: 12px;
     padding: 2px 4px;
   }
 
   .rc {
-    padding: 2px 3px;
+    padding: 8px 16px;
   }
 
   .rc .j {
-    font-size: 10px;
+    font-size: 16px;
   }
 
   .rc .s {
-    font-size: 5px;
-    min-width: 6px;
+    font-size: 12px;
+    min-width: 11px;
   }
 
   .cal-sidebar {
@@ -1338,5 +1361,82 @@
     width: 120px;
     height: 40px;
     font-size: 14px;
+  }
+}
+
+/* ===== Tablet Responsive Fixes (768px - 991px) ===== */
+@media (min-width: 768px) and (max-width: 991px) {
+  /* Games page */
+  .game-tab-btn {
+    font-size: 16px;
+    padding: 7px 14px;
+  }
+
+  .games-list-container {
+    padding: 20px !important;
+  }
+
+  .game-accordion-btn {
+    font-size: 14px;
+    padding: 12px 16px;
+  }
+
+  .game-card-icon {
+    font-size: 30px;
+  }
+
+  .game-card-label {
+    font-size: 12px;
+  }
+
+  /* Results page */
+  .result-search-box {
+    max-width: 100%;
+  }
+
+  .rs-result-number {
+    font-size: 28px;
+  }
+
+  /* Calendar page */
+  .calendar-filter-bar .cal-sidebar {
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  .cal-table thead th {
+    font-size: 11px;
+    padding: 8px 4px;
+  }
+
+  .cal-table tbody td {
+    height: 40px;
+  }
+
+  .cal-table tbody td:first-child {
+    font-size: 10px;
+  }
+
+  /* Profile page */
+  .profile-card {
+    padding: 30px 28px;
+  }
+
+  .profile-upgrade-btn {
+    width: 100%;
+  }
+
+  /* SEO content pages (About, Privacy, Terms) */
+  .seo-page-content h1 { font-size: 1.75rem; }
+  .seo-page-content h2 { font-size: 1.45rem; }
+  .seo-page-content h3 { font-size: 1.2rem; }
+
+  .seo-page-content p,
+  .seo-page-content li {
+    font-size: 0.95rem;
+  }
+
+  .about-content-box {
+    padding: 20px !important;
   }
 }

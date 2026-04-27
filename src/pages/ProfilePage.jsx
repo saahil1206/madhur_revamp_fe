@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
-import logoImg from '../assets/images/Logo.png'
+import logoImg from '../assets/images/Logo.avif'
 
 function ProfilePage() {
   const [formData, setFormData] = useState({

@@ -1,7 +1,6 @@
 /* ===== Global overflow fix ===== */
 html,
 body {
-  overflow-x: hidden;
   width: 100%;
 }
 
@@ -56,10 +55,12 @@ img {
 }
 
 .background-img-ban {
-  background-image: url("../images/Home-page-bg.png");
+  background-color: #241a2f;
+  background-image: url("../images/Home-page-bg.avif");
   background-size: cover;
+  background-position: center;
   background-repeat: no-repeat;
-  height: 900px;
+  height: 800px;
 }
 .header-rounded {
   border-radius: 100px;
@@ -330,7 +331,6 @@ img {
   display: none;
 }
 
-
 .font-w-500 {
   font-weight: 500;
   font-size: 25px;
@@ -380,6 +380,54 @@ img {
 
 .Purple-bg {
   background-color: #561d5e;
+}
+
+/* Marquee scrolling effect */
+.purple-bar-label {
+  padding-right: 12px;
+}
+
+.marquee-wrapper {
+  overflow-x: auto;
+  overflow-y: hidden;
+  position: relative;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  user-select: none;
+}
+
+.marquee-wrapper::-webkit-scrollbar {
+  display: none;
+}
+
+.marquee-content {
+  display: flex;
+  width: max-content;
+  gap: 0;
+}
+
+.marquee-content > .marquee-half {
+  display: flex;
+  animation: marquee-scroll 28s linear infinite;
+}
+
+.marquee-item {
+  flex-shrink: 0;
+}
+
+.marquee-wrapper:hover .marquee-half,
+.marquee-item:hover ~ .marquee-half,
+.marquee-content:hover .marquee-half {
+  animation-play-state: paused;
+}
+
+@keyframes marquee-scroll {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-100%);
+  }
 }
 .purple-light-box {
   width: 20px;
@@ -554,6 +602,10 @@ img {
 }
 
 .lettalk-btn {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  z-index: 9999;
   border: 2px solid #551d5e;
   color: #551d5e;
   background-color: white;
@@ -622,7 +674,7 @@ img {
   background-color: rgba(255, 255, 255, 0.3);
 }
 .minus-margin-top {
-  margin-top: -121px;
+  margin-top: -80px;
 }
 .card-back-color {
   background-color: #7a4880;
@@ -647,10 +699,12 @@ img {
   text-align: center;
   min-width: 0;
   border: none;
+  overflow: hidden;
+  white-space: nowrap;
 }
 
 .background-img {
-  background-image: url("../images/background-img.png");
+  background-image: url("../images/background-img.avif");
   background-repeat: no-repeat;
   background-size: cover;
   border-radius: 20px;
@@ -672,13 +726,25 @@ img {
 /* Terms Page */
 .terms-page-section {
   background:
-    radial-gradient(circle at 15% 10%, rgba(160, 91, 179, 0.2), transparent 35%),
-    radial-gradient(circle at 80% 20%, rgba(255, 188, 83, 0.12), transparent 35%),
+    radial-gradient(
+      circle at 15% 10%,
+      rgba(160, 91, 179, 0.2),
+      transparent 35%
+    ),
+    radial-gradient(
+      circle at 80% 20%,
+      rgba(255, 188, 83, 0.12),
+      transparent 35%
+    ),
     #302530;
 }
 
 .terms-hero {
-  background: linear-gradient(135deg, rgba(122, 72, 128, 0.88), rgba(86, 29, 94, 0.88));
+  background: linear-gradient(
+    135deg,
+    rgba(122, 72, 128, 0.88),
+    rgba(86, 29, 94, 0.88)
+  );
   border: 1px solid rgba(255, 255, 255, 0.14);
   border-radius: 18px;
   padding: 28px 20px;
@@ -727,7 +793,35 @@ img {
   font-size: 16px;
 }
 
-@media (max-width: 575px) {
+/* Terms - Tablet */
+@media (min-width: 768px) and (max-width: 991px) {
+  .terms-title {
+    font-size: 30px;
+  }
+
+  .terms-subtitle {
+    font-size: 15px;
+  }
+
+  .terms-hero {
+    padding: 22px 16px;
+  }
+
+  .terms-card {
+    padding: 16px 14px;
+  }
+
+  .terms-card-title {
+    font-size: 20px;
+  }
+
+  .terms-card-body {
+    font-size: 14px;
+  }
+}
+
+/* Terms - Medium phones */
+@media (max-width: 767px) {
   .terms-title {
     font-size: 28px;
   }
@@ -736,12 +830,60 @@ img {
     font-size: 14px;
   }
 
+  .terms-hero {
+    padding: 18px 14px;
+    border-radius: 14px;
+  }
+
+  .terms-card {
+    padding: 14px 12px;
+    border-radius: 12px;
+  }
+
   .terms-card-title {
     font-size: 18px;
   }
 
   .terms-card-body {
     font-size: 14px;
+  }
+}
+
+/* Terms - Small phones */
+@media (max-width: 575px) {
+  .terms-title {
+    font-size: 24px;
+  }
+
+  .terms-subtitle {
+    font-size: 13px;
+  }
+
+  .terms-card-title {
+    font-size: 16px;
+  }
+
+  .terms-card-body {
+    font-size: 13px;
+  }
+
+  .terms-updated {
+    font-size: 13px;
+  }
+}
+
+@media (max-width: 480px) {
+  .terms-hero {
+    padding: 14px 10px;
+    border-radius: 10px;
+  }
+
+  .terms-card {
+    padding: 12px 10px;
+  }
+
+  .terms-title {
+    font-size: 22px;
   }
 }
 
@@ -789,7 +931,9 @@ img {
   border-radius: 999px;
   font-size: 14px;
   letter-spacing: 0.3px;
-  animation: spinRevealPop 0.35s ease, spinRevealFade 2.6s ease forwards;
+  animation:
+    spinRevealPop 0.35s ease,
+    spinRevealFade 2.6s ease forwards;
   z-index: 2;
 }
 
@@ -898,8 +1042,15 @@ img {
   background-color: rgba(255, 255, 255, 0.3);
 }
 
+.hero-section-container {
+  padding-bottom: 70px;
+}
+
 /* Timer responsive - 767px */
 @media (max-width: 767px) {
+  .hero-section-container {
+    padding-bottom: 5px;
+  }
   .timer-box,
   .timer-box-yellow,
   .timer-box-blue {
@@ -1379,5 +1530,114 @@ img {
   /* Minus margin top remove */
   .minus-margin-top {
     margin-top: 0;
+  }
+}
+
+/* ===== 404 Not Found Page ===== */
+.not-found-page {
+  min-height: 70vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  text-align: center;
+}
+
+.not-found-content {
+  max-width: 100%;
+}
+
+.not-found-title {
+  font-size: 56px;
+  font-weight: 700;
+  margin-bottom: 8px;
+  color: #fff;
+  font-family: poppins-bold;
+}
+
+.not-found-text {
+  font-size: 18px;
+  margin-bottom: 16px;
+  color: rgba(255, 255, 255, 0.8);
+  font-family: poppins-regular;
+}
+
+.not-found-btn {
+  font-family: Poppins-SemiBold;
+  padding: 12px 28px;
+  font-size: 15px;
+  border-radius: 8px;
+}
+
+@media (max-width: 767px) {
+  .not-found-title {
+    font-size: 42px;
+  }
+
+  .not-found-text {
+    font-size: 16px;
+  }
+
+  .not-found-btn {
+    padding: 10px 22px;
+    font-size: 14px;
+  }
+}
+
+@media (max-width: 480px) {
+  .not-found-page {
+    padding: 16px;
+    min-height: 50vh;
+  }
+
+  .not-found-title {
+    font-size: 36px;
+  }
+
+  .not-found-text {
+    font-size: 14px;
+  }
+
+  .not-found-btn {
+    padding: 10px 20px;
+    font-size: 13px;
+    width: 100%;
+  }
+}
+
+/* ===== Tablet Responsive Fixes (768px - 991px) ===== */
+@media (min-width: 768px) and (max-width: 991px) {
+  .header-rounded {
+    border-radius: 40px;
+    padding: 6px 12px;
+  }
+
+  .font-w-500 {
+    font-size: 20px;
+  }
+
+  .timer-box,
+  .timer-box-yellow,
+  .timer-box-blue {
+    min-width: 50px;
+    height: 72px;
+    padding: 8px 10px;
+  }
+
+  .timer-value {
+    font-size: 24px;
+  }
+
+  .timer-colon {
+    font-size: 24px;
+  }
+
+  .hero-section-container {
+    padding-bottom: 30px;
+  }
+
+  .footer-bg {
+    padding-left: 12px;
+    padding-right: 12px;
   }
 }

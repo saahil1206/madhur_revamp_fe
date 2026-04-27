@@ -1,7 +1,8 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./admin-login.css";
 import madhurLogo from "./admin-img/madhur-logo.png";
+import { storeAdminSession } from "./adminSession";
 
 const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -11,6 +12,14 @@ const Login = () => {
   const [error, setError] = useState("");
   const navigate = useNavigate();
   const apiBaseUrl = import.meta.env.VITE_API_BASE_URL || "http://localhost:5000";
+
+  useEffect(() => {
+    const logoutReason = sessionStorage.getItem("admin_logout_reason");
+    if (logoutReason) {
+      setError(logoutReason);
+      sessionStorage.removeItem("admin_logout_reason");
+    }
+  }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -37,8 +46,7 @@ const Login = () => {
         throw new Error(data?.message || "Login failed");
       }
 
-      localStorage.setItem("admin_token", data.token);
-      localStorage.setItem("admin_user", JSON.stringify(data.user || {}));
+      storeAdminSession(data.token, data.user || {});
       navigate("/dashboard");
     } catch (err) {
       setError(err.message || "Unable to login right now.");
@@ -108,9 +116,9 @@ const Login = () => {
           </form>
 
           {/* Register Now */}
-          <a href="/register" className="register-link">
+          {/* <a href="/register" className="register-link">
             Register Now
-          </a>
+          </a> */}
         </div>
       </div>
 

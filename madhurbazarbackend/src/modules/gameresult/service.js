@@ -131,6 +131,9 @@ async function create(payload, actor = {}) {
   if (!date || !number || !bazar || !category) {
     throw new Error("date, number, bazar and category are required");
   }
+  if (String(date) > new Date().toISOString().slice(0, 10)) {
+    throw new Error("Future date is not allowed.");
+  }
   if (!isValidPanna(number)) {
     throw new Error(
       "Invalid panna number. Please enter a valid panna from the approved chart."
@@ -140,6 +143,17 @@ async function create(payload, actor = {}) {
   const resultType = String(category).toLowerCase();
   if (!["open", "close"].includes(resultType)) {
     throw new Error("category must be open or close");
+  }
+
+  if (resultType === "close") {
+    const openResult = await GameResult.findOne({
+      where: { bazar_id: bazar, result_type: "open", result_date: date },
+    });
+    if (!openResult) {
+      throw new Error(
+        "Open result is not declared for this market on selected date. Please submit open result first."
+      );
+    }
   }
 
   const existing = await GameResult.findOne({
@@ -196,6 +210,9 @@ async function update(id, payload) {
   }
   if (updates.category) {
     updates.result_type = String(updates.category).toLowerCase();
+    if (!["open", "close"].includes(updates.result_type)) {
+      throw new Error("category must be open or close");
+    }
     delete updates.category;
   }
   if (updates.bazar) {
@@ -203,8 +220,30 @@ async function update(id, payload) {
     delete updates.bazar;
   }
   if (updates.date) {
+    if (String(updates.date) > new Date().toISOString().slice(0, 10)) {
+      throw new Error("Future date is not allowed.");
+    }
     updates.result_date = updates.date;
     delete updates.date;
+  }
+
+  const nextResultType = updates.result_type || row.result_type;
+  const nextBazarId = updates.bazar_id || row.bazar_id;
+  const nextDate = updates.result_date || row.result_date;
+
+  if (nextResultType === "close") {
+    const openResult = await GameResult.findOne({
+      where: {
+        bazar_id: nextBazarId,
+        result_type: "open",
+        result_date: nextDate,
+      },
+    });
+    if (!openResult) {
+      throw new Error(
+        "Open result is not declared for this market on selected date. Please submit open result first."
+      );
+    }
   }
 
   await row.update(updates);

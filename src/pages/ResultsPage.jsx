@@ -1,10 +1,10 @@
 import { useEffect, useMemo, useState } from 'react'
 
-const cardThemes = [
-  { guessBoxClass: 'rs-guess-box', bodyClass: 'rs-body-purple', headerClass: 'rs-header-purple', cardClass: 'rs-card-purple' },
-  { guessBoxClass: 'rs-guess-box-blue', bodyClass: 'rs-body-teal', headerClass: 'rs-header-teal', cardClass: 'rs-card-teal' },
-  { guessBoxClass: 'rs-guess-box-yellow', bodyClass: 'rs-body-yellow', headerClass: 'rs-header-yellow', cardClass: 'rs-card-yellow' },
-]
+const cardThemesByType = {
+  normal: { guessBoxClass: 'rs-guess-box', bodyClass: 'rs-body-purple', headerClass: 'rs-header-purple', cardClass: 'rs-card-purple' },
+  elite: { guessBoxClass: 'rs-guess-box-yellow', bodyClass: 'rs-body-yellow', headerClass: 'rs-header-yellow', cardClass: 'rs-card-yellow' },
+  premium: { guessBoxClass: 'rs-guess-box-blue', bodyClass: 'rs-body-teal', headerClass: 'rs-header-teal', cardClass: 'rs-card-teal' },
+}
 
 function normalizeBazarType(value) {
   const text = String(value || '').trim().toLowerCase()
@@ -57,7 +57,7 @@ function ResultsPage() {
         title: row.bazar?.bazar_name || `Bazar ${row.bazar_id}`,
         type: 'Jodi',
         notice: row.bazar?.Notice || '',
-        bazarType: normalizeBazarType(row.bazar?.bazar_category),
+        bazarType: normalizeBazarType(row.bazar?.bazar_category || row.bazar?.bazar_type),
         openPana: '--',
         openAakda: '-',
         closeAakda: '-',
@@ -70,7 +70,7 @@ function ResultsPage() {
       if (row.bazar?.Notice) {
         current.notice = row.bazar.Notice
       }
-      current.bazarType = normalizeBazarType(row.bazar?.bazar_category)
+      current.bazarType = normalizeBazarType(row.bazar?.bazar_category || row.bazar?.bazar_type)
 
       if (row.result_type === 'open') {
         current.openPana = row.result_pana || '--'
@@ -151,8 +151,8 @@ function ResultsPage() {
         {!loading && error && <p className="text-danger poppins-regular">{error}</p>}
         {!loading && !error && filteredResults.length === 0 && <p className="text-white poppins-regular">No result data found.</p>}
 
-        {!loading && !error && filteredResults.map((card, i) => {
-          const theme = cardThemes[i % cardThemes.length]
+        {!loading && !error && filteredResults.map((card) => {
+          const theme = cardThemesByType[card.bazarType] || cardThemesByType.normal
           const guessingDigits = String(card.notice || '')
             .replace(/\s+/g, '')
             .match(/\d/g) || []

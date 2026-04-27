@@ -2,100 +2,97 @@ import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import ChatBox from "../components/common/ChatBox";
 import Footer from "../components/layout/Footer";
-import akadaImg from "../assets/images/akada.png";
-import panaImg from "../assets/images/pana.png";
-import jodiImg from "../assets/images/jodi.png";
-import motorImg from "../assets/images/motor.png";
-import horoscopeMainImg from "../assets/images/Todays-Horoscope.png";
-import horoscopeFallbackIcon from "../assets/images/Horoscope.png";
+import akadaImg from "../assets/images/akada.avif";
+import panaImg from "../assets/images/pana.avif";
+import jodiImg from "../assets/images/jodi.avif";
+import motorImg from "../assets/images/motor.avif";
+import horoscopeMainImg from "../assets/images/Todays-Horoscope.avif";
+import horoscopeFallbackIcon from "../assets/images/Horoscope.avif";
 import { applySeoFromMetaHeader } from "../utils/applySeoFromMetaHeader";
 
 const SPIN_SEGMENT_DEG = 30;
 const SPIN_DURATION_MS = 7600;
 
-const spinHoroscopeData = [
-  {
-    sign: "Aries",
-    symbol: "♈",
-    message:
-      "Today Aries can gain momentum by taking one bold but focused step. Keep communication clear and avoid rushing into unnecessary arguments.",
-  },
-  {
-    sign: "Taurus",
-    symbol: "♉",
-    message:
-      "Today Taurus may feel steady progress in routine work. Prioritize consistency and avoid overcommitting your time to too many tasks.",
-  },
-  {
-    sign: "Gemini",
-    symbol: "♊",
-    message:
-      "Today Gemini may receive useful updates through conversations. Stay flexible and double-check details before final decisions.",
-  },
-  {
-    sign: "Cancer",
-    symbol: "♋",
-    message:
-      "Today Cancer may feel emotionally sensitive but intuitive. Focus on supportive relationships and give yourself short pauses to recharge.",
-  },
-  {
-    sign: "Leo",
-    symbol: "♌",
-    message:
-      "Today Leo can shine by leading with patience instead of pressure. Balance confidence with listening for better results.",
-  },
-  {
-    sign: "Virgo",
-    symbol: "♍",
-    message:
-      "Today Virgo may handle complex tasks well if priorities stay clear. Keep your plans simple and avoid perfection overload.",
-  },
-  {
-    sign: "Libra",
-    symbol: "♎",
-    message:
-      "Today Libra may face a demanding and hectic schedule, requiring extra effort and discipline to manage tasks effectively. It is advisable to avoid major, impulsive decisions and focus on maintaining harmony in personal relationships.",
-  },
-  {
-    sign: "Scorpio",
-    symbol: "♏",
-    message:
-      "Today Scorpio can benefit from strategic thinking and calm responses. Use your focus wisely and avoid unnecessary confrontations.",
-  },
-  {
-    sign: "Sagittarius",
-    symbol: "♐",
-    message:
-      "Today Sagittarius may feel inspired to explore fresh ideas. Keep practical limits in mind while acting on opportunities.",
-  },
-  {
-    sign: "Capricorn",
-    symbol: "♑",
-    message:
-      "Today Capricorn can make solid progress through disciplined effort. A steady pace will deliver stronger outcomes than quick shortcuts.",
-  },
-  {
-    sign: "Aquarius",
-    symbol: "♒",
-    message:
-      "Today Aquarius may discover creative solutions in unexpected places. Collaborate with others and keep your approach adaptable.",
-  },
-  {
-    sign: "Pisces",
-    symbol: "♓",
-    message:
-      "Today Pisces may find clarity by trusting intuition and structure together. Protect your energy and stay grounded in practical steps.",
-  },
+const spinHoroscopeBase = [
+  { sign: "Aries", symbol: "♈" },
+  { sign: "Taurus", symbol: "♉" },
+  { sign: "Gemini", symbol: "♊" },
+  { sign: "Cancer", symbol: "♋" },
+  { sign: "Leo", symbol: "♌" },
+  { sign: "Virgo", symbol: "♍" },
+  { sign: "Libra", symbol: "♎" },
+  { sign: "Scorpio", symbol: "♏" },
+  { sign: "Sagittarius", symbol: "♐" },
+  { sign: "Capricorn", symbol: "♑" },
+  { sign: "Aquarius", symbol: "♒" },
+  { sign: "Pisces", symbol: "♓" },
 ];
 
-const cardVariants = [
-  "default",
-  "default",
-  "yellow",
-  "default",
-  "default",
-  "blue",
+const horoscopeStartParts = [
+  "can gain momentum by taking one focused step",
+  "may feel steady progress in routine work",
+  "may receive useful updates through conversations",
+  "can benefit from strategic thinking and calm responses",
+  "may discover practical solutions in unexpected places",
+  "can make solid progress through disciplined effort",
+  "may find clarity by balancing intuition and structure",
+  "can shine by leading with patience instead of pressure",
 ];
+
+const horoscopeActionParts = [
+  "Keep communication clear and avoid impulsive reactions.",
+  "Stay flexible and double-check details before final decisions.",
+  "Prioritize consistency and avoid overcommitting your time.",
+  "Use your focus wisely and avoid unnecessary confrontations.",
+  "Protect your energy and stay grounded in practical steps.",
+  "Balance confidence with listening for better results.",
+  "Keep your plans simple and avoid perfection overload.",
+  "Maintain harmony in relationships while handling key priorities.",
+];
+
+function hashToPositiveInt(value) {
+  let hash = 0;
+  const text = String(value || "");
+  for (let i = 0; i < text.length; i += 1) {
+    hash = (hash << 5) - hash + text.charCodeAt(i);
+    hash |= 0;
+  }
+  return Math.abs(hash);
+}
+
+function pickWithSeed(items, seed) {
+  if (!items.length) return "";
+  return items[seed % items.length];
+}
+
+function buildHoroscopeMessage(sign, seed) {
+  const sentenceOne = pickWithSeed(horoscopeStartParts, seed);
+  const sentenceTwo = pickWithSeed(horoscopeActionParts, seed + 11);
+  return `Today ${sign} ${sentenceOne}. ${sentenceTwo}`;
+}
+
+const horoscopeDateSeed = new Date().toISOString().slice(0, 10);
+const spinHoroscopeData = spinHoroscopeBase.map((item, index) => {
+  const seed = hashToPositiveInt(`${horoscopeDateSeed}-${item.sign}-${index}`);
+  return {
+    ...item,
+    message: buildHoroscopeMessage(item.sign, seed),
+  };
+});
+
+function normalizeBazarType(value) {
+  const text = String(value || "").trim().toLowerCase();
+  if (text === "elite" || text === "elite bazar") return "elite";
+  if (text === "premium" || text === "premium bazar") return "premium";
+  return "normal";
+}
+
+function getVariantByBazarType(value) {
+  const type = normalizeBazarType(value);
+  if (type === "elite") return "yellow";
+  if (type === "premium") return "blue";
+  return "default";
+}
 
 const luckyCardsMeta = [
   { key: "aakda", img: akadaImg, title: "Aakda", digits: 4 },
@@ -335,6 +332,11 @@ function ResultCard({ title, variant, timer, digits, badgeText }) {
 }
 
 function HomePage() {
+  const defaultGuessingData = [
+    { name: "Madhur Morning", numbers: [1, 7, 2, 4] },
+    { name: "Madhur Night", numbers: [1, 7, 2, 4] },
+    { name: "Madhur Day", numbers: [1, 7, 2, 4] },
+  ];
   const [liveCards, setLiveCards] = useState([]);
   const [resultLoading, setResultLoading] = useState(true);
   const [scheduleData, setScheduleData] = useState([]);
@@ -351,6 +353,8 @@ function HomePage() {
   const [luckyDigitResult, setLuckyDigitResult] = useState(null);
   const [luckySubmitLoading, setLuckySubmitLoading] = useState(false);
   const [luckySubmitError, setLuckySubmitError] = useState("");
+  const [purpleBarData, setPurpleBarData] = useState([]);
+  const [isSpeakingResults, setIsSpeakingResults] = useState(false);
   const apiBaseUrl =
     import.meta.env.VITE_API_BASE_URL || "http://localhost:5000";
   const [nowTick, setNowTick] = useState(Date.now());
@@ -361,12 +365,12 @@ function HomePage() {
   const audioContextRef = useRef(null);
   const spinSoundTimerRef = useRef(null);
   const spinSoundStoppedRef = useRef(false);
-
-  const purpleBarData = [
-    { name: "Madhur Morning", numbers: [1, 7, 2, 4] },
-    { name: "Madhur Night", numbers: [1, 7, 2, 4] },
-    { name: "Madhur Day", numbers: [1, 7, 2, 4] },
-  ];
+  const speechTimeoutsRef = useRef([]);
+  const [speechVoices, setSpeechVoices] = useState([]);
+  const marqueeWrapperRef = useRef(null);
+  const isDraggingRef = useRef(false);
+  const dragStartXRef = useRef(0);
+  const dragStartScrollRef = useRef(0);
 
   useEffect(() => {
     const timer = setInterval(() => setNowTick(Date.now()), 1000);
@@ -374,9 +378,57 @@ function HomePage() {
   }, []);
 
   useEffect(() => {
+    const loadVoices = () => {
+      const list = window.speechSynthesis?.getVoices?.() || [];
+      setSpeechVoices(list);
+    };
+    loadVoices();
+    if (window.speechSynthesis) {
+      window.speechSynthesis.onvoiceschanged = loadVoices;
+    }
+    return () => {
+      if (window.speechSynthesis) {
+        window.speechSynthesis.onvoiceschanged = null;
+      }
+    };
+  }, []);
+
+  useEffect(() => {
+    const fetchBazarGuessing = async () => {
+      try {
+        const response = await fetch(`${apiBaseUrl}/api/bazar-guessing`);
+        if (!response.ok) throw new Error("Failed to load guessing");
+        const data = await response.json();
+
+        const mapped = (Array.isArray(data) ? data : []).map((item) => ({
+          name: item?.name || "--",
+          numbers: Array.isArray(item?.digits)
+            ? item.digits.slice(0, 4)
+            : [0, 0, 0, 0],
+        }));
+        setPurpleBarData(mapped);
+      } catch (_error) {
+        setPurpleBarData([
+          { name: "Madhur Morning", numbers: [1, 7, 2, 4] },
+          { name: "Madhur Night", numbers: [1, 7, 2, 4] },
+          { name: "Madhur Day", numbers: [1, 7, 2, 4] },
+        ]);
+      }
+    };
+    fetchBazarGuessing();
+  }, [apiBaseUrl]);
+
+  useEffect(() => {
     return () => {
       if (spinSoundTimerRef.current) {
         window.clearTimeout(spinSoundTimerRef.current);
+      }
+      speechTimeoutsRef.current.forEach((timeoutId) => {
+        window.clearTimeout(timeoutId);
+      });
+      speechTimeoutsRef.current = [];
+      if ("speechSynthesis" in window) {
+        window.speechSynthesis.cancel();
       }
       if (audioContextRef.current) {
         audioContextRef.current.close();
@@ -440,7 +492,7 @@ function HomePage() {
         });
 
         const cards = (Array.isArray(bazars) ? bazars : [])
-          .map((bazar, idx) => {
+          .map((bazar) => {
             const phaseData = getCountdownPhase(
               now,
               bazar.open_time,
@@ -491,7 +543,9 @@ function HomePage() {
             return {
               id: bazar.id,
               title: `${bazar.bazar_name} Result`,
-              variant: cardVariants[idx % cardVariants.length],
+              variant: getVariantByBazarType(
+                bazar.bazar_category || bazar.bazar_type,
+              ),
               badgeText: phaseData.phase,
               targetTime: phaseData.target.toISOString(),
               digits: formatResultDigits(
@@ -713,22 +767,92 @@ function HomePage() {
     window.speechSynthesis.speak(speech);
   };
 
+  const getPreferredFemaleVoice = () => {
+    const voices = speechVoices || [];
+    if (!voices.length) return null;
+
+    const femaleHints = [
+      "female",
+      "woman",
+      "zira",
+      "susan",
+      "samantha",
+      "karen",
+      "heera",
+      "veena",
+      "moira",
+    ];
+    const preferredLang = voices.find(
+      (v) =>
+        /^en(-|_)in$/i.test(v.lang || "") &&
+        femaleHints.some((hint) => (v.name || "").toLowerCase().includes(hint)),
+    );
+    if (preferredLang) return preferredLang;
+
+    const anyFemale = voices.find((v) =>
+      femaleHints.some((hint) => (v.name || "").toLowerCase().includes(hint)),
+    );
+    return anyFemale || null;
+  };
+
   const handleSpeakResults = () => {
     if (!("speechSynthesis" in window)) return;
 
+    speechTimeoutsRef.current.forEach((timeoutId) => {
+      window.clearTimeout(timeoutId);
+    });
+    speechTimeoutsRef.current = [];
     window.speechSynthesis.cancel();
+    const speakItems = purpleBarData.length
+      ? purpleBarData
+      : defaultGuessingData;
 
-    purpleBarData.forEach((item, index) => {
+    speakItems.forEach((item, index) => {
       const text = `${item.name} ${item.numbers.join(" ")}`;
 
       const speech = new SpeechSynthesisUtterance(text);
       speech.lang = "en-IN";
       speech.rate = 0.9; // more natural
+      const femaleVoice = getPreferredFemaleVoice();
+      if (femaleVoice) {
+        speech.voice = femaleVoice;
+      }
 
-      setTimeout(() => {
+      if (index === speakItems.length - 1) {
+        speech.onend = () => {
+          setIsSpeakingResults(false);
+        };
+        speech.onerror = () => {
+          setIsSpeakingResults(false);
+        };
+      }
+
+      const timeoutId = window.setTimeout(() => {
         window.speechSynthesis.speak(speech);
       }, index * 2500);
+      speechTimeoutsRef.current.push(timeoutId);
     });
+
+    setIsSpeakingResults(true);
+  };
+
+  const stopSpeakResults = () => {
+    if (!("speechSynthesis" in window)) return;
+
+    speechTimeoutsRef.current.forEach((timeoutId) => {
+      window.clearTimeout(timeoutId);
+    });
+    speechTimeoutsRef.current = [];
+    window.speechSynthesis.cancel();
+    setIsSpeakingResults(false);
+  };
+
+  const toggleSpeakResults = () => {
+    if (isSpeakingResults || window.speechSynthesis?.speaking || window.speechSynthesis?.pending) {
+      stopSpeakResults();
+      return;
+    }
+    handleSpeakResults();
   };
 
   const unlockAudio = () => {
@@ -736,93 +860,126 @@ function HomePage() {
     window.speechSynthesis.speak(dummy);
   };
 
+  const handleMarqueeMouseDown = (e) => {
+    const wrapper = marqueeWrapperRef.current;
+    if (!wrapper) return;
+    isDraggingRef.current = true;
+    dragStartXRef.current = e.pageX;
+    dragStartScrollRef.current = wrapper.scrollLeft;
+    wrapper.style.cursor = "grabbing";
+  };
+
+  const handleMarqueeMouseMove = (e) => {
+    const wrapper = marqueeWrapperRef.current;
+    if (!wrapper || !isDraggingRef.current) return;
+    const delta = e.pageX - dragStartXRef.current;
+    wrapper.scrollLeft = dragStartScrollRef.current - delta;
+  };
+
+  const handleMarqueeMouseUp = () => {
+    const wrapper = marqueeWrapperRef.current;
+    isDraggingRef.current = false;
+    if (wrapper) wrapper.style.cursor = "grab";
+  };
+
+  const handleMarqueeTouchStart = (e) => {
+    const wrapper = marqueeWrapperRef.current;
+    const touch = e.touches?.[0];
+    if (!wrapper || !touch) return;
+    isDraggingRef.current = true;
+    dragStartXRef.current = touch.pageX;
+    dragStartScrollRef.current = wrapper.scrollLeft;
+  };
+
+  const handleMarqueeTouchMove = (e) => {
+    const wrapper = marqueeWrapperRef.current;
+    const touch = e.touches?.[0];
+    if (!wrapper || !touch || !isDraggingRef.current) return;
+    const delta = touch.pageX - dragStartXRef.current;
+    wrapper.scrollLeft = dragStartScrollRef.current - delta;
+    e.preventDefault();
+  };
+
+  const handleMarqueeTouchEnd = () => {
+    isDraggingRef.current = false;
+  };
+
   return (
     <>
       {/* Purple Bar */}
       <div className="Purple-bg mt-4">
         <div className="container py-4 mobile-p-1">
-          <div className="row align-items-center">
-            <div className="col-xl-2 col-lg-2 col-md-3 col-sm-3 col-3">
+          <div className="d-flex align-items-center">
+            <div className="purple-bar-label flex-shrink-0">
               <h6 className="text-white Poppins-SemiBold mb-0">
                 Dhamaka Guessing
               </h6>
             </div>
-            <div className="col-xl-3 col-lg-3 col-md-4 col-sm-7 col-7 mb-0">
-              <div className="d-flex justify-content-between maindiv-profile w-100">
-                <div className="py-1">
-                  <h5 className="mb-0 Poppins-SemiBold font-size-14">
-                    Madhur Moring
-                  </h5>
-                </div>
-                <div className="d-flex align-items-center justify-content-center gap-2">
-                  {[1, 7, 2, 4].map((n, i) => (
-                    <div key={i} className="purple-light-box">
-                      {n}
-                    </div>
-                  ))}
-                </div>
+            <div
+              ref={marqueeWrapperRef}
+              className="marquee-wrapper flex-grow-1 overflow-hidden"
+              onMouseDown={handleMarqueeMouseDown}
+              onMouseMove={handleMarqueeMouseMove}
+              onMouseUp={handleMarqueeMouseUp}
+              onMouseLeave={handleMarqueeMouseUp}
+              onTouchStart={handleMarqueeTouchStart}
+              onTouchMove={handleMarqueeTouchMove}
+              onTouchEnd={handleMarqueeTouchEnd}
+              onTouchCancel={handleMarqueeTouchEnd}
+              style={{ cursor: "grab" }}
+            >
+              <div className="marquee-content">
+                {[0, 1].map((copy) => (
+                  <div key={copy} className="marquee-half">
+                    {(purpleBarData.length
+                      ? purpleBarData.map((item) => ({
+                          name: item.name,
+                          nums: item.numbers,
+                        }))
+                      : defaultGuessingData.map((item) => ({
+                          name: item.name,
+                          nums: item.numbers,
+                        }))
+                    ).map((item, idx) => (
+                      <div
+                        key={idx}
+                        className="marquee-item flex-shrink-0 mx-3"
+                      >
+                        <div className="d-flex align-items-center gap-3 maindiv-profile px-3">
+                          <div className="py-1">
+                            <h5 className="mb-0 Poppins-SemiBold font-size-14 text-nowrap">
+                              {item.name}
+                            </h5>
+                          </div>
+                          <div className="d-flex align-items-center justify-content-center gap-2">
+                            {item.nums.map((n, i) => (
+                              <div key={i} className="purple-light-box">
+                                {n}
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                ))}
               </div>
             </div>
-            <div className="col-xl-3 col-lg-3 col-md-4 col-sm-12 col-12 mb-2 purple-bar-hide">
-              <div className="d-flex justify-content-between maindiv-profile w-100">
-                <div className="py-1">
-                  <h5 className="mb-0 Poppins-SemiBold font-size-14">
-                    Madhur Night
-                  </h5>
-                </div>
-                <div className="d-flex align-items-center justify-content-center gap-2">
-                  {[1, 7, 2, 4].map((n, i) => (
-                    <div key={i} className="purple-light-box">
-                      {n}
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
-            <div className="col-xl-3 col-lg-3 col-md-4 col-sm-12 col-12 mb-2 purple-bar-hide">
-              <div className="d-flex justify-content-between maindiv-profile w-100">
-                <div className="py-1">
-                  <h5 className="mb-0 Poppins-SemiBold font-size-14">
-                    Madhur Day
-                  </h5>
-                </div>
-                <div className="d-flex align-items-center justify-content-center gap-2">
-                  {[1, 7, 2, 4].map((n, i) => (
-                    <div key={i} className="purple-light-box">
-                      {n}
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
-            <div className="col-xl-1 col-lg-1 col-sm-2 col-2 d-flex align-items-center justify-content-center">
-              {/* <div className="bg-volume">
-                <i className="fas fa-volume-up text-white volume-iocn"></i>
-              </div> */}
-
-              {/* <div
-  className="bg-volume"
-  onClick={handleSpeakResults}
-  style={{ cursor: "pointer" }}
->
-  <i className="fas fa-volume-up text-white volume-iocn"></i>
-</div> */}
-
+            <div className="flex-shrink-0 d-flex align-items-center justify-content-center ms-2">
               <div
                 className="bg-volume"
-                onClick={() => {
-                  unlockAudio();
-                  handleSpeakResults();
-                }}
+                onClick={toggleSpeakResults}
                 style={{ cursor: "pointer" }}
-              ><i className="fas fa-volume-up text-white volume-iocn"></i></div>
+              >
+                <i className="fas fa-volume-up text-white volume-iocn"></i>
+              </div>
             </div>
           </div>
         </div>
       </div>
 
       {/* Hero Section */}
-      <div className="container px-3">
+      <div className="container px-3 hero-section-container">
         <h5 className="font-size-48 Poppins-Medium text-white text-center pt-5">
           Welcome To Madhur
         </h5>
@@ -840,7 +997,10 @@ function HomePage() {
             <i className="fab fa-whatsapp text-white font-20"></i>
           </div>
         </div>
-        <div className="d-flex justify-content-center flex-wrap gap-2 gap-md-3 mt-3 mt-md-4 pb-4">
+        <div
+          className="d-flex justify-content-center flex-wrap gap-2 gap-md-3 mt-3 mt-md-4 pb-4"
+          style={{ position: "relative", zIndex: 2 }}
+        >
           <button className="btn bg-purple-btn">Guess Matka</button>
           <Link to="/results" className="btn outline-purple-btn">
             Check Results
@@ -878,10 +1038,7 @@ function HomePage() {
           </h3>
           <div className="row pt-3 pt-md-4 g-2 g-md-3">
             {luckyCards.map((card, i) => (
-              <div
-                key={i}
-                className="col-6 col-md-6 col-lg-4 col-xl-3 mb-2"
-              >
+              <div key={i} className="col-6 col-md-6 col-lg-4 col-xl-3 mb-2">
                 <div className="card p-2 p-md-4 card-back-color h-100">
                   <div className="img-outer-div">
                     <img src={card.img} width="60%" alt={card.title} />
@@ -892,10 +1049,7 @@ function HomePage() {
                       ? getLuckyPlaceholder(card)
                       : card.numbers
                     ).map((n, j) => (
-                      <div
-                        key={j}
-                        className="small-box"
-                      >
+                      <div key={j} className="small-box">
                         <span className="Poppins-Medium font-size-16">{n}</span>
                       </div>
                     ))}
@@ -1015,9 +1169,7 @@ function HomePage() {
         {/* Time Table */}
         <div className="container card-dark-bg mt-4 p-2 p-md-4">
           <div className="d-flex flex-column flex-md-row align-items-md-center gap-2 gap-md-3 mb-3">
-            <h4 className="text-white poppins-bold mb-0">
-              Time Table
-            </h4>
+            <h4 className="text-white poppins-bold mb-0">Time Table</h4>
             <p className="text-white Poppins-light font-size-14 mb-0">
               justo eros, maximus a velit ac, pulvinar faucibus sapien.
               Vestibulum quis sodales elit. Sed ornare eleifend vehicula. In hac
@@ -1076,3 +1228,4 @@ function HomePage() {
 }
 
 export default HomePage;
+

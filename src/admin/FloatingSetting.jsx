@@ -17,7 +17,7 @@ const FloatingSetting = () => {
   useEffect(() => {
     const load = async () => {
       if (!token) {
-        navigate("/login");
+        navigate("/adminlogin");
         return;
       }
       setLoading(true);
@@ -43,7 +43,7 @@ const FloatingSetting = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!token) {
-      navigate("/login");
+      navigate("/adminlogin");
       return;
     }
 

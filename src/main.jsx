@@ -14,11 +14,11 @@ import './assets/css/details.css'
 import './assets/css/chatbox.css'
 
 ReactDOM.createRoot(document.getElementById('root')).render(
-  <React.StrictMode>
+  // <React.StrictMode>
      <HelmetProvider>
     <BrowserRouter basename="/madhurbazar">
       <App />
     </BrowserRouter>
     </HelmetProvider>
-  </React.StrictMode>
+  // </React.StrictMode>
 );

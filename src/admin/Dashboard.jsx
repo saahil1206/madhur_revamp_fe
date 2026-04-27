@@ -45,6 +45,9 @@ const Dashboard = () => {
               <Link to="/bazar-category" className="admin-dropdown-item">
                 Category Setup
               </Link>
+              <Link to="/bazar-guessing-setting" className="admin-dropdown-item">
+                Guessing Setup
+              </Link>
             </div>
           )}
         </div>
