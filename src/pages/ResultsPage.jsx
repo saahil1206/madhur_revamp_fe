@@ -1,4 +1,6 @@
 import { useEffect, useMemo, useState } from 'react'
+import { Link } from 'react-router-dom'
+import { toSlug } from '../utils/slug'
 
 const cardThemesByType = {
   normal: { guessBoxClass: 'rs-guess-box', bodyClass: 'rs-body-purple', headerClass: 'rs-header-purple', cardClass: 'rs-card-purple' },
@@ -17,6 +19,7 @@ function ResultsPage() {
   const [searchTerm, setSearchTerm] = useState('')
   const [filter, setFilter] = useState('All')
   const [results, setResults] = useState([])
+  const [bazarGuessing, setBazarGuessing] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
 
@@ -27,14 +30,19 @@ function ResultsPage() {
     setError('')
 
     try {
-      const response = await fetch(`${apiBaseUrl}/api/results/today`)
+      const [resultsResponse, guessingResponse] = await Promise.all([
+        fetch(`${apiBaseUrl}/api/results/today`),
+        fetch(`${apiBaseUrl}/api/bazar-guessing`),
+      ])
 
-      if (!response.ok) {
+      if (!resultsResponse.ok) {
         throw new Error('Failed to load result data.')
       }
 
-      const data = await response.json()
+      const data = await resultsResponse.json()
+      const guessingData = guessingResponse.ok ? await guessingResponse.json() : []
       setResults(Array.isArray(data) ? data : [])
+      setBazarGuessing(Array.isArray(guessingData) ? guessingData : [])
     } catch (err) {
       setError(err.message || 'Failed to load result data.')
     } finally {
@@ -49,14 +57,19 @@ function ResultsPage() {
 
   const mergedResults = useMemo(() => {
     const grouped = new Map()
+    const guessingMap = new Map(
+      bazarGuessing.map((item) => [String(item?.name || '').trim().toLowerCase(), item]),
+    )
 
     results.forEach((row) => {
       const key = `${row.bazar_id}-${row.result_date}`
+      const bazarName = row.bazar?.bazar_name || `Bazar ${row.bazar_id}`
+      const bazarGuess = guessingMap.get(String(bazarName).trim().toLowerCase())
       const current = grouped.get(key) || {
         id: key,
-        title: row.bazar?.bazar_name || `Bazar ${row.bazar_id}`,
+        title: bazarName,
         type: 'Jodi',
-        notice: row.bazar?.Notice || '',
+        notice: bazarGuess?.digitsText || '',
         bazarType: normalizeBazarType(row.bazar?.bazar_category || row.bazar?.bazar_type),
         openPana: '--',
         openAakda: '-',
@@ -67,8 +80,8 @@ function ResultsPage() {
       if (row.bazar?.bazar_name) {
         current.title = row.bazar.bazar_name
       }
-      if (row.bazar?.Notice) {
-        current.notice = row.bazar.Notice
+      if (bazarGuess?.digitsText) {
+        current.notice = bazarGuess.digitsText
       }
       current.bazarType = normalizeBazarType(row.bazar?.bazar_category || row.bazar?.bazar_type)
 
@@ -85,7 +98,7 @@ function ResultsPage() {
     })
 
     return Array.from(grouped.values())
-  }, [results])
+  }, [results, bazarGuessing])
 
   const filteredResults = useMemo(() => {
     const term = searchTerm.trim().toLowerCase()
@@ -153,6 +166,7 @@ function ResultsPage() {
 
         {!loading && !error && filteredResults.map((card) => {
           const theme = cardThemesByType[card.bazarType] || cardThemesByType.normal
+          const gameSlug = toSlug(card.title)
           const guessingDigits = String(card.notice || '')
             .replace(/\s+/g, '')
             .match(/\d/g) || []
@@ -163,7 +177,9 @@ function ResultsPage() {
           <div key={card.id} className={`rs-card ${theme.cardClass} mb-4 p-3 ${theme.bodyClass}`}>
             <div className={`rs-card-header ${theme.headerClass} pt-2`}>
               <h6 className="mb-0 text-white poppins-regular">{card.title} &nbsp;&nbsp; ({card.type})</h6>
-              <button className="btn rs-panel-btn">Panel</button>
+              <Link to={`/games/${gameSlug}/calendar`} className="btn rs-panel-btn">
+                Panel
+              </Link>
             </div>
             <div className="rs-card-body">
               <p className="rs-guessing-label Poppins-SemiBold">

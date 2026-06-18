@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import Footer from "../components/layout/Footer";
 import { applySeoFromMetaHeader } from "../utils/applySeoFromMetaHeader";
+import { SITE_ID } from "../utils/siteId";
 
 const termsPoints = [
   {
@@ -74,7 +75,7 @@ function TermsConditionPage() {
         const apiBaseUrl =
           import.meta.env.VITE_API_BASE_URL || "http://localhost:5000";
         const res = await fetch(
-          `${apiBaseUrl}/api/seoPublic?siteId=1&pageName=term-condition&gameId=0`,
+          `${apiBaseUrl}/api/seoPublic?siteId=${SITE_ID}&pageName=term-condition&gameId=0`,
         );
         const data = await res.json();
         applySeoFromMetaHeader(data?.metaHeader || "");

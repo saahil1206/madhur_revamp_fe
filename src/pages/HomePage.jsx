@@ -9,6 +9,7 @@ import motorImg from "../assets/images/motor.avif";
 import horoscopeMainImg from "../assets/images/Todays-Horoscope.avif";
 import horoscopeFallbackIcon from "../assets/images/Horoscope.avif";
 import { applySeoFromMetaHeader } from "../utils/applySeoFromMetaHeader";
+import { SITE_ID } from "../utils/siteId";
 
 const SPIN_SEGMENT_DEG = 30;
 const SPIN_DURATION_MS = 7600;
@@ -71,7 +72,14 @@ function buildHoroscopeMessage(sign, seed) {
   return `Today ${sign} ${sentenceOne}. ${sentenceTwo}`;
 }
 
-const horoscopeDateSeed = new Date().toISOString().slice(0, 10);
+function getLocalYmd(date = new Date()) {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+  return `${year}-${month}-${day}`;
+}
+
+const horoscopeDateSeed = getLocalYmd();
 const spinHoroscopeData = spinHoroscopeBase.map((item, index) => {
   const seed = hashToPositiveInt(`${horoscopeDateSeed}-${item.sign}-${index}`);
   return {
@@ -79,6 +87,8 @@ const spinHoroscopeData = spinHoroscopeBase.map((item, index) => {
     message: buildHoroscopeMessage(item.sign, seed),
   };
 });
+
+const HOROSCOPE_SPIN_STORAGE_KEY = "madhur-horoscope-spin-date";
 
 function normalizeBazarType(value) {
   const text = String(value || "").trim().toLowerCase();
@@ -255,6 +265,14 @@ function addDays(dateObj, days) {
   return d;
 }
 
+function normalizeLink(value) {
+  const rawValue = String(value || "").trim();
+  if (!rawValue) return "";
+  if (/^https?:\/\//i.test(rawValue)) return rawValue;
+  if (/^www\./i.test(rawValue)) return `https://${rawValue}`;
+  return `https://${rawValue.replace(/^\/+/, "")}`;
+}
+
 function ResultCard({ title, variant, timer, digits, badgeText }) {
   const bodyClass =
     variant === "yellow"
@@ -274,9 +292,6 @@ function ResultCard({ title, variant, timer, digits, badgeText }) {
       <div className="result-card">
         <div className="result-card-header">
           <h6 className="mb-0 Poppins-SemiBold text-white">{title}</h6>
-          <span className="live-badge Poppins-SemiBold">
-            {badgeText || "Live"} <span className="live-dot"></span>
-          </span>
         </div>
         <div className={bodyClass}>
           <div className="timer-section">
@@ -355,6 +370,13 @@ function HomePage() {
   const [luckySubmitError, setLuckySubmitError] = useState("");
   const [purpleBarData, setPurpleBarData] = useState([]);
   const [isSpeakingResults, setIsSpeakingResults] = useState(false);
+  const [floatingSetting, setFloatingSetting] = useState({
+    whatsappName: "Whatsapp",
+    whatsappUrl: "",
+    telegramName: "Telegram",
+    telegramUrl: "",
+    status: 0,
+  });
   const apiBaseUrl =
     import.meta.env.VITE_API_BASE_URL || "http://localhost:5000";
   const [nowTick, setNowTick] = useState(Date.now());
@@ -362,6 +384,7 @@ function HomePage() {
   const [isSpinning, setIsSpinning] = useState(false);
   const [spinResult, setSpinResult] = useState(spinHoroscopeData[6]);
   const [showSpinReveal, setShowSpinReveal] = useState(false);
+  const [spinCompletedToday, setSpinCompletedToday] = useState(false);
   const audioContextRef = useRef(null);
   const spinSoundTimerRef = useRef(null);
   const spinSoundStoppedRef = useRef(false);
@@ -394,6 +417,13 @@ function HomePage() {
   }, []);
 
   useEffect(() => {
+    const storedSpinDate = window.localStorage.getItem(
+      HOROSCOPE_SPIN_STORAGE_KEY,
+    );
+    setSpinCompletedToday(storedSpinDate === getLocalYmd());
+  }, []);
+
+  useEffect(() => {
     const fetchBazarGuessing = async () => {
       try {
         const response = await fetch(`${apiBaseUrl}/api/bazar-guessing`);
@@ -416,6 +446,47 @@ function HomePage() {
       }
     };
     fetchBazarGuessing();
+  }, [apiBaseUrl]);
+
+  useEffect(() => {
+    const loadFloatingSetting = async () => {
+      try {
+        const response = await fetch(`${apiBaseUrl}/api/settings/floating-public`);
+        const data = await response.json();
+        if (!response.ok) throw new Error(data?.message || "Failed to load floating setting");
+
+        let parsedValue = {};
+        if (data?.setting_value) {
+          if (typeof data.setting_value === "object") {
+            parsedValue = data.setting_value;
+          } else {
+            try {
+              parsedValue = JSON.parse(data.setting_value);
+            } catch (_error) {
+              parsedValue = { whatsappUrl: data.setting_value };
+            }
+          }
+        }
+
+        setFloatingSetting({
+          whatsappName: parsedValue.whatsappName || data?.setting_name || "Whatsapp",
+          whatsappUrl: parsedValue.whatsappUrl || "",
+          telegramName: parsedValue.telegramName || "Telegram",
+          telegramUrl: parsedValue.telegramUrl || "",
+          status: Number(data?.status) || 0,
+        });
+      } catch (_error) {
+        setFloatingSetting({
+          whatsappName: "Whatsapp",
+          whatsappUrl: "https://wa.me/",
+          telegramName: "Telegram",
+          telegramUrl: "https://t.me/",
+          status: 1,
+        });
+      }
+    };
+
+    loadFloatingSetting();
   }, [apiBaseUrl]);
 
   useEffect(() => {
@@ -442,7 +513,7 @@ function HomePage() {
         const apiBaseUrl =
           import.meta.env.VITE_API_BASE_URL || "http://localhost:5000";
         const res = await fetch(
-          `${apiBaseUrl}/api/seoPublic?siteId=1&pageName=home&gameId=0`,
+          `${apiBaseUrl}/api/seoPublic?siteId=${SITE_ID}&pageName=home&gameId=0`,
         );
         const data = await res.json();
         applySeoFromMetaHeader(data?.metaHeader || "");
@@ -582,6 +653,10 @@ function HomePage() {
     })
     .filter(Boolean);
 
+  const floatingEnabled = Number(floatingSetting.status) === 1;
+  const floatingWhatsAppLink = normalizeLink(floatingSetting.whatsappUrl) || "https://wa.me/";
+  const floatingTelegramLink = normalizeLink(floatingSetting.telegramUrl) || "https://t.me/";
+
   const stopSpinSound = () => {
     spinSoundStoppedRef.current = true;
     if (spinSoundTimerRef.current) {
@@ -641,7 +716,7 @@ function HomePage() {
   };
 
   const handleSpin = () => {
-    if (isSpinning) return;
+    if (isSpinning || spinCompletedToday) return;
 
     const randomIndex = Math.floor(Math.random() * spinHoroscopeData.length);
     const targetOffset =
@@ -658,6 +733,8 @@ function HomePage() {
       setSpinResult(result);
       setIsSpinning(false);
       setShowSpinReveal(true);
+      setSpinCompletedToday(true);
+      window.localStorage.setItem(HOROSCOPE_SPIN_STORAGE_KEY, getLocalYmd());
       stopSpinSound();
 
       window.setTimeout(() => {
@@ -665,6 +742,17 @@ function HomePage() {
       }, 2600);
     }, SPIN_DURATION_MS);
   };
+
+
+  
+
+
+  const spinButtonDisabled = isSpinning || spinCompletedToday;
+  const spinButtonLabel = isSpinning
+    ? "Spinning..."
+    : spinCompletedToday
+      ? "Come back tomorrow"
+      : "Spin to win";
 
   const handleLuckyDigitSubmit = async () => {
     setLuckySubmitError("");
@@ -965,7 +1053,7 @@ function HomePage() {
                 ))}
               </div>
             </div>
-            <div className="flex-shrink-0 d-flex align-items-center justify-content-center ms-2">
+            {/* <div className="flex-shrink-0 d-flex align-items-center justify-content-center ms-2">
               <div
                 className="bg-volume"
                 onClick={toggleSpeakResults}
@@ -973,7 +1061,7 @@ function HomePage() {
               >
                 <i className="fas fa-volume-up text-white volume-iocn"></i>
               </div>
-            </div>
+            </div> */}
           </div>
         </div>
       </div>
@@ -990,18 +1078,42 @@ function HomePage() {
           To get more regular updates stay connected
         </p>
         <div className="d-flex justify-content-center gap-3">
-          <div className="telegram">
-            <i className="fab fa-telegram-plane text-white font-20"></i>
-          </div>
-          <div className="whatup">
-            <i className="fab fa-whatsapp text-white font-20"></i>
-          </div>
+          {floatingEnabled ? (
+            <a
+              className="telegram"
+              href={floatingTelegramLink}
+              target="_blank"
+              rel="noreferrer"
+              aria-label={floatingSetting.telegramName || "Telegram"}
+            >
+              <i className="fab fa-telegram-plane text-white font-20"></i>
+            </a>
+          ) : (
+            <div className="telegram">
+              <i className="fab fa-telegram-plane text-white font-20"></i>
+            </div>
+          )}
+          {floatingEnabled ? (
+            <a
+              className="whatup"
+              href={floatingWhatsAppLink}
+              target="_blank"
+              rel="noreferrer"
+              aria-label={floatingSetting.whatsappName || "Whatsapp"}
+            >
+              <i className="fab fa-whatsapp text-white font-20"></i>
+            </a>
+          ) : (
+            <div className="whatup">
+              <i className="fab fa-whatsapp text-white font-20"></i>
+            </div>
+          )}
         </div>
         <div
           className="d-flex justify-content-center flex-wrap gap-2 gap-md-3 mt-3 mt-md-4 pb-4"
           style={{ position: "relative", zIndex: 2 }}
         >
-          <button className="btn bg-purple-btn">Guess Matka</button>
+	  {/* <button className="btn bg-purple-btn">Guess Matka</button>*/}
           <Link to="/results" className="btn outline-purple-btn">
             Check Results
           </Link>
@@ -1112,9 +1224,9 @@ function HomePage() {
                 <button
                   className="btn purple-btn w-100 w-md-50"
                   onClick={handleSpin}
-                  disabled={isSpinning}
+                  disabled={spinButtonDisabled}
                 >
-                  {isSpinning ? "Spinning..." : "Spin to win"}
+                  {spinButtonLabel}
                 </button>
               </div>
             </div>
@@ -1141,10 +1253,10 @@ function HomePage() {
                   }
                 />
               </div>
-              <p className="text-white mt-4 text-center Poppins-light font-size-14">
+              {/* <p className="text-white mt-4 text-center Poppins-light font-size-14">
                 Ut viverra nunc nec quam luctus, non pharetra nibh lacinia.
                 Interdum et malesuada fames ac ante ipsum primis in faucibus.
-              </p>
+              </p> */}
               <div className="mt-3 mb-5">
                 <button
                   className="btn purple-btn"
@@ -1170,11 +1282,11 @@ function HomePage() {
         <div className="container card-dark-bg mt-4 p-2 p-md-4">
           <div className="d-flex flex-column flex-md-row align-items-md-center gap-2 gap-md-3 mb-3">
             <h4 className="text-white poppins-bold mb-0">Time Table</h4>
-            <p className="text-white Poppins-light font-size-14 mb-0">
+            {/* <p className="text-white Poppins-light font-size-14 mb-0">
               justo eros, maximus a velit ac, pulvinar faucibus sapien.
               Vestibulum quis sodales elit. Sed ornare eleifend vehicula. In hac
               habitasse plate
-            </p>
+            </p> */}
           </div>
           <div className="table-responsive">
             <table className="time-table w-100">

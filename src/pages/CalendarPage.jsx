@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { useParams } from "react-router-dom";
 import { jsPDF } from "jspdf";
+import { toSlug } from "../utils/slug";
 
 function formatDateKey(dateObj) {
   const y = dateObj.getFullYear();
@@ -27,14 +28,6 @@ function formatRangeLabel(startDate, endDate) {
   const monthShort = startDate.toLocaleString("en-US", { month: "short" });
   const yearShort = `${startDate.getFullYear()}`.slice(-2);
   return `${startDay}-${endDay} ${monthShort}, ${yearShort}`;
-}
-
-function toSlug(value) {
-  return String(value || "")
-    .toLowerCase()
-    .trim()
-    .replace(/[^a-z0-9]+/g, "-")
-    .replace(/^-+|-+$/g, "");
 }
 
 function getStartOfWeekMonday(dateObj) {

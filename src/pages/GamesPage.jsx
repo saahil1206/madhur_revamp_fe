@@ -1,13 +1,6 @@
 import { useEffect, useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
-
-function toSlug(value) {
-  return String(value || '')
-    .toLowerCase()
-    .trim()
-    .replace(/[^a-z0-9]+/g, '-')
-    .replace(/^-+|-+$/g, '');
-}
+import { toSlug } from '../utils/slug'
 
 function getGameIcon(name) {
   const text = String(name || '').toLowerCase();

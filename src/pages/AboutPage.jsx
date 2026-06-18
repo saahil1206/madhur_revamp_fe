@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { applySeoFromMetaHeader } from "../utils/applySeoFromMetaHeader";
+import { SITE_ID } from "../utils/siteId";
 
 function normalizePageHtml(html) {
   const raw = String(html || "").trim();
@@ -17,7 +18,7 @@ function AboutPage() {
     const loadSeo = async () => {
       try {
         const apiBaseUrl = import.meta.env.VITE_API_BASE_URL || "http://localhost:5000";
-        const res = await fetch(`${apiBaseUrl}/api/seoPublic?siteId=1&pageName=about-us&gameId=0`);
+        const res = await fetch(`${apiBaseUrl}/api/seoPublic?siteId=${SITE_ID}&pageName=about-us&gameId=0`);
         const data = await res.json();
         applySeoFromMetaHeader(data?.metaHeader || "");
         setPageHtml(normalizePageHtml(data?.pageHtml));

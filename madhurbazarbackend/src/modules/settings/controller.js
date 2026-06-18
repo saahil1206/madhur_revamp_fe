@@ -9,6 +9,15 @@ async function getFloating(req, res) {
   }
 }
 
+async function getFloatingPublic(req, res) {
+  try {
+    const data = await service.getFloatingSetting();
+    return res.json(data);
+  } catch (error) {
+    return res.status(500).json({ message: "Failed to load floating setting" });
+  }
+}
+
 async function updateFloating(req, res) {
   try {
     const data = await service.updateFloatingSetting(req.body || {});
@@ -18,4 +27,4 @@ async function updateFloating(req, res) {
   }
 }
 
-module.exports = { getFloating, updateFloating };
+module.exports = { getFloating, getFloatingPublic, updateFloating };

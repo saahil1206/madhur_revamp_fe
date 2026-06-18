@@ -56,9 +56,9 @@ function ProfilePage() {
             </div>
           </div>
 
-          <p className="profile-desc">
+          {/* <p className="profile-desc">
             Lorem ipsum dolor sit amet, consectetur adipiscing elit. In justo eros, maximus a velit ac, pulvinar faucibus sapien. Vestibulum quis sodales elit. Sed ornare eleifend vehicula. In hac habitasse platea dictumst. Suspendisse nec egestas ex, sed imperdiet leo. Ut viverra nunc nec quam luctus, non pharetra nibh lacinia. Interdum et malesuada fames ac ante ipsum primis in faucibus.
-          </p>
+          </p> */}
 
           <div className="mb-4">
             <button className="btn profile-upgrade-btn">Upgrade My Plan</button>

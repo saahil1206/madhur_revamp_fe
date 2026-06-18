@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./admin-login.css";
-import madhurLogo from "./admin-img/madhur-logo.png";
+import madhurLogo from "./admin-img/madhur-logo.avif";
+// import madhurLogo from "./admin-img/madhur-logo.png";
 import { storeAdminSession } from "./adminSession";
 
 const Login = () => {

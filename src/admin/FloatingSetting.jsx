@@ -7,12 +7,24 @@ const FloatingSetting = () => {
   const token = localStorage.getItem("admin_token");
 
   const [isVisible, setIsVisible] = useState(false);
-  const [settingName, setSettingName] = useState("Whatsapp");
-  const [settingValue, setSettingValue] = useState("");
+  const [whatsappName, setWhatsappName] = useState("Whatsapp");
+  const [whatsappUrl, setWhatsappUrl] = useState("");
+  const [telegramName, setTelegramName] = useState("Telegram");
+  const [telegramUrl, setTelegramUrl] = useState("");
   const [loading, setLoading] = useState(false);
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
+
+  const parseFloatingValue = (value) => {
+    if (!value) return {};
+    if (typeof value === "object") return value;
+    try {
+      return JSON.parse(value);
+    } catch (_error) {
+      return { whatsappUrl: value };
+    }
+  };
 
   useEffect(() => {
     const load = async () => {
@@ -28,9 +40,12 @@ const FloatingSetting = () => {
         });
         const data = await response.json();
         if (!response.ok) throw new Error(data?.message || "Failed to load setting");
+        const parsedValue = parseFloatingValue(data.setting_value);
         setIsVisible(Number(data.status) === 1);
-        setSettingName(data.setting_name || "Whatsapp");
-        setSettingValue(data.setting_value || "");
+        setWhatsappName(parsedValue.whatsappName || data.setting_name || "Whatsapp");
+        setWhatsappUrl(parsedValue.whatsappUrl || "");
+        setTelegramName(parsedValue.telegramName || "Telegram");
+        setTelegramUrl(parsedValue.telegramUrl || "");
       } catch (err) {
         setError(err.message || "Failed to load setting");
       } finally {
@@ -51,6 +66,12 @@ const FloatingSetting = () => {
     setMessage("");
     setError("");
     try {
+      const payload = {
+        whatsappName,
+        whatsappUrl,
+        telegramName,
+        telegramUrl,
+      };
       const response = await fetch(`${apiBaseUrl}/api/settings/floating`, {
         method: "PUT",
         headers: {
@@ -58,8 +79,8 @@ const FloatingSetting = () => {
           Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify({
-          setting_name: settingName,
-          setting_value: settingValue,
+          setting_name: whatsappName,
+          setting_value: JSON.stringify(payload),
           status: isVisible ? 1 : 0,
         }),
       });
@@ -100,16 +121,30 @@ const FloatingSetting = () => {
           <input
             type="text"
             className="floating-input"
-            placeholder="Whatsapp"
-            value={settingName}
-            onChange={(e) => setSettingName(e.target.value)}
+            placeholder="Whatsapp label"
+            value={whatsappName}
+            onChange={(e) => setWhatsappName(e.target.value)}
           />
           <input
             type="text"
             className="floating-input floating-input-wide"
-            placeholder="Enter URL"
-            value={settingValue}
-            onChange={(e) => setSettingValue(e.target.value)}
+            placeholder="Whatsapp URL"
+            value={whatsappUrl}
+            onChange={(e) => setWhatsappUrl(e.target.value)}
+          />
+          <input
+            type="text"
+            className="floating-input"
+            placeholder="Telegram label"
+            value={telegramName}
+            onChange={(e) => setTelegramName(e.target.value)}
+          />
+          <input
+            type="text"
+            className="floating-input floating-input-wide"
+            placeholder="Telegram URL"
+            value={telegramUrl}
+            onChange={(e) => setTelegramUrl(e.target.value)}
           />
           <button type="submit" className="btn-submit" disabled={saving || loading}>
             {saving ? "Saving..." : "Submit"}

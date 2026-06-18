@@ -72,64 +72,39 @@ function App() {
     }
   }, [location.pathname, navigate])
 
-return (
-  <Routes>
-
-    {window.location.hostname === "admin.madhurbazar.co.in" ? (
-      <>
-        <Route
-          path="/"
-          element={
-            <AdminPublicRoute>
-              <Login />
-            </AdminPublicRoute>
-          }
-        />
-
-        <Route
-          element={
-            <AdminProtectedRoute>
-              <AdminLayout />
-            </AdminProtectedRoute>
-          }
-        >
-          <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/enter-result" element={<EnterResult />} />
-          <Route path="/result-record" element={<ResultRecord />} />
-          <Route path="/lucky-number-setting" element={<LuckyNumberSetting />} />
-          <Route path="/bazar-guessing-setting" element={<BazarGuessingSetting />} />
-          <Route path="/bazar-category" element={<BazarCategory />} />
-          <Route path="/floating-setting" element={<FloatingSetting />} />
-          <Route path="/game-seo-list" element={<GameSeoList />} />
-          <Route path="/lucky-number-requests" element={<LuckyNumberRequests />} />
-          <Route path="/edit-profile" element={<EditProfile />} />
-          <Route path="/change-password" element={<ChangePassword />} />
-        </Route>
-      </>
-    ) : (
-      <>
-        <Route element={<HomeLayout />}>
-          <Route path="/" element={<HomePage />} />
-        </Route>
-
-        <Route element={<SubpageLayout />}>
-          <Route path="/results" element={<ResultsPage />} />
-          <Route path="/about" element={<AboutPage />} />
-          <Route path="/terms-condition" element={<TermsConditionPage />} />
-          <Route path="/privacy-policy" element={<PrivacyPolicyPage />} />
-          <Route path="/games" element={<GamesPage />} />
-          <Route path="/games/:gameSlug" element={<DetailsPage />} />
-          <Route path="/games/:gameSlug/calendar" element={<CalendarPage />} />
-        </Route>
-
-        <Route path="/signin" element={<SignInPage />} />
-        <Route path="/profile" element={<ProfilePage />} />
-      </>
-    )}
-
-    <Route path="*" element={<NotFoundPage />} />
-  </Routes>
-)
+  return (
+    <Routes>
+      <Route element={<HomeLayout />}>
+        <Route path="/" element={<HomePage />} />
+      </Route>
+      <Route element={<SubpageLayout />}>
+        <Route path="/results" element={<ResultsPage />} />
+        <Route path="/about" element={<AboutPage />} />
+        <Route path="/terms-condition" element={<TermsConditionPage />} />
+        <Route path="/privacy-policy" element={<PrivacyPolicyPage />} />
+        <Route path="/games" element={<GamesPage />} />
+        <Route path="/games/:gameSlug" element={<DetailsPage />} />
+        <Route path="/games/:gameSlug/calendar" element={<CalendarPage />} />
+      </Route>
+      <Route path="/signin" element={<SignInPage />} />
+      <Route path="/profile" element={<ProfilePage />} />
+      <Route path="/adminlogin" element={<AdminPublicRoute><Login /></AdminPublicRoute>} />
+      <Route element={<AdminProtectedRoute><AdminLayout /></AdminProtectedRoute>}>
+        <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/enter-result" element={<EnterResult />} />
+        <Route path="/result-record" element={<ResultRecord />} />
+        <Route path="/lucky-number-setting" element={<LuckyNumberSetting />} />
+        <Route path="/bazar-guessing-setting" element={<BazarGuessingSetting />} />
+        <Route path="/bazar-category" element={<BazarCategory />} />
+        <Route path="/floating-setting" element={<FloatingSetting />} />
+        <Route path="/game-seo-list" element={<GameSeoList />} />
+        <Route path="/lucky-number-requests" element={<LuckyNumberRequests />} />
+        <Route path="/edit-profile" element={<EditProfile />} />
+        <Route path="/change-password" element={<ChangePassword />} />
+      </Route>
+      <Route path="*" element={<NotFoundPage />} />
+    </Routes>
+  )
 }
 
 export default App

@@ -16,7 +16,7 @@ import './assets/css/chatbox.css'
 ReactDOM.createRoot(document.getElementById('root')).render(
   // <React.StrictMode>
      <HelmetProvider>
-    <BrowserRouter basename="/madhurbazar">
+    <BrowserRouter>
       <App />
     </BrowserRouter>
     </HelmetProvider>
