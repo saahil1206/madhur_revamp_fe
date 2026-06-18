@@ -17,7 +17,7 @@ jobs:
 
       - name: Deploy Admin via SSM (wait + logs)
         run: |
-          INSTANCE_ID="09cca75368f18e9b6"
+          INSTANCE_ID="i-09cca75368f18e9b6"
 
           echo "Sending admin deploy command via SSM..."
 
