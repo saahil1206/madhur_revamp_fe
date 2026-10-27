@@ -22,7 +22,7 @@ jobs:
         run: |
           set -e
 
-          INSTANCE_ID="i-09cca75368f18e9b6"
+          INSTANCE_ID="i-052b7e256950eff26"
 
           echo "Sending admin deploy command via SSM..."
 

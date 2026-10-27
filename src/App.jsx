@@ -1,135 +1,202 @@
+^Croot@ip-10-0-2-10:/var/www/react-madhurbazar/src# cat App.jsx
+
 import { useEffect } from 'react'
+
 import { Routes, Route } from 'react-router-dom'
+
 import { Navigate, useLocation, useNavigate } from 'react-router-dom'
+
 import HomeLayout from './components/layout/HomeLayout'
+
 import SubpageLayout from './components/layout/SubpageLayout'
+
 import HomePage from './pages/HomePage'
+
 import SignInPage from './pages/SignInPage'
+
 import ProfilePage from './pages/ProfilePage'
+
 import ResultsPage from './pages/ResultsPage'
+
 import AboutPage from './pages/AboutPage'
+
 import GamesPage from './pages/GamesPage'
+
 import DetailsPage from './pages/DetailsPage'
+
 import CalendarPage from './pages/CalendarPage'
+
 import TermsConditionPage from './pages/TermsConditionPage'
+
 import PrivacyPolicyPage from './pages/PrivacyPolicyPage'
+
 import NotFoundPage from './pages/NotFoundPage'
+
 import Login from './admin/login'
+
 import AdminLayout from './admin/AdminLayout'
+
 import Dashboard from './admin/Dashboard'
+
 import EnterResult from './admin/EnterResult'
+
 import ResultRecord from './admin/ResultRecord'
+
 import FloatingSetting from './admin/FloatingSetting'
+
 import GameSeoList from './admin/GameSeoList'
+
 import BazarCategory from './admin/BazarCategory'
+
 import LuckyNumberRequests from './admin/LuckyNumberRequests'
+
 import LuckyNumberSetting from './admin/LuckyNumberSetting'
+
 import BazarGuessingSetting from './admin/BazarGuessingSetting'
+
 import EditProfile from './admin/EditProfile'
+
 import ChangePassword from './admin/ChangePassword'
+
 import { clearAdminSession, getAdminToken } from './admin/adminSession'
-
+ 
 function AdminProtectedRoute({ children }) {
+
   const token = getAdminToken()
+
   if (!token) {
+
     return <Navigate to="/adminlogin" replace />
-  }
-  return children
-}
 
+  }
+
+  return children
+
+}
+ 
 function AdminPublicRoute({ children }) {
+
   const token = getAdminToken()
+
   if (token) {
+
     return <Navigate to="/dashboard" replace />
+
   }
+
   return children
-}
 
+}
+ 
 function App() {
+
   const navigate = useNavigate()
+
   const location = useLocation()
-
+ 
   useEffect(() => {
+
     const originalFetch = window.fetch.bind(window)
-
+ 
     window.fetch = async (...args) => {
+
       const response = await originalFetch(...args)
+
       const token = getAdminToken()
-
+ 
       if (response.status === 401 && token) {
+
         clearAdminSession("Your account was logged in from another browser. Please sign in again.")
-
+ 
         if (location.pathname !== '/adminlogin') {
+
           navigate('/adminlogin', { replace: true })
+
         }
+
       }
-
+ 
       return response
-    }
 
+    }
+ 
     return () => {
+
       window.fetch = originalFetch
+
     }
+
   }, [location.pathname, navigate])
-
+ 
 return (
-  <Routes>
-
+<Routes>
+ 
     {window.location.hostname === "admin.madhurbazar.co.in" ? (
-      <>
-        <Route
+<>
+<Route
+
           path="/"
+
           element={
-            <AdminPublicRoute>
-              <Login />
-            </AdminPublicRoute>
+<AdminPublicRoute>
+<Login />
+</AdminPublicRoute>
+
           }
+
         />
-
+ 
         <Route
+
           element={
-            <AdminProtectedRoute>
-              <AdminLayout />
-            </AdminProtectedRoute>
+<AdminProtectedRoute>
+<AdminLayout />
+</AdminProtectedRoute>
+
           }
-        >
-          <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/enter-result" element={<EnterResult />} />
-          <Route path="/result-record" element={<ResultRecord />} />
-          <Route path="/lucky-number-setting" element={<LuckyNumberSetting />} />
-          <Route path="/bazar-guessing-setting" element={<BazarGuessingSetting />} />
-          <Route path="/bazar-category" element={<BazarCategory />} />
-          <Route path="/floating-setting" element={<FloatingSetting />} />
-          <Route path="/game-seo-list" element={<GameSeoList />} />
-          <Route path="/lucky-number-requests" element={<LuckyNumberRequests />} />
-          <Route path="/edit-profile" element={<EditProfile />} />
-          <Route path="/change-password" element={<ChangePassword />} />
-        </Route>
-      </>
+>
+<Route path="/dashboard" element={<Dashboard />} />
+<Route path="/enter-result" element={<EnterResult />} />
+<Route path="/result-record" element={<ResultRecord />} />
+<Route path="/lucky-number-setting" element={<LuckyNumberSetting />} />
+<Route path="/bazar-guessing-setting" element={<BazarGuessingSetting />} />
+<Route path="/bazar-category" element={<BazarCategory />} />
+<Route path="/floating-setting" element={<FloatingSetting />} />
+<Route path="/game-seo-list" element={<GameSeoList />} />
+<Route path="/lucky-number-requests" element={<LuckyNumberRequests />} />
+<Route path="/edit-profile" element={<EditProfile />} />
+<Route path="/change-password" element={<ChangePassword />} />
+</Route>
+</>
+
     ) : (
-      <>
-        <Route element={<HomeLayout />}>
-          <Route path="/" element={<HomePage />} />
-        </Route>
-
+<>
+<Route element={<HomeLayout />}>
+<Route path="/" element={<HomePage />} />
+</Route>
+ 
         <Route element={<SubpageLayout />}>
-          <Route path="/results" element={<ResultsPage />} />
-          <Route path="/about" element={<AboutPage />} />
-          <Route path="/terms-condition" element={<TermsConditionPage />} />
-          <Route path="/privacy-policy" element={<PrivacyPolicyPage />} />
-          <Route path="/games" element={<GamesPage />} />
-          <Route path="/games/:gameSlug" element={<DetailsPage />} />
-          <Route path="/games/:gameSlug/calendar" element={<CalendarPage />} />
-        </Route>
-
+<Route path="/results" element={<ResultsPage />} />
+<Route path="/about" element={<AboutPage />} />
+<Route path="/terms-condition" element={<TermsConditionPage />} />
+<Route path="/privacy-policy" element={<PrivacyPolicyPage />} />
+<Route path="/games" element={<GamesPage />} />
+<Route path="/games/:gameSlug" element={<DetailsPage />} />
+<Route path="/games/:gameSlug/calendar" element={<CalendarPage />} />
+</Route>
+ 
         <Route path="/signin" element={<SignInPage />} />
-        <Route path="/profile" element={<ProfilePage />} />
-      </>
+<Route path="/profile" element={<ProfilePage />} />
+</>
+
     )}
-
+ 
     <Route path="*" element={<NotFoundPage />} />
-  </Routes>
-)
-}
+</Routes>
 
+)
+
+}
+ 
 export default App
+ 
