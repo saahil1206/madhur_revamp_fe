@@ -1,4 +1,3 @@
-^Croot@ip-10-0-2-10:/var/www/react-madhurbazar/src# cat App.jsx
 
 import { useEffect } from 'react'
 
