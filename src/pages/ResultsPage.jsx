@@ -87,10 +87,10 @@ function ResultsPage() {
 
       if (row.result_type === 'open') {
         current.openPana = row.result_pana || '--'
-        current.openAakda = row.result_AAkda || '-'
+        current.openAakda = row.result_AAkda ?? '-'
       }
       if (row.result_type === 'close') {
-        current.closeAakda = row.result_AAkda || '-'
+        current.closeAakda = row.result_AAkda ?? '-'
         current.closePana = row.result_pana || '--'
       }
 
